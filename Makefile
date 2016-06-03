@@ -1,6 +1,6 @@
 OBJ = main.o SFMLWidget.o
 CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -I SFML-2.3.2/include -I header/
-LDFLAGS=-export-dynamic
+LDFLAGS=-rdynamic
 LDLIBS=`pkg-config --libs gtkmm-3.0` -L SFML-2.3.2/lib -lsfml-graphics -lsfml-window -lsfml-system 
 
 VPATH=src:header
