@@ -12,7 +12,7 @@
 #include "../header/SFMLWidget.h"
 #include <iostream>
 #include <SFML/Graphics.hpp>
-
+#include <cassert>
 
 SFMLWidget * SFML;
 
@@ -53,8 +53,11 @@ int main(int argc, char* argv[])
     Gtk::Main kit(argc, argv);
 
 	//La SFML GTK è quella principale
-    Gtk::Window * window;
+    Gtk::Window * window = NULL;
     Gtk::Box * box;
+
+    //Asserzione che fallisce (quindi termina il programma)
+    //assert(window != NULL);
 
 	//Creazione della zona di disegno mediante SFMLWidget
 	SFML = new SFMLWidget(sf::VideoMode(300, 300));
