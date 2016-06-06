@@ -29,6 +29,7 @@ void disegno()
 	sap.setPosition(sf::Vector2f(0,0));
 	sap.setFillColor(sf::Color::Green);
 
+
 	//Disegno del cerchio
 	SFML->renderWindow.draw(sap);
 
@@ -36,9 +37,9 @@ void disegno()
 	SFML->renderWindow.display();
 }
 
+//Ogni volta che il widget viene ridimensionato, si aggiusta la View.
  void resize_view()
     {
-        // Let the View fit the pixels of the window.
         sf::Vector2f lower_right(SFML->renderWindow.getSize().x,
                                  SFML->renderWindow.getSize().y);
 
