@@ -15,23 +15,28 @@
 #include <cassert>
 
 SFMLWidget * SFML;
+sf::RectangleShape * rect;
 
 void disegno()
 {
 	//Diciamo a GTK di ridisegnare il widget SFML
+    static bool premuto = false;
 	SFML->invalidate();
 
 	//Pulizia della SFML
 	SFML->renderWindow.clear();
 
-	//Creazione del cerchio da disegnare
-	sf::CircleShape sap(50);
-	sap.setPosition(sf::Vector2f(0,0));
-	sap.setFillColor(sf::Color::Green);
-
+    if (!premuto && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
+        std::cout <<"premo S \n";
+        rect->move(0, 1);
+        premuto = true;
+    }
+    else
+        premuto = false;
 
 	//Disegno del cerchio
-	SFML->renderWindow.draw(sap);
+	SFML->renderWindow.draw(*rect);
 
 	//Si visualizza ciò che è stato disegnato
 	SFML->renderWindow.display();
@@ -61,7 +66,14 @@ int main(int argc, char* argv[])
     //assert(window != NULL);
 
 	//Creazione della zona di disegno mediante SFMLWidget
+	//IMPORTANTE: vengono applicate solo le modifiche al widget
+	// fatte dopo il window show all
 	SFML = new SFMLWidget(sf::VideoMode(300, 300));
+
+
+
+    rect = new sf::RectangleShape(sf::Vector2f(300, 100));
+    rect->setFillColor(sf::Color::Green);
 
 	//Link del segnale draw del widget
 	SFML->signal_draw().connect(sigc::bind_return(sigc::hide(
@@ -73,15 +85,17 @@ int main(int argc, char* argv[])
 	SFML->show();
 
 
+
     Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("gui.glade");
 
     builder->get_widget("window1", window);
     builder->get_widget("box1", box);
 
-	//Si mostrano tutti i widget contenuti nella SFML principale
+    box->pack_start(*SFML);
+    //Si mostrano tutti i widget contenuti nella SFML principale
     window->show_all();
 
-    box->pack_start(*SFML);
+    SFML->renderWindow.setFramerateLimit(60);
 
     Gtk::Main::run(*window); //Draw the window
     return 0;
