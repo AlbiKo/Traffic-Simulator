@@ -1,7 +1,7 @@
 
 /** @mainpage Faccio la prova.
     Super prova che spacca. Davvero davvero. ::main \n
-    rafds
+
 
     @author Me
     @author Te
