@@ -7,15 +7,14 @@
     Scrivo altra robetta
 
 Blob
-
     Testina
 
 Scrivo robetta
 
-
     @author Me
     @author Te
 */
+
 
 
 #include <gtkmm.h>
@@ -23,6 +22,19 @@ Scrivo robetta
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <cassert>
+
+#ifdef DEBUG_MODE
+unsigned int MASK = 1 ;
+
+#define DBG(A, B) {if ((A) & MASK) {B; } }
+#else
+#define DBG(A, B)
+#endif
+
+
+#define D1(a) DBG(1, a)
+#define D2(a) DBG(2, a)
+#define D3(a) DBG(4, a)
 
 SFMLWidget * SFML;
 sf::RectangleShape * rect;
@@ -33,7 +45,7 @@ void disegno()
     static bool premuto = false;
 	SFML->invalidate();
 
-	//Pulizia della SFML
+	//Pulizia della SFML window
 	SFML->renderWindow.clear();
 
     if (!premuto && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -73,14 +85,12 @@ int main(int argc, char* argv[])
     Gtk::Box * box;
 
     //Asserzione che fallisce (quindi termina il programma)
-    //assert(window != NULL);
+    assert(window != NULL);
 
 	//Creazione della zona di disegno mediante SFMLWidget
 	//IMPORTANTE: vengono applicate solo le modifiche al widget
 	// fatte dopo il window show all
 	SFML = new SFMLWidget(sf::VideoMode(300, 300));
-
-
 
     rect = new sf::RectangleShape(sf::Vector2f(300, 100));
     rect->setFillColor(sf::Color::Green);
@@ -90,10 +100,8 @@ int main(int argc, char* argv[])
 															sigc::ptr_fun(&disegno)),
 															true
 												));
-
 	SFML->signal_size_allocate().connect(sigc::hide(sigc::ptr_fun(&resize_view)));
 	SFML->show();
-
 
 
     Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("gui.glade");
