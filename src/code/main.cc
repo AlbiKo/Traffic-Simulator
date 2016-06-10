@@ -2,13 +2,7 @@
 /** @mainpage Faccio la prova.
     Super prova che spacca. Davvero davvero. ::main \n
 
-    Sopra altra robetta
-    Eh
-    Scrivo altra robetta
-Blob
-    Testina
 
-Scrivo robetta
 
     @author Me
     @author Te
@@ -18,30 +12,23 @@ Scrivo robetta
 
 #include <gtkmm.h>
 #include "../header/SFMLWidget.h"
+#include "../header/Core.h"
+#include "../header/Debug.h"
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <cassert>
 
 #ifdef DEBUG_MODE
 unsigned int MASK = 1 ;
-
-#define DBG(A, B) {if ((A) & MASK) {B; } }
-#else
-#define DBG(A, B)
-#endif
-
-
-#define D1(a) DBG(1, a)
-#define D2(a) DBG(2, a)
-#define D3(a) DBG(4, a)
+#endif // DEBUG_MODE
 
 SFMLWidget * SFML;
 sf::RectangleShape * rect;
 
 void disegno()
 {
+	static bool premuto = false;
+
 	//Diciamo a GTK di ridisegnare il widget SFML
-    static bool premuto = false;
 	SFML->invalidate();
 
 	//Pulizia della SFML window
@@ -64,15 +51,15 @@ void disegno()
 }
 
 //Ogni volta che il widget viene ridimensionato, si aggiusta la View.
- void resize_view()
-    {
-        sf::Vector2f lower_right(SFML->renderWindow.getSize().x,
-                                 SFML->renderWindow.getSize().y);
+void resize_view ()
+{
+	sf::Vector2f lower_right(SFML->renderWindow.getSize().x,
+							 SFML->renderWindow.getSize().y);
 
-        sf::View view(lower_right * 0.5f, lower_right);
+	sf::View view(lower_right * 0.5f, lower_right);
 
-        SFML->renderWindow.setView(view);
-    }
+	SFML->renderWindow.setView(view);
+}
 
 int main(int argc, char* argv[])
 {
