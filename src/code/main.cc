@@ -83,13 +83,10 @@ int main(int argc, char* argv[])
     Gtk::Window * window = NULL;
     Gtk::Box * box;
 
-    //Asserzione che fallisce (quindi termina il programma)
-    assert(window != NULL);
-
 	//Creazione della zona di disegno mediante SFMLWidget
 	//IMPORTANTE: vengono applicate solo le modifiche al widget
 	// fatte dopo il window show all
-	SFML = new SFMLWidget(sf::VideoMode(300, 300));
+	SFML = new SFMLWidget(sf::VideoMode(1280, 768));
 
     rect = new sf::RectangleShape(sf::Vector2f(300, 100));
     rect->setFillColor(sf::Color::Green);
