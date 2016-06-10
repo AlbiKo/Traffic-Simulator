@@ -1,1 +1,7 @@
+Core.o: src/code/Core.cc src/code/../header/Core.h \
+ src/code/../header/../header/Mappa.h \
+ src/code/../header/../header/../header/Nodo.h
+Mappa.o: src/code/Mappa.cc src/code/../header/Mappa.h \
+ src/code/../header/../header/Nodo.h
+Nodo.o: src/code/Nodo.cc src/code/../header/Nodo.h
 main.o: src/code/main.cc src/code/../header/SFMLWidget.h
