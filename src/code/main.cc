@@ -5,7 +5,6 @@
     Sopra altra robetta
     Eh
     Scrivo altra robetta
-
 Blob
     Testina
 
@@ -54,7 +53,7 @@ void disegno()
         rect->move(0, 1);
         premuto = true;
     }
-    else
+    else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::S))
         premuto = false;
 
 	//Disegno del cerchio
