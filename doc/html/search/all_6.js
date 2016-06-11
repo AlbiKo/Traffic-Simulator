@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['sfml',['SFML',['../main_8cc.html#a96bf570ee1a3a25fd5c92a4edb6b7a93',1,'main.cc']]],
-  ['sfmlwidget',['SFMLWidget',['../classSFMLWidget.html',1,'SFMLWidget'],['../classSFMLWidget.html#acbf31e5829c1e4059a10e269f7d4ae01',1,'SFMLWidget::SFMLWidget()']]],
-  ['sfmlwidget_2ecpp',['SFMLWidget.cpp',['../SFMLWidget_8cpp.html',1,'']]],
-  ['sfmlwidget_2eh',['SFMLWidget.h',['../SFMLWidget_8h.html',1,'']]]
+  ['nodo',['Nodo',['../classNodo.html',1,'Nodo'],['../classNodo.html#ac30bd1bed827ef8784fd3cebd032e9a4',1,'Nodo::Nodo()'],['../classNodo.html#ab120efa8a65ac99bbb2bf9bbb8a1c3b2',1,'Nodo::Nodo(Vector2i startPos)']]],
+  ['nodo_2ecc',['Nodo.cc',['../Nodo_8cc.html',1,'']]],
+  ['nodo_2eh',['Nodo.h',['../Nodo_8h.html',1,'']]]
 ];

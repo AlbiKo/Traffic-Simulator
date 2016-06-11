@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sfmlwidget',['SFMLWidget',['../classSFMLWidget.html',1,'']]]
+  ['mappa',['Mappa',['../classMappa.html',1,'']]]
 ];

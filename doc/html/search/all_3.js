@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['m_5frefgdkwindow',['m_refGdkWindow',['../classSFMLWidget.html#afdbc9c1aee2905e567db5df047e7afae',1,'SFMLWidget']]],
-  ['m_5fvmode',['m_vMode',['../classSFMLWidget.html#aad94ca72e74daacf425a6b3fe9dca34f',1,'SFMLWidget']]],
-  ['main',['main',['../main_8cc.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.cc']]],
-  ['main_2ecc',['main.cc',['../main_8cc.html',1,'']]]
+  ['getadiacenza',['getAdiacenza',['../classNodo.html#ad0040068ffa52493a41bb144c9471d84',1,'Nodo']]],
+  ['getnumadiacenze',['getNumAdiacenze',['../classNodo.html#ae16e65fef48b06154cb64a60953a5d81',1,'Nodo']]],
+  ['getpos',['getPos',['../classNodo.html#a81bc3bac3a93c3ab0de8b7de3a152a6b',1,'Nodo']]]
 ];

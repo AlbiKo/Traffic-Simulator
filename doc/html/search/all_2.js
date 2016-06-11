@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['invalidate',['invalidate',['../classSFMLWidget.html#aea26c30299e30953841dca151c1bbe9f',1,'SFMLWidget']]]
+  ['faccio_20la_20prova_2e',['Faccio la prova.',['../index.html',1,'']]]
 ];

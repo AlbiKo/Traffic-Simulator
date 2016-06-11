@@ -25,13 +25,12 @@ Nodo::Nodo(Vector2i startPos)
     D1(std::cout<<"Nodo: posizione" <<pos.x <<"," <<pos.y <<std::endl);
 }
 
-void Nodo::setPos(int x, int y)
+void Nodo::setPos(Vector2i newPos)
 {
 	D2(std::cout<<"Nodo: vecchia posizione " <<pos.x <<"," <<pos.y <<std::endl);
-	D1(std::cout<<"Nodo: nuova posizione " <<x <<"," <<y <<std::endl);
+	D1(std::cout<<"Nodo: nuova posizione " <<newPos.x <<"," <<newPos.y <<std::endl);
 
-	pos.x = x;
-	pos.y = y;
+	pos = newPos;
 }
 
 Nodo * Nodo::getAdiacenza(int i, int &peso)
