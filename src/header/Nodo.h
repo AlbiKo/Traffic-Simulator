@@ -2,26 +2,36 @@
 
 using namespace sf;
 
+/** Classe nodo bella
+	bella.
+	eh
+*/
+
 class Nodo
 {
 
 private:
     Vector2i pos;
 
-    Nodo * adiacenze[4];
+	struct Adiacenza
+	{
+		Nodo * nodo;
+		int peso;
+	} adiacenze[4];
+
     int numAdiacenze;
 
-public:
+	void setAdiacenza(int i, Nodo * nodo);
 
-	int peso;
+public:
 
     Nodo();
     Nodo(Vector2i startPos);
 
 	void setPos(int x, int y);
 
-	Nodo * getAdiacenza(int i);
-	void setAdiacenza(int i, Nodo * nodo);
+	Nodo * getAdiacenza(int i, int &peso);
+
 	bool setAdiacenza(Nodo * nodo);
 
 	inline int getNumAdiacenze()

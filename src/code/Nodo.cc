@@ -6,11 +6,13 @@ Nodo::Nodo()
 {
     pos.x 		 = 0;
     pos.y 		 = 0;
-    peso		 = 0;
     numAdiacenze = 0;
 
     for (int i = 0; i < 4; i++)
-        adiacenze[i] = NULL;
+    {
+		adiacenze[i].nodo = NULL;
+		adiacenze[i].peso = 0;
+    }
 
 	D2(std::cout<<"Nodo: posizione" <<pos.x <<"," <<pos.y <<std::endl);
 }
@@ -32,18 +34,20 @@ void Nodo::setPos(int x, int y)
 	pos.y = y;
 }
 
-Nodo * Nodo::getAdiacenza(int i)
+Nodo * Nodo::getAdiacenza(int i, int &peso)
 {
 	assert(i >= 0 && i <= 3);
 	D1(PRINT("Nodo: leggo adiacenza in " <<i));
 
 	if (i < 0 || i > 3)
 	{
-		D1(PRINT("Nodo: letta adiacenza " <<adiacenze[i]));
+		D1(PRINT("Nodo: letta adiacenza " <<adiacenze[i].nodo <<" di peso " <<adiacenze[i].peso));
+		adiacenze[i].peso = 0;
 		return NULL;
 	}
 
-	return adiacenze[i];
+	peso = adiacenze[i].peso;
+	return adiacenze[i].nodo;
 }
 
 void Nodo::setAdiacenza(int i, Nodo * nodo)
@@ -52,13 +56,29 @@ void Nodo::setAdiacenza(int i, Nodo * nodo)
 	D1(PRINT("Nodo: scrivo adiacenza in " <<i <<": " <<nodo));
 
 	if (i >= 0 && i <= 3)
-		adiacenze[i] = nodo;
+	{
+		adiacenze[i].nodo = nodo;
+
+		if (nodo == NULL)
+			adiacenze[i].peso = 0;
+		else
+		{
+			adiacenze[i].peso = std::abs(pos.x - nodo->getPos().x);
+
+			//Se la condizione è vera, significa che i due nodi
+			//sono disposti verticalmente
+			if (adiacenze[i].peso == 0)
+				adiacenze[i].peso = std::abs(pos.y - nodo->getPos().y);
+		}
+	}
 }
 
 bool Nodo::setAdiacenza(Nodo * nodo)
 {
 	int i;
-	for (i = 0; i < 4 && adiacenze[i] != NULL; i++);
+
+	//Si cerca la prima posizione libera
+	for (i = 0; i < 4 && adiacenze[i].nodo != NULL; i++);
 
 	if (i == 4)
 	{
@@ -67,9 +87,8 @@ bool Nodo::setAdiacenza(Nodo * nodo)
 	}
 	else
 	{
-		adiacenze[i] = nodo;
+		setAdiacenza(i, nodo);
 		D1(PRINT("Nodo adiacenza "<<nodo <<"impostata alla posizione " <<i));
 		return true;
 	}
-
 }
