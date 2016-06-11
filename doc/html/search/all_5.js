@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['renderwindow',['renderWindow',['../classSFMLWidget.html#a8edb9d0f03b10d78b1291807e9070fcc',1,'SFMLWidget']]],
-  ['resize_5fview',['resize_view',['../main_8cc.html#a085ecb04d2b3117f67e009683804bc8e',1,'main.cc']]]
+  ['m_5frefgdkwindow',['m_refGdkWindow',['../classSFMLWidget.html#afdbc9c1aee2905e567db5df047e7afae',1,'SFMLWidget']]],
+  ['m_5fvmode',['m_vMode',['../classSFMLWidget.html#aad94ca72e74daacf425a6b3fe9dca34f',1,'SFMLWidget']]],
+  ['main',['main',['../main_8cc.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main.cc']]],
+  ['main_2ecc',['main.cc',['../main_8cc.html',1,'']]],
+  ['mappa',['Mappa',['../classMappa.html',1,'']]],
+  ['mappa_2ecc',['Mappa.cc',['../Mappa_8cc.html',1,'']]],
+  ['mappa_2eh',['Mappa.h',['../Mappa_8h.html',1,'']]]
 ];
