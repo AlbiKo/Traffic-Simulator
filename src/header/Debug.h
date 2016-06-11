@@ -13,4 +13,4 @@ extern unsigned int MASK;
 #define D1(a) DBG(1, a)
 #define D2(a) DBG(2, a)
 #define D3(a) DBG(4, a)
-
+#define PRINT(a) std::cout <<a <<std::endl;
