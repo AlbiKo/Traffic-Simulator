@@ -1,8 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-
 using namespace sf;
-
 
 class Nodo
 {
@@ -14,6 +12,9 @@ private:
     int numAdiacenze;
 
 public:
+
+	int peso;
+
     Nodo();
     Nodo(Vector2i startPos);
 
@@ -21,6 +22,7 @@ public:
 
 	Nodo * getAdiacenza(int i);
 	void setAdiacenza(int i, Nodo * nodo);
+	bool setAdiacenza(Nodo * nodo);
 
 	inline int getNumAdiacenze()
 	{

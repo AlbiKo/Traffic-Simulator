@@ -24,6 +24,9 @@ unsigned int MASK = 1 ;
 SFMLWidget * SFML;
 sf::RectangleShape * rect;
 
+int RESX = 1280,
+	RESY = 768;
+
 void disegno()
 {
 	static bool premuto = false;
@@ -73,7 +76,7 @@ int main(int argc, char* argv[])
 	//Creazione della zona di disegno mediante SFMLWidget
 	//IMPORTANTE: vengono applicate solo le modifiche al widget
 	// fatte dopo il window show all
-	SFML = new SFMLWidget(sf::VideoMode(1280, 768));
+	SFML = new SFMLWidget(sf::VideoMode(RESX, RESY));
 
     rect = new sf::RectangleShape(sf::Vector2f(300, 100));
     rect->setFillColor(sf::Color::Green);
