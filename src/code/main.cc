@@ -22,14 +22,14 @@ unsigned int MASK = 1 ;
 #endif // DEBUG_MODE
 
 SFMLWidget * SFML;
-sf::RectangleShape * rect;
+
 
 int RESX = 1280,
 	RESY = 768;
 
 void disegno()
 {
-	static bool premuto = false;
+
 
 	//Diciamo a GTK di ridisegnare il widget SFML
 	SFML->invalidate();
@@ -37,17 +37,7 @@ void disegno()
 	//Pulizia della SFML window
 	SFML->renderWindow.clear();
 
-    if (!premuto && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    {
-        std::cout <<"premo S \n";
-        rect->move(0, 1);
-        premuto = true;
-    }
-    else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        premuto = false;
-
-	//Disegno del cerchio
-	SFML->renderWindow.draw(*rect);
+	update(SFML->renderWindow);
 
 	//Si visualizza ciò che è stato disegnato
 	SFML->renderWindow.display();
@@ -78,8 +68,7 @@ int main(int argc, char* argv[])
 	// fatte dopo il window show all
 	SFML = new SFMLWidget(sf::VideoMode(RESX, RESY));
 
-    rect = new sf::RectangleShape(sf::Vector2f(300, 100));
-    rect->setFillColor(sf::Color::Green);
+    CoreInit();
 
 	//Link del segnale draw del widget
 	SFML->signal_draw().connect(sigc::bind_return(sigc::hide(

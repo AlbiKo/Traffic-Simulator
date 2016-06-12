@@ -2,4 +2,5 @@
 #include "../header/Mappa.h"
 #include "../header/Debug.h"
 
-void update();
+void CoreInit();
+void update(sf::RenderWindow &widget);
