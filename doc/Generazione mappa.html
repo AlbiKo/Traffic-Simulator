@@ -1245,7 +1245,7 @@ p {font-size: 14pt;}
 <p>Dividere in blocchi di stessa grandezza dovrebbe rendere pi&ugrave; facile controllare la coerenza e il posizionamento di strade.</p>
 </li>
 <li>
-<p>Una volta che la zona &egrave; stata suddivisa come griglia, si parte con il posizionare le sorgenti (strade arancioni) facendo attenzione ad estenderle anche alla zona rossa (per esempio la sorgente in basso).</p>
+<p>Una volta che la zona &egrave; stata suddivisa come griglia, si parte con il posizionare le sorgenti (strade arancioni) mantenendo l'ordine con cui vengono posizionate e facendo attenzione ad estenderle anche alla zona rossa (per esempio la sorgente in basso).</p>
 Vincoli possibili per il posizionamento di sorgenti:
 <ol style="list-style-type: lower-alpha;">
 <li>Fra due sorgenti ci deve essere almeno un blocco di distanza</li>
@@ -1254,7 +1254,12 @@ Vincoli possibili per il posizionamento di sorgenti:
 </ol>
 </li>
 <li>
-<p>Posizionate le sorgenti, si cerca di collegare ogni sorgente a tutte le altre una alla volta, scegliendo di utilizzare una strada gi&agrave; esistente o di crearne una nuova da zero o appoggiandosi ad una parte di strada gi&agrave; creata.</p>
+<p>Posizionate le sorgenti, si passa alla creazione delle strade.<br />
+In ordine di posizione, si collegano le sorgenti a sinistra con le sorgenti in alto e in basso della met&agrave; sinistra della finestra e la sorgente pi&ugrave; vicina alla parte sinistra sia sopra che sotto.
+Stessa cosa con la parte destra.<br />
+Il collegamento fra due sorgenti viene fatto scegliendo casualmente la direzione che si deve prendere partendo da un blocco. Per assicurarsi che avvenga il collegamento, non viene ammessa la direzione che porta nel verso opposto alla destinazione.<br />
+Per esempio, se dalla sorgente a sinistra dobbiamo andare in una di quelle in alto, non verr&agrave; mai accettata la direzione verso il basso.
+</p>
 Vincoli possibili per il posizionamento dei blocchi stradali:
 <ol style="list-style-type: lower-alpha;">
 <li>Due incroci non possono essere adiacenti. Per esempio, la strada grigia non potrebbe essere posizionata poich&eacute; si andrebbero a creare incroci uno sopra l'altro (vedi zona gialla)</li>
