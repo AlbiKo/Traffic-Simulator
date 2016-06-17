@@ -1,14 +1,12 @@
 Core.o: src/code/Core.cc src/code/../header/Core.h \
- src/code/../header/../header/Mappa.h \
- src/code/../header/../header/../header/Nodo.h \
- src/code/../header/../header/../header/Debug.h \
- src/code/../header/../header/Debug.h
+ src/code/../header/Mappa.h src/code/../header/Blocco.h \
+ src/code/../header/TipoBlocco.h src/code/../header/Debug.h
 Mappa.o: src/code/Mappa.cc src/code/../header/Mappa.h \
- src/code/../header/../header/Nodo.h src/code/../header/../header/Debug.h
+ src/code/../header/Blocco.h src/code/../header/TipoBlocco.h \
+ src/code/../header/Debug.h
 Nodo.o: src/code/Nodo.cc src/code/../header/Nodo.h \
  src/code/../header/Debug.h
 main.o: src/code/main.cc src/code/../header/SFMLWidget.h \
- src/code/../header/Core.h src/code/../header/../header/Mappa.h \
- src/code/../header/../header/../header/Nodo.h \
- src/code/../header/../header/../header/Debug.h \
- src/code/../header/../header/Debug.h src/code/../header/Debug.h
+ src/code/../header/Core.h src/code/../header/Mappa.h \
+ src/code/../header/Blocco.h src/code/../header/TipoBlocco.h \
+ src/code/../header/Debug.h src/code/../header/Debug.h

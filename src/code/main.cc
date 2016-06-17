@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
 
     CoreInit();
 
+
 	//Link del segnale draw del widget
 	SFML->signal_draw().connect(sigc::bind_return(sigc::hide(
 															sigc::ptr_fun(&disegno)),
