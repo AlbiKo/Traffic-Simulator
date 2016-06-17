@@ -11,6 +11,7 @@
 
 using namespace sf;
 Sprite * sprite[11];
+Blocco * blocco;
 
 Mappa::Mappa()
 {
@@ -21,12 +22,16 @@ Mappa::Mappa()
 		sprite[i]->setPosition(i*68, 0);
 		sprite[i]->setTexture(texture[i]);
 	}
+	//int ** a = new int [3][4];
+	blocco = new Blocco(1, 1, ORIZZONTALE, &texture[ORIZZONTALE]);
 }
 
 void Mappa::draw(RenderWindow &widget)
 {
 	for (int i = 0; i < 11; i++)
 		widget.draw(*sprite[i]);
+
+	widget.draw(blocco->getSprite());
 }
 
 void Mappa::loadTextures()

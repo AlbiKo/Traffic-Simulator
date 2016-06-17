@@ -1,5 +1,5 @@
 #include "TipoBlocco.h"
-#include "Debug.h"
+
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
@@ -13,7 +13,7 @@ private:
 public:
 	static const int size = 68;
 
-	Blocco(int x, int y, Texture &texture);
+	Blocco(int rowIndex, int columnIndex, TipoBlocco tipo,  Texture * texture);
 
 	inline Sprite getSprite()
 	{
@@ -25,7 +25,5 @@ public:
 		return tipo;
 	}
 
-	void setTipo(TipoBlocco tipo);
-
-
+	void setTipo(TipoBlocco tipo, Texture * texture);
 };
