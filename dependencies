@@ -1,3 +1,5 @@
+Blocco.o: src/code/Blocco.cc src/code/../header/Blocco.h \
+ src/code/../header/TipoBlocco.h src/code/../header/Debug.h
 Core.o: src/code/Core.cc src/code/../header/Core.h \
  src/code/../header/Mappa.h src/code/../header/Blocco.h \
  src/code/../header/TipoBlocco.h src/code/../header/Debug.h

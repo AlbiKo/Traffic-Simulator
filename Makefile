@@ -8,14 +8,14 @@ VPATH=src/header:src/code
 
 .PHONY: debug
 debug: CXXFLAGS+=-D DEBUG_MODE
-debug: program
+debug: Traffic Simulator
 
 .PHONY: release
 release: CXXFLAGS+=-D NDEBUG
-release: program
+release: Traffic Simulator
 
-program: $(OBJ)
-	g++ -o program $(OBJ) $(LDFLAGS) $(LDLIBS)
+Traffic Simulator: $(OBJ)
+	g++ -o "Traffic Simulator" $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 
 -include dependencies
