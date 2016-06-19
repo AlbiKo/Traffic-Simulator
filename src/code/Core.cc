@@ -1,5 +1,15 @@
 #include "../header/Core.h"
 
-void update()
+using namespace sf;
+
+static Mappa mappa;
+
+void CoreInit()
 {
+	mappa.generate();
+}
+
+void update(RenderWindow &widget)
+{
+	mappa.draw(widget);
 }
