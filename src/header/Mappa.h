@@ -12,12 +12,13 @@ class Mappa
 private:
 
 	int blocchiX, blocchiY;
-
 	Blocco *** blocchi;
+
 	void loadTextures();
 	void cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo);
 public:
     Mappa();
 
     void draw(RenderWindow &widget);
+    void generate();
 };

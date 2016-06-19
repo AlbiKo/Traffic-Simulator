@@ -1,40 +1,26 @@
 #include "../header/Mappa.h"
 #include "../header/Debug.h"
-/**
-	Mantiene la matrice dei blocchi
 
-	creazione sorgenti
-	step successivo partendo da un certo blocco
-
-	Serve direzioni
-
-*/
 extern int RESX, RESY;
 using namespace sf;
 
 Texture * texture[11];
 
-Blocco * b;
-
 Mappa::Mappa()
 {
 	loadTextures();
-
-	b = new Curva(0, 1, SX_TO_UP);
-	static_cast<Curva *>(b)->cambiaVerso(SX_TO_DOWN);
-
 
 	blocchiX = RESX / Blocco::size;
 	if (RESX % Blocco::size != 0)
 		blocchiX++;
 
-	D1(PRINT("Totale blocchi su X" <<blocchiX));
+	D1(PRINT("Totale blocchi su X " <<blocchiX));
 
 	blocchiY = RESY / Blocco::size;
 	if (RESY % Blocco::size != 0)
 		blocchiY++;
 
-	D1(PRINT("Totale blocchi su Y" <<blocchiY));
+	D1(PRINT("Totale blocchi su Y " <<blocchiY));
 
 	blocchi = new Blocco**[blocchiY];
 
@@ -45,11 +31,17 @@ Mappa::Mappa()
 	}
 
 
-	cambiaTipoBlocco(blocchi[0][0], VERTICALE);
+	cambiaTipoBlocco(blocchi[0][0], CROSS3_SX);
+	cambiaTipoBlocco(blocchi[1][0], CROSS3_DX);
 
 	Rettilineo * ret = dynamic_cast<Rettilineo *>(blocchi[0][0]);
 	if (ret != NULL)
 		ret->cambiaVerso(ORIZZONTALE);
+}
+
+void Mappa::generate()
+{
+	D1(PRINT("Genero"));
 }
 
 void Mappa::draw(RenderWindow &widget)
@@ -58,8 +50,6 @@ void Mappa::draw(RenderWindow &widget)
 		for (int j = 0; j < blocchiX; j++)
 			if (blocchi[i][j]->getTipo() != VUOTO)
 				widget.draw(blocchi[i][j]->getSprite());
-
-	widget.draw(b->getSprite());
 }
 
 void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)
