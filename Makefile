@@ -1,5 +1,5 @@
 
-OBJ = main.o Core.o Mappa.o Blocco.o Nodo.o SFMLWidget.o
+OBJ = main.o Core.o Mappa.o Blocco.o Rettilineo.o Curva.o Incrocio3.o Incrocio4.o Nodo.o SFMLWidget.o
 CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -I SFML-2.3.2/include -I src/header/
 LDFLAGS=-rdynamic
 LDLIBS=`pkg-config --libs gtkmm-3.0` -L SFML-2.3.2/lib -lsfml-graphics -lsfml-window -lsfml-system 

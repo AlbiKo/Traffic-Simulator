@@ -1,4 +1,6 @@
 
+#ifndef TIPOBLOCCO_INCLUDE
+#define TIPOBLOCCO_INCLUDE
 enum TipoBlocco
 {
 	ORIZZONTALE = 0, VERTICALE,
@@ -7,3 +9,5 @@ enum TipoBlocco
 	CROSS4,
 	VUOTO
 };
+
+#endif

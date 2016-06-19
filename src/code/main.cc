@@ -25,7 +25,7 @@ SFMLWidget * SFML;
 
 
 int RESX = 1280,
-	RESY = 768;
+	RESY = 700;
 
 void disegno()
 {
