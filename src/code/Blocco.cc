@@ -8,13 +8,13 @@ extern Texture * texture[11];
 Blocco::Blocco()
 {
 	sprite.setPosition(0,0);
-	setTipo(VUOTO);
+	setTipo(TipoBlocco::EMPTY);
 }
 
 Blocco::~Blocco()
 {
-	Vector2i coord = coordBlocco();
-	D2(PRINT("Distructo blocco (" <<coord.x  <<"," <<coord.y <<")"));
+	//Vector2i coord = coordBlocco();
+	D2(PRINT("Distructo blocco (" <<coordBlocco().x  <<"," <<coordBlocco().y <<")"));
 }
 
 Blocco::Blocco(int rowIndex, int columnIndex, TipoBlocco tipo)
@@ -26,12 +26,12 @@ Blocco::Blocco(int rowIndex, int columnIndex, TipoBlocco tipo)
 
 void Blocco::setTipo(TipoBlocco tipo)
 {
-	if (tipo == VUOTO)
-		this->tipo = VUOTO;
+	if (tipo == TipoBlocco::EMPTY)
+		this->tipo = TipoBlocco::EMPTY;
 	else
 	{
 		this->tipo = tipo;
-		sprite.setTexture(*texture[tipo]);
+		sprite.setTexture(*texture[toInt(tipo)]);
 	}
 }
 

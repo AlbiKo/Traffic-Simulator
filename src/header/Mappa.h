@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include "TipoBlocco.h"
+#include "enum_toInt.h"
 #include "Blocco.h"
 #include "Rettilineo.h"
 #include "Curva.h"

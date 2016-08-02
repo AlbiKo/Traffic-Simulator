@@ -1,4 +1,5 @@
 #include "TipoBlocco.h"
+#include "enum_toInt.h"
 #include <SFML/Graphics.hpp>
 
 #ifndef BLOCCO_INCLUDE

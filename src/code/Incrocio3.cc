@@ -4,7 +4,7 @@
 Incrocio3::Incrocio3()
 {
 	sprite.setPosition(0,0);
-	setTipo(CROSS3_UP);
+	setTipo(TipoBlocco::CROSS3_UP);
 }
 
 Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
@@ -15,8 +15,8 @@ Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 
 void Incrocio3::cambiaVerso(TipoBlocco verso)
 {
-	if (verso == CROSS3_UP || verso == CROSS3_DOWN || verso == CROSS3_SX || CROSS3_DX)
+	if (verso == TipoBlocco::CROSS3_UP || verso == TipoBlocco::CROSS3_DOWN || verso == TipoBlocco::CROSS3_SX || verso == TipoBlocco::CROSS3_DX)
 		setTipo(verso);
 	else
-		setTipo(CROSS3_UP);
+		setTipo(TipoBlocco::CROSS3_UP);
 }
