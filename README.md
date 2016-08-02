@@ -17,5 +17,7 @@ Prerequisiti:
     
 4) Libreria SFML: http://www.sfml-dev.org/download/sfml/2.3.2/
 
+È possibile utilizzare lo script "setup-ide.sh" per installare i prerequisiti.
+
 # Documentazione SFML
 http://www.sfml-dev.org/learn.php
