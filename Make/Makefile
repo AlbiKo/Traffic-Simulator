@@ -1,6 +1,6 @@
 
 OBJ = main.o Core.o Mappa.o Blocco.o Rettilineo.o Curva.o Incrocio3.o Incrocio4.o Nodo.o SFMLWidget.o
-CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -I ../src/header/
+CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -std=c++11 -I ../src/header/
 LDFLAGS=-rdynamic
 LDLIBS=`pkg-config --libs gtkmm-3.0` -lsfml-graphics -lsfml-window -lsfml-system
 
@@ -15,7 +15,7 @@ release: CXXFLAGS+=-D NDEBUG
 release: Traffic-Simulator
 
 Traffic-Simulator: $(OBJ)
-	g++ -o ../bin/Traffic-Simulator $(OBJ) $(LDFLAGS) $(LDLIBS)
+	g++ -std=c++11 -o ../bin/Traffic-Simulator $(OBJ) $(LDFLAGS) $(LDLIBS)
 
 
 -include dependencies

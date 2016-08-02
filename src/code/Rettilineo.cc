@@ -4,7 +4,7 @@
 Rettilineo::Rettilineo()
 {
 	sprite.setPosition(0,0);
-	setTipo(ORIZZONTALE);
+	setTipo(TipoBlocco::HORIZONTAL);
 }
 
 Rettilineo::Rettilineo(int rowIndex, int columnIndex, TipoBlocco tipo)
@@ -17,10 +17,10 @@ Rettilineo::Rettilineo(int rowIndex, int columnIndex, TipoBlocco tipo)
 void Rettilineo::cambiaVerso(TipoBlocco verso)
 {
 	D1(PRINT("rett verso"));
-	if (verso == ORIZZONTALE || verso == VERTICALE)
+	if (verso == TipoBlocco::HORIZONTAL || verso == TipoBlocco::VERTICAL)
 		setTipo(verso);
 	else
-		setTipo(ORIZZONTALE);
+		setTipo(TipoBlocco::HORIZONTAL);
 
 
 }
