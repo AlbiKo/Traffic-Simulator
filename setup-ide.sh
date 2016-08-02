@@ -15,6 +15,6 @@ read -p "Vuoi continuare? (Y/N): " yn
 add-apt-repository ppa:ubuntu-toolchain-r/test -y
 apt-get update
 apt-get install g++ -y
-apt-get install codeblocks g++-4.9 libgtkmm-3.0-dev glade libsfml-dev git -y
+apt-get install codeblocks g++-4.9 libgtkmm-3.0-dev glade libsfml-dev git doxygen -y
 echo " "
 echo "Eseguito."
