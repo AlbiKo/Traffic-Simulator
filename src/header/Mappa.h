@@ -6,6 +6,7 @@
 #include "Curva.h"
 #include "Incrocio3.h"
 #include "Incrocio4.h"
+#include "Vector2i_List.h"
 
 using namespace sf;
 

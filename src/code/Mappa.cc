@@ -42,6 +42,7 @@ Mappa::Mappa()
 void Mappa::generate()
 {
 	D1(PRINT("Genero"));
+	
 }
 
 void Mappa::draw(RenderWindow &widget)

@@ -6,7 +6,7 @@ Core.o: ../src/code/Core.cc ../src/code/../header/Core.h \
  ../src/code/../header/enum_toInt.h ../src/code/../header/Blocco.h \
  ../src/code/../header/Rettilineo.h ../src/code/../header/Curva.h \
  ../src/code/../header/Incrocio3.h ../src/code/../header/Incrocio4.h \
- ../src/code/../header/Debug.h
+ ../src/code/../header/Vector2i_List.h ../src/code/../header/Debug.h
 Curva.o: ../src/code/Curva.cc ../src/code/../header/Curva.h \
  ../src/code/../header/Blocco.h ../src/code/../header/TipoBlocco.h \
  ../src/code/../header/enum_toInt.h ../src/code/../header/Debug.h
@@ -20,17 +20,20 @@ Mappa.o: ../src/code/Mappa.cc ../src/code/../header/Mappa.h \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Blocco.h ../src/code/../header/Rettilineo.h \
  ../src/code/../header/Curva.h ../src/code/../header/Incrocio3.h \
- ../src/code/../header/Incrocio4.h ../src/code/../header/Debug.h
+ ../src/code/../header/Incrocio4.h ../src/code/../header/Vector2i_List.h \
+ ../src/code/../header/Debug.h
 Nodo.o: ../src/code/Nodo.cc ../src/code/../header/Nodo.h \
  ../src/code/../header/Debug.h
 Rettilineo.o: ../src/code/Rettilineo.cc \
  ../src/code/../header/Rettilineo.h ../src/code/../header/Blocco.h \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Debug.h
+Vector2i_List.o: ../src/code/Vector2i_List.cc \
+ ../src/code/../header/Vector2i_List.h
 main.o: ../src/code/main.cc ../src/code/../header/SFMLWidget.h \
  ../src/code/../header/Core.h ../src/code/../header/Mappa.h \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Blocco.h ../src/code/../header/Rettilineo.h \
  ../src/code/../header/Curva.h ../src/code/../header/Incrocio3.h \
- ../src/code/../header/Incrocio4.h ../src/code/../header/Debug.h \
- ../src/code/../header/Debug.h
+ ../src/code/../header/Incrocio4.h ../src/code/../header/Vector2i_List.h \
+ ../src/code/../header/Debug.h ../src/code/../header/Debug.h
