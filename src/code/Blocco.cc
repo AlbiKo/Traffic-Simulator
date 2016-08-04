@@ -14,12 +14,12 @@ Blocco::Blocco()
 Blocco::~Blocco()
 {
 	//Vector2i coord = coordBlocco();
-	D2(PRINT("Distructo blocco (" <<coordBlocco().x  <<"," <<coordBlocco().y <<")"));
+	//D2(PRINT("Distructo blocco (" <<coordBlocco().x  <<"," <<coordBlocco().y <<")"));
 }
 
 Blocco::Blocco(int rowIndex, int columnIndex, TipoBlocco tipo)
 {
-	D3(PRINT("Constructo Blocco"));
+	//D3(PRINT("Constructo Blocco"));
 	sprite.setPosition(columnIndex * size, rowIndex * size);
 	setTipo(tipo);
 }
@@ -37,6 +37,6 @@ void Blocco::setTipo(TipoBlocco tipo)
 
 void Blocco::cambiaVerso(TipoBlocco verso)
 {
-	D1(PRINT("Blocco verso"));
+	//D1(PRINT("Blocco verso"));
 
 }
