@@ -39,66 +39,29 @@ Mappa::Mappa()
 void Mappa::generate()
 {
 	srand(time(NULL));
-	D1(PRINT("\n***********************************\nGenero"));
-	generateSource(0, 0, 0);
-	generateSource(0, 0, 1); 
+	generateSources();
 	
-	generateSource(0, blocchiY-1, 0); 
-	generateSource(blocchiX - 1, 0, 1);
+}
 
-
-
-
-	
-	
-	D1(PRINT("***********************************"));
+void Mappa::generateSources() {
+	generateSource(0, 0, false);
+	generateSource(0, 0, true);
+	generateSource(0, blocchiY - 1, false);
+	generateSource(blocchiX - 1, 0, true);
 }
 
 void Mappa::generateSource(int x, int y, bool vertical) { //vertical=false->horizontal
-	int max_source, min, max; //min e max sono le coordinate minime e massime
-	min = 1;
-	if (vertical)
-		max = blocchiY - 2;
-	else
-		max = blocchiX - 2;
-	max_source = (max / 2) + (max % 2);
+	int min = 1, 
+		max = vertical ? blocchiY - 2 : blocchiX - 2,
+		max_source = (max / 2) + (max % 2);
 
-	#ifdef DEBUG_MODE
-		if (vertical) {
-			D1(PRINT("blocchiY = " << blocchiY));
-		}
-		else {
-			D1(PRINT("blocchiX = " << blocchiX));
-		}
-	#endif // DEBUG_MODE
 	int start_pos = rand() % max + min;
-
-
-	D1(PRINT("min: " << min));
-	D1(PRINT("max: " << max));
-	D1(PRINT("\nSorgenti possibili: " << max_source));
-	D1(PRINT("\nPosizione di partenza: " << start_pos));
-	D1(PRINT("\nX: " << x));
-	D1(PRINT("Y: " << y));
-	D1(PRINT("__________________"));
-	
-	/*Elemento di partenza*/
-	//vertical ? cambiaTipoBlocco(blocchi[start_pos][y], TipoBlocco::HORIZONTAL) : cambiaTipoBlocco(blocchi[x][start_pos], TipoBlocco::VERTICAL);
 
 	int i = start_pos, count = 0;
 	do {
 		if (i==start_pos || randomBool()) {
 			if (vertical) {
-				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY)) {
-					#ifdef DEBUG_MODE
-						D1(PRINT("--------------------------------"));
-						D1(PRINT(i+1 <<" is libero? "<<(blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY)));
-						if (i<max)
-							D1(PRINT(i+2 <<" is libero? "<<(blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY)));
-						D1(PRINT("--------------------------------\n\n"));
-					#endif // DEBUG_MODE
-
-					
+				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY)) {					
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
 					count++;
 					i+=2;
@@ -106,27 +69,16 @@ void Mappa::generateSource(int x, int y, bool vertical) { //vertical=false->hori
 			}
 			else {
 				if (i==max || (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY && blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY)) {
-					#ifdef DEBUG_MODE
-						D1(PRINT("--------------------------------"));
-						D1(PRINT(i+1 <<" is libero? " << (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY)));
-						if (i<max)
-							D1(PRINT(i+2 <<" is libero? " << (blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY)));
-						D1(PRINT("--------------------------------\n\n"));
-					#endif // DEBUG_MODE
-
-
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
 					count++;
 					i+=2;
 				}
 			}
-
 		}
 		i++;
 		if (i > max)
 			i = min;
 	} while (i != start_pos && count<max_source);
-
 }
 
 void Mappa::nome_casuale(int x, int y) {}

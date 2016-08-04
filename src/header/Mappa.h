@@ -23,10 +23,8 @@ private:
 
 	void generateSource(int x, int y, bool vertical);
 	void nome_casuale(int x, int y);
-	void generateDX();
-	void generateUP();
-	void generateDOWN();
 	bool randomBool();
+	void generateSources();
 	
 public:
     Mappa();
