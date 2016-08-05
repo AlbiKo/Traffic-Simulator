@@ -1,31 +1,29 @@
-#include "../header/Vector2i_List.h"
+#include "../header/Direzione_List.h"
 #include "../header/Debug.h"
 
-using namespace sf;
-
-Vector2i_List::Vector2i_List()
+Direzione_List::Direzione_List()
 {
 	root = NULL;
 	num_nodi = 0;
 }
 
-Vector2i_List::Vector2i_List(sf::Vector2i r)
+Direzione_List::Direzione_List(Direzione r)
 {
-	root = new Vector2i_Node;
+	root = new Direzione_Node;
 	root->node = r;
 	root->next = NULL;
 	num_nodi = 1;
 }
 
-void Vector2i_List::insert(sf::Vector2i r)
+void Direzione_List::insert(Direzione r)
 {
-	Vector2i_Node *i = new Vector2i_Node;
+	Direzione_Node *i = new Direzione_Node;
 	i->node = r;
 	i->next = NULL;
 	if (root == NULL)
 		root = i;
 	else {
-		Vector2i_Node *n = root;
+		Direzione_Node *n = root;
 		while (n->next != NULL)
 			n = n->next;
 		n->next = i;
@@ -33,16 +31,18 @@ void Vector2i_List::insert(sf::Vector2i r)
 	num_nodi++;
 }
 
-Vector2i Vector2i_List::get(int index, bool del)
+Direzione Direzione_List::get(int index, bool del)
 {
-	if (index >= num_nodi) return Vector2i(-1, -1);
-	Vector2i_Node *t = root;
-	Vector2i_Node *previous = NULL;
+	if (index >= num_nodi)
+		return Direzione::ND;
+
+	Direzione_Node *t = root;
+	Direzione_Node *previous = NULL;
 	for (int i = 0; i < index; i++) {
 		previous = t;
 		t = t->next;
 	}
-	Vector2i temp = t->node;
+	Direzione temp = t->node;
 	if (del) {
 		if (t == root)
 			root = t->next;
@@ -56,14 +56,14 @@ Vector2i Vector2i_List::get(int index, bool del)
 	return temp;
 }
 
-Vector2i Vector2i_List::get(int x, int y, bool del)
+Direzione Direzione_List::get(Direzione d, bool del)
 {
-	Vector2i_Node *t = root;
-	Vector2i_Node *previous = NULL;
+	Direzione_Node *t = root;
+	Direzione_Node *previous = NULL;
 
-	if (t == NULL) return Vector2i(-1, -1);
+	if (t == NULL) return Direzione::ND;
 
-	while (t != NULL && (t->node.x != x && t->node.y != y))
+	while (t != NULL && (t->node != d))
 	{
 		previous = t;
 		t = t->next;
@@ -71,7 +71,7 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 
 	if (t != NULL)
 	{
-		Vector2i temp = t->node;
+		Direzione temp = t->node;
 		if (del)
 		{
 			if (t == root)
@@ -85,10 +85,10 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 		return temp;
 	}
 
-	return Vector2i(-1, -1);
+	return Direzione::ND;
 }
 
-void Vector2i_List::clean()
+void Direzione_List::clean()
 {
 	while (num_nodi != 0)
 		get(0, true);

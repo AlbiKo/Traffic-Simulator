@@ -19,6 +19,12 @@ private:
 public:
 	Vector2i_List();
 	Vector2i_List(Vector2i r);
+	
+	inline int count()
+	{
+		return num_nodi;
+	}
+
 	void insert(Vector2i r);
 	Vector2i get(int index, bool del);
 	Vector2i get(int x, int y, bool del);

@@ -30,54 +30,73 @@ Mappa::Mappa()
 			blocchi[i][j] = new Blocco(i, j, TipoBlocco::EMPTY);
 	}
 
-
+	/*
 	Rettilineo * ret = dynamic_cast<Rettilineo *>(blocchi[0][0]);
 	if (ret != NULL)
 		ret->cambiaVerso(TipoBlocco::HORIZONTAL);
+	*/
 }
 
 void Mappa::generate()
 {
+	D1(PRINT("Generazione mappa.."));
 	srand(time(NULL));
 	generateSources();
 	
+	D1(PRINT("Numero sorgenti " <<sorgenti.count()));
 }
 
-void Mappa::generateSources() {
-	generateSource(0, 0, false);
+void Mappa::generateSources()
+{
+	D1(PRINT("Generazione sorgenti.."));
+
+	sorgenti.clean();
+
 	generateSource(0, 0, true);
-	generateSource(0, blocchiY - 1, false);
+	generateSource(0, 0, false);
 	generateSource(blocchiX - 1, 0, true);
+	generateSource(0, blocchiY - 1, false);
 }
 
-void Mappa::generateSource(int x, int y, bool vertical) { //vertical=false->horizontal
-	int min = 1, 
-		max = vertical ? blocchiY - 2 : blocchiX - 2,
-		max_source = (max / 2) + (max % 2);
+void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizontal
+{ 
+	int min			= 1, 
+		max			= vertical ? blocchiY - 2 : blocchiX - 2,
+		max_source	= (max / 2) + (max % 2),
+		start_pos	= rand() % max + min,
+		i			= start_pos, 
+		count		= 0;
 
-	int start_pos = rand() % max + min;
-
-	int i = start_pos, count = 0;
 	do {
-		if (i==start_pos || randomBool()) {
-			if (vertical) {
-				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY)) {					
+		if (i==start_pos || randomBool())
+		{
+			if (vertical)
+			{
+				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY))
+				{					
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
+
+					D2(PRINT("Sorgente in " <<x <<", " <<i));
+					sorgenti.insert(Vector2i(x, i));
 					count++;
 					i+=2;
 				}
 			}
-			else {
-				if (i==max || (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY && blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY)) {
+			else if (i==max || (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY && blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY))
+				{
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
+
+					D2(PRINT("Sorgente in " << i << ", " << y));
+					sorgenti.insert(Vector2i(i, y));
 					count++;
 					i+=2;
 				}
-			}
 		}
+
 		i++;
 		if (i > max)
 			i = min;
+
 	} while (i != start_pos && count<max_source);
 }
 
