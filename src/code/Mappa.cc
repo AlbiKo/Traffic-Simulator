@@ -31,9 +31,6 @@ Mappa::Mappa()
 	}
 
 
-	cambiaTipoBlocco(blocchi[0][0], TipoBlocco::CROSS3_SX);
-	cambiaTipoBlocco(blocchi[1][0], TipoBlocco::CROSS3_DX);
-
 	Rettilineo * ret = dynamic_cast<Rettilineo *>(blocchi[0][0]);
 	if (ret != NULL)
 		ret->cambiaVerso(TipoBlocco::HORIZONTAL);
@@ -41,8 +38,53 @@ Mappa::Mappa()
 
 void Mappa::generate()
 {
-	D1(PRINT("Genero"));
+	srand(time(NULL));
+	generateSources();
 	
+}
+
+void Mappa::generateSources() {
+	generateSource(0, 0, false);
+	generateSource(0, 0, true);
+	generateSource(0, blocchiY - 1, false);
+	generateSource(blocchiX - 1, 0, true);
+}
+
+void Mappa::generateSource(int x, int y, bool vertical) { //vertical=false->horizontal
+	int min = 1, 
+		max = vertical ? blocchiY - 2 : blocchiX - 2,
+		max_source = (max / 2) + (max % 2);
+
+	int start_pos = rand() % max + min;
+
+	int i = start_pos, count = 0;
+	do {
+		if (i==start_pos || randomBool()) {
+			if (vertical) {
+				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY)) {					
+					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
+					count++;
+					i+=2;
+				}
+			}
+			else {
+				if (i==max || (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY && blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY)) {
+					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
+					count++;
+					i+=2;
+				}
+			}
+		}
+		i++;
+		if (i > max)
+			i = min;
+	} while (i != start_pos && count<max_source);
+}
+
+void Mappa::nome_casuale(int x, int y) {}
+
+bool Mappa::randomBool() {
+	return (rand() % RAND_MAX) % 2;
 }
 
 void Mappa::draw(RenderWindow &widget)
@@ -138,3 +180,4 @@ void Mappa::loadTextures()
 	if (!texture[toInt(TipoBlocco::CROSS4)]->loadFromFile("media/img/incrocio4.jpg"))
 		exit(1);
 }
+

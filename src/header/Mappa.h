@@ -7,6 +7,7 @@
 #include "Incrocio3.h"
 #include "Incrocio4.h"
 #include "Vector2i_List.h"
+#include <ctime>
 
 using namespace sf;
 
@@ -19,6 +20,12 @@ private:
 
 	void loadTextures();
 	void cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo);
+
+	void generateSource(int x, int y, bool vertical);
+	void nome_casuale(int x, int y);
+	bool randomBool();
+	void generateSources();
+	
 public:
     Mappa();
 
