@@ -1,5 +1,8 @@
 #ifndef TIPOBLOCCO_INCLUDE
 	#define TIPOBLOCCO_INCLUDE
+
+	/**Enum che rappresenta la/e direzione/i dei vari tipi di blocco.
+	*/
 	enum class TipoBlocco
 	{
 		HORIZONTAL = 0, VERTICAL,

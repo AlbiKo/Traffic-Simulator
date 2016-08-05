@@ -1,14 +1,17 @@
 
-/** @mainpage Faccio la prova.
-    Super prova che spacca. Davvero davvero. ::main \n
+/** @mainpage Traffic-Simulator.
+		Questo programma gestisce il traffico stradale di un ambiente generato casualmente.\n
+		La "mappa" generata conterrà incroci che saranno gestiti da semafori.\n
+		I veicoli procederanno da un luogo di partenza verso una destinazione autonomamente, rispettando gli incroci e le regolazioni semaforiche.\n
+		\n Benvenuti in SimCity 2000!\n\n
+		NOTA:
+		Documentazione incompleta su ::Blocco
 
 
 
-    @author Me
-    @author Te
+    @author Daniele Corradini
+    @author Alberto Beccari
 */
-
-
 
 #include <gtkmm.h>
 #include "../header/SFMLWidget.h"
@@ -21,16 +24,21 @@
 unsigned int MASK = 3 ;
 #endif // DEBUG_MODE
 
+/**Widget SFML che verrà applicato al box GTK
+*/
 SFMLWidget * SFML;
 
-
+/**Larghezza della finestra
+*/
 int RESX = 1280,
+/**Altezza della finestra
+*/
 	RESY = 700;
 
+/**Disegnamento dell'interfaccia
+*/
 void disegno()
 {
-
-
 	//Diciamo a GTK di ridisegnare il widget SFML
 	SFML->invalidate();
 
@@ -43,17 +51,20 @@ void disegno()
 	SFML->renderWindow.display();
 }
 
-//Ogni volta che il widget viene ridimensionato, si aggiusta la View.
+
+/**Aggiustamento della view quando il widget viene ridimensionato
+*/
 void resize_view ()
 {
 	sf::Vector2f lower_right(SFML->renderWindow.getSize().x,
 							 SFML->renderWindow.getSize().y);
 
 	sf::View view(lower_right * 0.5f, lower_right);
-
 	SFML->renderWindow.setView(view);
 }
 
+/**Inizializzazione del programma
+*/
 int main(int argc, char* argv[])
 {
 	//Inizializzazione GTK
