@@ -32,12 +32,8 @@ void Direzionatore::ammettiDirezione(Direzione d)
 
 void Direzionatore::escludiDirezione(Direzione d)
 {
-	#ifdef DEBUG_MODE
 		D2(PRINT("Escludo direzione: " << toInt(d)));
-		D2(PRINT("Risultato: " << toInt(dl.get(d, true))));
-	#else
 		dl.get(d, true);
-	#endif
 }
 
 /**
