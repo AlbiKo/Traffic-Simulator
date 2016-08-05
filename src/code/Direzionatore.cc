@@ -12,6 +12,7 @@ Direzionatore::Direzionatore()
 Direzionatore::~Direzionatore()
 {
 	D2(PRINT("Distruzione Direzionatore.."));
+	dl.clean();
 }
 
 Direzione Direzionatore::estraiDirezione()
@@ -19,7 +20,6 @@ Direzione Direzionatore::estraiDirezione()
 	if (dl.count() == 0)
 		return Direzione::ND;
 
-	srand(time(0));
 	return dl.get(rand() % dl.count(),false);
 }
 
@@ -40,12 +40,12 @@ void Direzionatore::escludiDirezione(Direzione d)
 
 	@param prevDir Direzione da cui si è venuti
 */
-void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir)
+void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir, sf::Vector2i numBlocchi)
 {
 	D1(PRINT("\nEscludo direzioni.."));
-	D1(PRINT("Partenza: " <<partenza.x <<", " <<partenza.y));
-	D1(PRINT("Destinazione: " << destinazione.x << ", " << destinazione.y));
-	D1(PRINT("Prev dir: " <<toInt(prevDir)));
+	D3(PRINT("Partenza: " <<partenza.x <<", " <<partenza.y));
+	D3(PRINT("Destinazione: " << destinazione.x << ", " << destinazione.y));
+	D3(PRINT("Prev dir: " <<toInt(prevDir)));
 
 	ripristina();
 	escludiDirezione(prevDir);
@@ -55,6 +55,17 @@ void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destina
 	else
 		escludiDirezione(Direzione::GIU);
 
+	if (partenza.x == 1)
+		escludiDirezione(Direzione::SX);
+
+	if (partenza.x == numBlocchi.x - 2)
+		escludiDirezione(Direzione::DX);
+
+	if (partenza.y == 1)
+		escludiDirezione(Direzione::SU);
+
+	if (partenza.y == numBlocchi.y - 2)
+		escludiDirezione(Direzione::GIU);
 }
 
 void Direzionatore::ripristina()

@@ -22,13 +22,18 @@ private:
 	Vector2i_List sorgenti;
 
 	void loadTextures();
+	void clean();
 	void cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo);
 
-	void generateSource(int x, int y, bool vertical);
-	void nome_casuale(int x, int y);
 	bool randomBool();
 	void generateSources();
-	
+	void generateSource(int x, int y, bool vertical);
+
+	void generateRoutes();
+	void generateRoute(Vector2i startPos, Vector2i endPos);
+	void initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i& currentPos, Direzione& prevDir);
+	void applyRouteBlock(Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
+	void autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir);
 public:
     Mappa();
 

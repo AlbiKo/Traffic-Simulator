@@ -9,6 +9,7 @@ Texture * texture[11];
 Mappa::Mappa()
 {
 	loadTextures();
+	sorgenti = Vector2i_List();
 
 	blocchiX = RESX / Blocco::size;
 	if (RESX % Blocco::size != 0)
@@ -39,11 +40,12 @@ Mappa::Mappa()
 
 void Mappa::generate()
 {
-	D1(PRINT("Generazione mappa.."));
+	D1(PRINT("\n\n\n\n\n\nGenerazione mappa.."));
 	srand(time(NULL));
+	clean();
 	generateSources();
-	
-	D1(PRINT("Numero sorgenti " <<sorgenti.count()));
+	generateRoutes();
+
 }
 
 void Mappa::generateSources()
@@ -62,10 +64,14 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 { 
 	int min			= 1, 
 		max			= vertical ? blocchiY - 2 : blocchiX - 2,
-		max_source	= (max / 2) + (max % 2),
+		max_source	= max / 3,
 		start_pos	= rand() % max + min,
 		i			= start_pos, 
 		count		= 0;
+
+	//Per completare il calcolo del numero di sorgenti massime
+	if (max % 3)
+		max_source++;
 
 	do {
 		if (i==start_pos || randomBool())
@@ -100,9 +106,164 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 	} while (i != start_pos && count<max_source);
 }
 
-void Mappa::nome_casuale(int x, int y) {}
 
-bool Mappa::randomBool() {
+void Mappa::generateRoutes()
+{
+	D1(PRINT("Generazione strade.."));
+	assert(sorgenti.count() >= 4);
+
+	Vector2i vez = sorgenti.get(0, false);
+	generateRoute(vez, Vector2i(8, blocchiY-1));
+	/*Direzionatore dir = Direzionatore();
+	dir.escludiDirezioni(vez, Vector2i(10, 0), Direzione::SX);
+	if (dir.estraiDirezione() == Direzione::SU)
+		cambiaTipoBlocco(blocchi[vez.y][vez.x + 1], TipoBlocco::SX_TO_UP);
+	else
+		cambiaTipoBlocco(blocchi[vez.y][vez.x + 1], TipoBlocco::HORIZONTAL);*/
+}
+
+void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
+{
+	Direzionatore dir = Direzionatore();
+
+	Direzione prevDir = Direzione::ND;
+	Vector2i currentPos(0,0);
+	initGeneratingRoute(startPos, endPos, currentPos, prevDir);
+	
+	if (prevDir == Direzione::ND)
+		return;
+
+	D1(PRINT("\nStartPos" << startPos.x << ", " << startPos.y));
+	D1(PRINT("CurrentPos " << currentPos.x << ", " << currentPos.y));
+	D1(PRINT("PrevDir " << toInt(prevDir)));
+	
+	do {
+		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
+	//	Direzione currentDir;
+		if (dir.count() == 0)
+			return;
+
+		if (currentPos.y == 1 || currentPos.y == blocchiX - 2)
+		{
+			autocompleteRoute(currentPos, endPos, prevDir);
+			return;
+		}
+		applyRouteBlock(currentPos, prevDir, dir.estraiDirezione(), TipoBlocco::HORIZONTAL);
+	} while (currentPos.x != endPos.x || currentPos.y != endPos.y);
+
+
+}
+
+void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & currentPos, Direzione & prevDir)
+{
+	if (endPos.y == 0)
+		endPos.y++;
+	else
+		endPos.y--;
+
+	if (startPos.x == 0 && startPos.y > 0 && startPos.y < blocchiY - 1)
+	{
+		//Si sta partendo da una sorgente sul lato sinistro,
+		//quindi il blocco da posizionare è quello immediatamente a destra..
+		currentPos = Vector2i(startPos.x + 1, startPos.y);
+
+		//.. e quindi non si può tornare verso il blocco precente (la sorgente)
+		// cioè verso sinistra
+		prevDir = Direzione::SX;
+	}
+	else
+	{
+		if (startPos.x == blocchiX - 1 && startPos.y > 0 && startPos.y < blocchiY - 1)
+		{
+			//Si sta partendo da una sorgente sul lato destro,
+			//quindi il blocco da posizionare è quello immediatamente a sinistra..
+			currentPos = Vector2i(startPos.x - 1, startPos.y);
+
+			//.. e quindi non si può tornare verso il blocco precente (la sorgente)
+			// cioè verso destra
+			prevDir = Direzione::DX;
+		}
+	}
+}
+
+void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzione currentDir, TipoBlocco tipo)
+{
+	D1(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
+	D1(PRINT("CurrentDir " <<toInt(currentDir)));
+	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
+	prevDir = getDirOpposta(currentDir);
+	D1(PRINT("PrevDir " << toInt(prevDir)));
+	switch (currentDir)
+	{
+	case Direzione::SU:
+		currentPos.y--;
+		break;
+
+	case Direzione::GIU:
+		currentPos.y++;
+		break;
+
+	case Direzione::DX:
+		currentPos.x++;
+		break;
+
+	case Direzione::SX:
+		currentPos.x--;
+		break;
+
+	case Direzione::ND:
+	default:
+		return;
+	}
+	D1(PRINT("Nuova CurrentPos " << currentPos.x << ", " << currentPos.y));
+}
+
+void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir)
+{
+	//Se ci si ritrova esattamente sulla destinazione e si viene dal basso
+	if (currentPos.x == endPos.x && prevDir == Direzione::GIU)
+	{
+		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::VERTICAL);
+		return;
+	}
+
+	//Dove si trova la destinazione rispetto alla pos corrente
+	Direzione pos; 
+	//Coefficiente di avvicinamento alla destinazione
+	int coeff = 1;
+	if (currentPos.x > endPos.x)
+	{
+		pos = Direzione::SX;
+		coeff = -1;
+	}
+	else
+		pos = Direzione::DX;
+
+	while (currentPos.x != endPos.x)
+	{
+		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::HORIZONTAL);
+		currentPos.x += coeff;
+	}
+
+	if (currentPos.y == 1)
+	{
+		if (pos == Direzione::SX)
+			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_UP);
+		else
+			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_UP);
+	}
+	else if (currentPos.y == blocchiY - 2)
+	{
+		if (pos == Direzione::SX)
+			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_DOWN);
+		else
+			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_DOWN);
+
+	}
+}
+
+bool Mappa::randomBool()
+{
 	return (rand() % RAND_MAX) % 2;
 }
 
@@ -198,5 +359,12 @@ void Mappa::loadTextures()
 	assert(texture[toInt(TipoBlocco::CROSS4)]->loadFromFile("media/img/incrocio4.jpg"));
 	if (!texture[toInt(TipoBlocco::CROSS4)]->loadFromFile("media/img/incrocio4.jpg"))
 		exit(1);
+}
+
+void Mappa::clean()
+{
+	for (int i = 0; i < blocchiY; i++)
+		for (int j = 0; j < blocchiX; j++)
+			cambiaTipoBlocco(blocchi[i][j], TipoBlocco::EMPTY);
 }
 

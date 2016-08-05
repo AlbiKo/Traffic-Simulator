@@ -9,6 +9,11 @@ Vector2i_List::Vector2i_List()
 	num_nodi = 0;
 }
 
+Vector2i_List::~Vector2i_List()
+{
+	this->clean();
+}
+
 Vector2i_List::Vector2i_List(sf::Vector2i r)
 {
 	root = new Vector2i_Node;

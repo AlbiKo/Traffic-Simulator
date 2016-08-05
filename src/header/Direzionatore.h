@@ -25,7 +25,7 @@ public:
 	Direzione estraiDirezione();
 	void ammettiDirezione(Direzione d);
 	void escludiDirezione(Direzione d);
-	void escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir);
+	void escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir, sf::Vector2i numBlocchi);
 	void ripristina();
 
 	inline int count()

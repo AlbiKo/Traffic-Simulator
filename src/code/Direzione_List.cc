@@ -7,6 +7,11 @@ Direzione_List::Direzione_List()
 	num_nodi = 0;
 }
 
+Direzione_List::~Direzione_List()
+{
+	this->clean();
+}
+
 Direzione_List::Direzione_List(Direzione r)
 {
 	root = new Direzione_Node;

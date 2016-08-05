@@ -18,6 +18,7 @@ private:
 
 public:
 	Vector2i_List();
+	~Vector2i_List();
 	Vector2i_List(Vector2i r);
 	
 	inline int count()
