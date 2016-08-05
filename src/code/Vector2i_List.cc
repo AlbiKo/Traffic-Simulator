@@ -3,20 +3,22 @@
 
 using namespace sf;
 
-Vector2i_List::Vector2i_List() {
+Vector2i_List::Vector2i_List()
+{
 	root = NULL;
 	num_nodi = 0;
 }
 
-Vector2i_List::Vector2i_List(sf::Vector2i r) {
+Vector2i_List::Vector2i_List(sf::Vector2i r)
+{
 	root = new Vector2i_Node;
 	root->node = r;
 	root->next = NULL;
 	num_nodi = 1;
 }
 
-void Vector2i_List::insert(sf::Vector2i r) {
-	D1(PRINT("Mi blocco ins " <<r.y));
+void Vector2i_List::insert(sf::Vector2i r)
+{
 	Vector2i_Node *i = new Vector2i_Node;
 	i->node = r;
 	i->next = NULL;
@@ -31,8 +33,8 @@ void Vector2i_List::insert(sf::Vector2i r) {
 	num_nodi++;
 }
 
-Vector2i Vector2i_List::get(int index, bool del) {
-	D1(PRINT("Mi blocco get " << index));
+Vector2i Vector2i_List::get(int index, bool del)
+{
 	if (index >= num_nodi) return Vector2i(-1, -1);
 	Vector2i_Node *t = root;
 	Vector2i_Node *previous = NULL;
@@ -54,7 +56,8 @@ Vector2i Vector2i_List::get(int index, bool del) {
 	return temp;
 }
 
-Vector2i Vector2i_List::get(int x, int y, bool del) {
+Vector2i Vector2i_List::get(int x, int y, bool del)
+{
 	Vector2i_Node *t = root;
 	Vector2i_Node *previous = NULL;
 
@@ -85,7 +88,8 @@ Vector2i Vector2i_List::get(int x, int y, bool del) {
 	return Vector2i(-1, -1);
 }
 
-void Vector2i_List::clean() {
+void Vector2i_List::clean()
+{
 	while (num_nodi != 0)
 		get(0, true);
 }
