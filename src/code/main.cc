@@ -18,7 +18,7 @@
 #include <SFML/Graphics.hpp>
 
 #ifdef DEBUG_MODE
-unsigned int MASK = 1 ;
+unsigned int MASK = 3 ;
 #endif // DEBUG_MODE
 
 SFMLWidget * SFML;

@@ -7,7 +7,9 @@
 #include "Incrocio3.h"
 #include "Incrocio4.h"
 #include "Vector2i_List.h"
+#include "Direzionatore.h"
 #include <ctime>
+
 
 using namespace sf;
 
@@ -17,6 +19,7 @@ private:
 
 	int blocchiX, blocchiY;
 	Blocco *** blocchi;
+	Vector2i_List sorgenti;
 
 	void loadTextures();
 	void cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo);
