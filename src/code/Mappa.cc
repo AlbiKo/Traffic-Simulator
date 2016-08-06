@@ -113,15 +113,10 @@ void Mappa::generateRoutes()
 	assert(sorgenti.count() >= 4);
 
 	Vector2i vez = sorgenti.get(0, false);
-	generateRoute(vez, Vector2i(8, blocchiY-1));
-	/*Direzionatore dir = Direzionatore();
-	dir.escludiDirezioni(vez, Vector2i(10, 0), Direzione::SX);
-	if (dir.estraiDirezione() == Direzione::SU)
-		cambiaTipoBlocco(blocchi[vez.y][vez.x + 1], TipoBlocco::SX_TO_UP);
-	else
-		cambiaTipoBlocco(blocchi[vez.y][vez.x + 1], TipoBlocco::HORIZONTAL);*/
+	generateRoute(vez, sorgenti.get(sorgenti.count()-1, false));
 }
 
+//DA FARE: non si può compiere più di un zigghezagghe
 void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 {
 	Direzionatore dir = Direzionatore();
@@ -140,10 +135,13 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	do {
 		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
 	//	Direzione currentDir;
+
+		//Non è possibile procedere verso alcuna direzione dal punto in cui ci si trova
 		if (dir.count() == 0)
 			return;
 
-		if (currentPos.y == 1 || currentPos.y == blocchiX - 2)
+
+		if ((currentPos.y == 1 && endPos.y == 1) || (currentPos.y == blocchiY - 2 && endPos.y == blocchiY - 2))
 		{
 			autocompleteRoute(currentPos, endPos, prevDir);
 			return;
@@ -151,7 +149,7 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		applyRouteBlock(currentPos, prevDir, dir.estraiDirezione(), TipoBlocco::HORIZONTAL);
 	} while (currentPos.x != endPos.x || currentPos.y != endPos.y);
 
-
+	autocompleteRoute(currentPos, endPos, prevDir);
 }
 
 void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & currentPos, Direzione & prevDir)
@@ -220,8 +218,11 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 
 void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir)
 {
-	//Se ci si ritrova esattamente sulla destinazione e si viene dal basso
-	if (currentPos.x == endPos.x && prevDir == Direzione::GIU)
+	D1(PRINT("Autocompletamento.."));
+	//Se ci si ritrova esattamente sulla destinazione e si viene dal basso/alto
+	if (currentPos.x == endPos.x && 
+		(currentPos.y == 1 || currentPos.y == blocchiY - 2) &&
+		(prevDir == Direzione::GIU || prevDir == Direzione::SU))
 	{
 		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::VERTICAL);
 		return;
@@ -239,6 +240,7 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 	else
 		pos = Direzione::DX;
 
+	//Ci si avvicina alla destinazione
 	while (currentPos.x != endPos.x)
 	{
 		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::HORIZONTAL);
@@ -260,6 +262,10 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_DOWN);
 
 	}
+}
+
+void Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir)
+{
 }
 
 bool Mappa::randomBool()

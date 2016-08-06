@@ -57,7 +57,6 @@ Direzione Direzione_List::get(int index, bool del)
 		num_nodi--;
 		
 	}
-	D1(PRINT(num_nodi));
 	return temp;
 }
 

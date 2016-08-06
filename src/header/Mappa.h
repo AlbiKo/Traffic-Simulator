@@ -29,11 +29,18 @@ private:
 	void generateSources();
 	void generateSource(int x, int y, bool vertical);
 
+	/** Collega le sorgenti dei lati sx/dx a quelle in alto e in basso
+	*/
 	void generateRoutes();
+
+	/**
+	*
+	*/
 	void generateRoute(Vector2i startPos, Vector2i endPos);
 	void initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i& currentPos, Direzione& prevDir);
 	void applyRouteBlock(Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
 	void autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir);
+	void mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir);
 public:
     Mappa();
 
