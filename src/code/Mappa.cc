@@ -134,7 +134,7 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	
 	do {
 		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
-	//	Direzione currentDir;
+		
 
 		//Non è possibile procedere verso alcuna direzione dal punto in cui ci si trova
 		if (dir.count() == 0)
@@ -146,7 +146,8 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 			autocompleteRoute(currentPos, endPos, prevDir);
 			return;
 		}
-		applyRouteBlock(currentPos, prevDir, dir.estraiDirezione(), TipoBlocco::HORIZONTAL);
+		Direzione currentDir = dir.estraiDirezione();
+		applyRouteBlock(currentPos, prevDir, currentDir, mergeRouteBlocks(currentPos, prevDir, currentDir));
 	} while (currentPos.x != endPos.x || currentPos.y != endPos.y);
 
 	autocompleteRoute(currentPos, endPos, prevDir);
@@ -229,34 +230,39 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 	}
 
 	//Dove si trova la destinazione rispetto alla pos corrente
-	Direzione pos; 
+	Direzione dirPos; 
 	//Coefficiente di avvicinamento alla destinazione
 	int coeff = 1;
 	if (currentPos.x > endPos.x)
 	{
-		pos = Direzione::SX;
+		dirPos = Direzione::SX;
 		coeff = -1;
 	}
 	else
-		pos = Direzione::DX;
+		dirPos = Direzione::DX;
 
+	
+	Direzione check = prevDir;
 	//Ci si avvicina alla destinazione
 	while (currentPos.x != endPos.x)
 	{
-		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::HORIZONTAL);
+		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, check, dirPos));
 		currentPos.x += coeff;
+
+		check = getDirOpposta(dirPos);
 	}
 
+	//Siamo sulla destinazione
 	if (currentPos.y == 1)
 	{
-		if (pos == Direzione::SX)
+		if (dirPos == Direzione::SX)
 			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_UP);
 		else
 			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_UP);
 	}
 	else if (currentPos.y == blocchiY - 2)
 	{
-		if (pos == Direzione::SX)
+		if (dirPos == Direzione::SX)
 			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_DOWN);
 		else
 			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_DOWN);
@@ -264,8 +270,66 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 	}
 }
 
-void Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir)
+TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir)
 {
+	TipoBlocco tb = blocchi[pos.y][pos.x]->getTipo();
+	switch (tb)
+	{
+	case TipoBlocco::HORIZONTAL:
+		break;
+	case TipoBlocco::VERTICAL:
+		break;
+	case TipoBlocco::SX_TO_UP:
+		break;
+	case TipoBlocco::SX_TO_DOWN:
+		break;
+	case TipoBlocco::DX_TO_UP:
+		break;
+	case TipoBlocco::DX_TO_DOWN:
+		break;
+	case TipoBlocco::CROSS3_SX:
+		break;
+	case TipoBlocco::CROSS3_DX:
+		break;
+	case TipoBlocco::CROSS3_UP:
+		break;
+	case TipoBlocco::CROSS3_DOWN:
+		break;
+	case TipoBlocco::EMPTY:
+		switch (prevDir)
+		{
+		case Direzione::SU:
+			tb = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_UP : TipoBlocco::DX_TO_UP;
+			if (currentDir == Direzione::GIU)
+				tb = TipoBlocco::VERTICAL;
+			break;
+		case Direzione::GIU:
+			tb = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_DOWN : TipoBlocco::DX_TO_DOWN;
+			if (currentDir == Direzione::SU)
+				tb = TipoBlocco::VERTICAL;
+			break;
+		case Direzione::DX:
+			tb = (currentDir == Direzione::SU) ? TipoBlocco::DX_TO_UP : TipoBlocco::DX_TO_DOWN;
+			if (currentDir == Direzione::SX)
+				tb = TipoBlocco::HORIZONTAL;
+			break;
+		case Direzione::SX:
+			tb = (currentDir == Direzione::SU) ? TipoBlocco::SX_TO_UP : TipoBlocco::SX_TO_DOWN;
+			if (currentDir == Direzione::DX)
+				tb = TipoBlocco::HORIZONTAL;
+			break;
+		default:
+			break;
+		}
+
+
+		break;
+	default:
+		break;
+	}
+
+
+	return tb;
 }
 
 bool Mappa::randomBool()
