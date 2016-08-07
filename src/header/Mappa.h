@@ -41,6 +41,7 @@ private:
 	void applyRouteBlock(Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
 	void autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir);
 	TipoBlocco mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir);
+	TipoBlocco mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir);
 public:
     Mappa();
 

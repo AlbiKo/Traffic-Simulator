@@ -114,6 +114,9 @@ void Mappa::generateRoutes()
 
 	Vector2i vez = sorgenti.get(0, false);
 	generateRoute(vez, sorgenti.get(sorgenti.count()-1, false));
+	generateRoute(vez, sorgenti.get(sorgenti.count() - 2, false));
+/*	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));
+	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));*/
 }
 
 //DA FARE: non si può compiere più di un zigghezagghe
@@ -187,11 +190,15 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & 
 
 void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzione currentDir, TipoBlocco tipo)
 {
+	D1(PRINT("Applico blocco.."));
 	D1(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
 	D1(PRINT("CurrentDir " <<toInt(currentDir)));
+
 	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
 	prevDir = getDirOpposta(currentDir);
+
 	D1(PRINT("PrevDir " << toInt(prevDir)));
+
 	switch (currentDir)
 	{
 	case Direzione::SU:
@@ -272,8 +279,8 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 
 TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir)
 {
-	TipoBlocco tb = blocchi[pos.y][pos.x]->getTipo();
-	switch (tb)
+	TipoBlocco tipo = blocchi[pos.y][pos.x]->getTipo();
+	switch (tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
 		break;
@@ -296,31 +303,7 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione cu
 	case TipoBlocco::CROSS3_DOWN:
 		break;
 	case TipoBlocco::EMPTY:
-		switch (prevDir)
-		{
-		case Direzione::SU:
-			tb = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_UP : TipoBlocco::DX_TO_UP;
-			if (currentDir == Direzione::GIU)
-				tb = TipoBlocco::VERTICAL;
-			break;
-		case Direzione::GIU:
-			tb = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_DOWN : TipoBlocco::DX_TO_DOWN;
-			if (currentDir == Direzione::SU)
-				tb = TipoBlocco::VERTICAL;
-			break;
-		case Direzione::DX:
-			tb = (currentDir == Direzione::SU) ? TipoBlocco::DX_TO_UP : TipoBlocco::DX_TO_DOWN;
-			if (currentDir == Direzione::SX)
-				tb = TipoBlocco::HORIZONTAL;
-			break;
-		case Direzione::SX:
-			tb = (currentDir == Direzione::SU) ? TipoBlocco::SX_TO_UP : TipoBlocco::SX_TO_DOWN;
-			if (currentDir == Direzione::DX)
-				tb = TipoBlocco::HORIZONTAL;
-			break;
-		default:
-			break;
-		}
+		
 
 
 		break;
@@ -329,7 +312,40 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione cu
 	}
 
 
-	return tb;
+	return tipo;
+}
+
+TipoBlocco Mappa::mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir)
+{
+	TipoBlocco tipo = TipoBlocco::EMPTY;
+
+	switch (prevDir)
+	{
+	case Direzione::SU:
+		tipo = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_UP : TipoBlocco::DX_TO_UP;
+		if (currentDir == Direzione::GIU)
+			tipo = TipoBlocco::VERTICAL;
+		break;
+	case Direzione::GIU:
+		tipo = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_DOWN : TipoBlocco::DX_TO_DOWN;
+		if (currentDir == Direzione::SU)
+			tipo = TipoBlocco::VERTICAL;
+		break;
+	case Direzione::DX:
+		tipo = (currentDir == Direzione::SU) ? TipoBlocco::DX_TO_UP : TipoBlocco::DX_TO_DOWN;
+		if (currentDir == Direzione::SX)
+			tipo = TipoBlocco::HORIZONTAL;
+		break;
+	case Direzione::SX:
+		tipo = (currentDir == Direzione::SU) ? TipoBlocco::SX_TO_UP : TipoBlocco::SX_TO_DOWN;
+		if (currentDir == Direzione::DX)
+			tipo = TipoBlocco::HORIZONTAL;
+		break;
+	default:
+		break;
+	}
+
+	return tipo;
 }
 
 bool Mappa::randomBool()
@@ -347,37 +363,41 @@ void Mappa::draw(RenderWindow &widget)
 
 void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)
 {
+	if (tipo == blocco->getTipo())
+		return;
+
 	Vector2i coord = blocco->coordBlocco();
 	delete blocco;
 
-	if (tipo == TipoBlocco::VERTICAL || tipo == TipoBlocco::HORIZONTAL)
+	switch (tipo)
 	{
+	case TipoBlocco::HORIZONTAL:
+	case TipoBlocco::VERTICAL:
 		blocco = new Rettilineo(coord.y, coord.x, tipo);
-		return;
-	}
+		break;
 
-	if (tipo == TipoBlocco::SX_TO_DOWN || tipo == TipoBlocco::DX_TO_DOWN || tipo == TipoBlocco::SX_TO_UP || tipo ==	TipoBlocco::DX_TO_UP)
-	{
+	case TipoBlocco::SX_TO_UP:
+	case TipoBlocco::SX_TO_DOWN:
+	case TipoBlocco::DX_TO_UP:
+	case TipoBlocco::DX_TO_DOWN:
 		blocco = new Curva(coord.y, coord.x, tipo);
-		return;
-	}
+		break;
 
-	if (tipo == TipoBlocco::CROSS3_DOWN || tipo == TipoBlocco::CROSS3_UP || tipo == TipoBlocco::CROSS3_DX || tipo == TipoBlocco::CROSS3_SX)
-	{
+	case TipoBlocco::CROSS3_SX:
+	case TipoBlocco::CROSS3_DX:
+	case TipoBlocco::CROSS3_UP:
+	case TipoBlocco::CROSS3_DOWN:
 		blocco = new Incrocio3(coord.y, coord.x, tipo);
-		return;
-	}
+		break;
 
-	if (tipo == TipoBlocco::CROSS4)
-	{
+	case TipoBlocco::CROSS4:
 		blocco = new Incrocio4(coord.y, coord.x);
-		return;
-	}
+		break;
 
-	if (tipo == TipoBlocco::EMPTY)
-	{
+	case TipoBlocco::EMPTY:
+	default:
 		blocco = new Blocco(coord.y, coord.x, tipo);
-		return;
+		break;
 	}
 }
 
