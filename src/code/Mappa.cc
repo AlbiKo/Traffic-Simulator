@@ -114,7 +114,7 @@ void Mappa::generateRoutes()
 
 	Vector2i vez = sorgenti.get(0, false);
 	generateRoute(vez, sorgenti.get(sorgenti.count()-1, false));
-	generateRoute(vez, sorgenti.get(sorgenti.count() - 2, false));
+	generateRoute(vez, sorgenti.get(3, false));
 /*	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));
 	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));*/
 }
@@ -169,9 +169,8 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & 
 		//quindi il blocco da posizionare è quello immediatamente a destra..
 		currentPos = Vector2i(startPos.x + 1, startPos.y);
 
-		//.. e quindi non si può tornare verso il blocco precente (la sorgente)
-		// cioè verso sinistra
-		prevDir = Direzione::SX;
+		//.. e quindi ci si è spostati verso destra
+		prevDir = Direzione::DX;
 	}
 	else
 	{
@@ -181,9 +180,8 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & 
 			//quindi il blocco da posizionare è quello immediatamente a sinistra..
 			currentPos = Vector2i(startPos.x - 1, startPos.y);
 
-			//.. e quindi non si può tornare verso il blocco precente (la sorgente)
-			// cioè verso destra
-			prevDir = Direzione::DX;
+			//.. e quindi ci si è spostati verso sinistra
+			prevDir = Direzione::SX;
 		}
 	}
 }
@@ -193,9 +191,9 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 	D1(PRINT("Applico blocco.."));
 	D1(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
 	D1(PRINT("CurrentDir " <<toInt(currentDir)));
-
+	D1(PRINT("Tipo " << toInt(tipo)));
 	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
-	prevDir = getDirOpposta(currentDir);
+	prevDir = currentDir;
 
 	D1(PRINT("PrevDir " << toInt(prevDir)));
 
@@ -256,30 +254,18 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, check, dirPos));
 		currentPos.x += coeff;
 
-		check = getDirOpposta(dirPos);
+		check = dirPos;
 	}
+
+	Direzione currentDir = (currentPos.y == 1) ? Direzione::SU : Direzione::GIU;
 
 	//Siamo sulla destinazione
-	if (currentPos.y == 1)
-	{
-		if (dirPos == Direzione::SX)
-			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_UP);
-		else
-			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_UP);
-	}
-	else if (currentPos.y == blocchiY - 2)
-	{
-		if (dirPos == Direzione::SX)
-			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::DX_TO_DOWN);
-		else
-			cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::SX_TO_DOWN);
-
-	}
+	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, dirPos, currentDir));
 }
 
-TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione currentDir)
+TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direzione currentDir)
 {
-	TipoBlocco tipo = blocchi[pos.y][pos.x]->getTipo();
+	TipoBlocco tipo = blocchi[currentPos.y][currentPos.x]->getTipo();
 	switch (tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
@@ -303,15 +289,13 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i pos, Direzione prevDir, Direzione cu
 	case TipoBlocco::CROSS3_DOWN:
 		break;
 	case TipoBlocco::EMPTY:
-		
-
-
+		tipo = mergeEmptyRouteBlock(prevDir, currentDir);
 		break;
 	default:
 		break;
 	}
 
-
+	tipo = checkSourceRouteBlock(currentPos, tipo);
 	return tipo;
 }
 
@@ -321,22 +305,22 @@ TipoBlocco Mappa::mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir)
 
 	switch (prevDir)
 	{
-	case Direzione::SU:
+	case Direzione::GIU:
 		tipo = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_UP : TipoBlocco::DX_TO_UP;
 		if (currentDir == Direzione::GIU)
 			tipo = TipoBlocco::VERTICAL;
 		break;
-	case Direzione::GIU:
+	case Direzione::SU:
 		tipo = (currentDir == Direzione::SX) ? TipoBlocco::SX_TO_DOWN : TipoBlocco::DX_TO_DOWN;
 		if (currentDir == Direzione::SU)
 			tipo = TipoBlocco::VERTICAL;
 		break;
-	case Direzione::DX:
+	case Direzione::SX:
 		tipo = (currentDir == Direzione::SU) ? TipoBlocco::DX_TO_UP : TipoBlocco::DX_TO_DOWN;
 		if (currentDir == Direzione::SX)
 			tipo = TipoBlocco::HORIZONTAL;
 		break;
-	case Direzione::SX:
+	case Direzione::DX:
 		tipo = (currentDir == Direzione::SU) ? TipoBlocco::SX_TO_UP : TipoBlocco::SX_TO_DOWN;
 		if (currentDir == Direzione::DX)
 			tipo = TipoBlocco::HORIZONTAL;
@@ -346,6 +330,77 @@ TipoBlocco Mappa::mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir)
 	}
 
 	return tipo;
+}
+
+TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
+{
+	//Si controlla se è un blocco che può essere adiacente ad una sorgente
+	if (currentPos.y != 1 && currentPos.y != blocchiY - 2 &&
+		currentPos.x != 1 && currentPos.x != blocchiX - 2)
+		return tipo;
+
+	switch (tipo)
+	{
+	case TipoBlocco::HORIZONTAL:
+		if (currentPos.y == 1 && sorgenti.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
+			tipo = TipoBlocco::CROSS3_UP;
+
+		if (currentPos.y == blocchiY - 2 && sorgenti.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
+			tipo = TipoBlocco::CROSS3_DOWN;
+		break;
+
+	case TipoBlocco::VERTICAL:
+		if (currentPos.x == 1 && sorgenti.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
+			tipo = TipoBlocco::CROSS3_SX;
+
+		if (currentPos.x == blocchiX - 2 && sorgenti.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
+			tipo = TipoBlocco::CROSS3_DX;
+		break;
+
+	case TipoBlocco::SX_TO_UP:
+		tipo = checkSourceCurveRouteBlock(currentPos, Vector2i(blocchiX - 2, blocchiY - 2), Vector2i(1, 1), tipo, TipoBlocco::CROSS3_UP, TipoBlocco::CROSS3_SX);
+		break;
+
+	case TipoBlocco::SX_TO_DOWN:
+		tipo = checkSourceCurveRouteBlock(currentPos, Vector2i(blocchiX - 2, 1), Vector2i(1, -1), tipo, TipoBlocco::CROSS3_DOWN, TipoBlocco::CROSS3_SX);
+		break;
+
+	case TipoBlocco::DX_TO_UP:
+		tipo = checkSourceCurveRouteBlock(currentPos, Vector2i(1, blocchiY - 2), Vector2i(-1, 1), tipo, TipoBlocco::CROSS3_UP, TipoBlocco::CROSS3_DX);
+		break;
+
+	case TipoBlocco::DX_TO_DOWN:
+		tipo = checkSourceCurveRouteBlock(currentPos, Vector2i(1, 1), Vector2i(-1, -1), tipo, TipoBlocco::CROSS3_DOWN, TipoBlocco::CROSS3_DX);
+		break;
+
+	default:
+		break;
+	}
+	return tipo;
+}
+
+
+TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i cornerPos, Vector2i offset, TipoBlocco base, TipoBlocco typeX, TipoBlocco typeY)
+{
+	if (currentPos.y == cornerPos.y && currentPos.x == cornerPos.x)
+	{
+		if (sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+			if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+				return TipoBlocco::CROSS4;
+			else
+				return typeX;
+		else if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+			return typeY;
+	}
+	else
+	{
+		if (currentPos.y == cornerPos.y && sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+			return typeY;
+		else if (currentPos.x == cornerPos.x && sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+			return typeX;
+	}
+
+	return base;
 }
 
 bool Mappa::randomBool()

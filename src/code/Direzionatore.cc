@@ -32,8 +32,8 @@ void Direzionatore::ammettiDirezione(Direzione d)
 
 void Direzionatore::escludiDirezione(Direzione d)
 {
-		D2(PRINT("Escludo direzione: " << toInt(d)));
-		dl.get(d, true);
+	D2(PRINT("Escludo direzione: " << toInt(d)));
+	dl.get(d, true);
 }
 
 /**
@@ -48,13 +48,15 @@ void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destina
 	D3(PRINT("Prev dir: " <<toInt(prevDir)));
 
 	ripristina();
-	escludiDirezione(prevDir);
+	escludiDirezione(getDirOpposta(prevDir));
 
+	//Contollo dove si trova la destinazione rispetto la partenza ed escludo la direzione opposta
 	if (partenza.y < destinazione.y)
 		escludiDirezione(Direzione::SU);
 	else
 		escludiDirezione(Direzione::GIU);
 
+	//Escludo le direzioni opportune se mi trovo sui bordi
 	if (partenza.x == 1)
 		escludiDirezione(Direzione::SX);
 
