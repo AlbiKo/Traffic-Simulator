@@ -68,7 +68,7 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 
 	if (t == NULL) return Vector2i(-1, -1);
 
-	while (t != NULL && (t->node.x != x && t->node.y != y))
+	while (t != NULL && (t->node.x != x || t->node.y != y))
 	{
 		previous = t;
 		t = t->next;
