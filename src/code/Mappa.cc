@@ -14,13 +14,11 @@ Mappa::Mappa()
 	blocchiX = RESX / Blocco::size;
 	if (RESX % Blocco::size != 0)
 		blocchiX++;
-
 	D1(PRINT("Totale blocchi su X " <<blocchiX));
 
 	blocchiY = RESY / Blocco::size;
 	if (RESY % Blocco::size != 0)
 		blocchiY++;
-
 	D1(PRINT("Totale blocchi su Y " <<blocchiY));
 
 	blocchi = new Blocco**[blocchiY];
@@ -189,13 +187,13 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & 
 void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzione currentDir, TipoBlocco tipo)
 {
 	D1(PRINT("Applico blocco.."));
-	D1(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
-	D1(PRINT("CurrentDir " <<toInt(currentDir)));
-	D1(PRINT("Tipo " << toInt(tipo)));
+	D2(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
+	D2(PRINT("CurrentDir " <<toInt(currentDir)));
+	D2(PRINT("Tipo " << toInt(tipo)));
 	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
 	prevDir = currentDir;
 
-	D1(PRINT("PrevDir " << toInt(prevDir)));
+	D2(PRINT("PrevDir " << toInt(prevDir)));
 
 	switch (currentDir)
 	{
@@ -219,7 +217,7 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 	default:
 		return;
 	}
-	D1(PRINT("Nuova CurrentPos " << currentPos.x << ", " << currentPos.y));
+	D3(PRINT("Nuova CurrentPos " << currentPos.x << ", " << currentPos.y));
 }
 
 void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir)
@@ -342,17 +340,21 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 	switch (tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
+		//Se ci si trova sulla prima riga e sopra c'è una sorgente
 		if (currentPos.y == 1 && sorgenti.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_UP;
 
+		//Se ci si trova sull'ultima riga e sotto c'è una sorgente
 		if (currentPos.y == blocchiY - 2 && sorgenti.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DOWN;
 		break;
 
 	case TipoBlocco::VERTICAL:
+		//Se ci si trova sulla prima colonna e a sinistra c'è una sorgente
 		if (currentPos.x == 1 && sorgenti.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_SX;
 
+		//Se ci si trova sull'ultima colonna e a destra c'è una sorgente
 		if (currentPos.x == blocchiX - 2 && sorgenti.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DX;
 		break;
@@ -379,25 +381,36 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 	return tipo;
 }
 
-
 TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i cornerPos, Vector2i offset, TipoBlocco base, TipoBlocco typeX, TipoBlocco typeY)
 {
+	//Si verifica che si stia controllando un blocco curva
+	if (base != TipoBlocco::SX_TO_UP && base != TipoBlocco::SX_TO_DOWN &&
+		base != TipoBlocco::DX_TO_UP && base != TipoBlocco::DX_TO_DOWN)
+		return base;
+
+	//Se il blocco si trova esattamente all'angolo
 	if (currentPos.y == cornerPos.y && currentPos.x == cornerPos.x)
 	{
+		//Se a fianco si trova una sorgente
 		if (sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+			//Se sopra/sotto si trova una sorgente
 			if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 				return TipoBlocco::CROSS4;
 			else
 				return typeX;
+
 		else if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
 	}
 	else
 	{
+		//Se ci si trova nella stessa riga dell'angolo e se c'è una sorgente sopra/sotto
 		if (currentPos.y == cornerPos.y && sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
-		else if (currentPos.x == cornerPos.x && sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
-			return typeX;
+		else
+			//Se ci si trova nella stessa colonna dell'angolo e se c'è una sorgente a fianco
+			if (currentPos.x == cornerPos.x && sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+				return typeX;
 	}
 
 	return base;
