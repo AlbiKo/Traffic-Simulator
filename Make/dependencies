@@ -39,6 +39,8 @@ Rettilineo.o: ../src/code/Rettilineo.cc \
  ../src/code/../header/Rettilineo.h ../src/code/../header/Blocco.h \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Debug.h
+TipoBlocco.o: ../src/code/TipoBlocco.cc \
+ ../src/code/../header/TipoBlocco.h
 Vector2i_List.o: ../src/code/Vector2i_List.cc \
  ../src/code/../header/Vector2i_List.h ../src/code/../header/Debug.h
 main.o: ../src/code/main.cc ../src/code/../header/SFMLWidget.h \
