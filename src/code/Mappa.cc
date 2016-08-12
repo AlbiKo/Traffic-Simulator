@@ -58,6 +58,7 @@ void Mappa::generateSources()
 	generateSource(0, blocchiY - 1, false);
 }
 
+//DA FARE: non si può mettere una sorgente nei primi due blocchi di un lato se c'è già nei primi due blocchi dell'altro lato (in senso orario)
 void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizontal
 { 
 	int min			= 1, 
@@ -104,7 +105,6 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 	} while (i != start_pos && count<max_source);
 }
 
-
 void Mappa::generateRoutes()
 {
 	D1(PRINT("Generazione strade.."));
@@ -113,13 +113,16 @@ void Mappa::generateRoutes()
 	Vector2i vez = sorgenti.get(0, false);
 	generateRoute(vez, sorgenti.get(sorgenti.count()-1, false));
 	generateRoute(vez, sorgenti.get(3, false));
-/*	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));
-	generateRoute(vez, sorgenti.get(sorgenti.count() - 1, false));*/
+	generateRoute(Vector2i(blocchiX-1,5), sorgenti.get(sorgenti.count() - 1, false));
+	generateRoute(Vector2i(blocchiX - 1, 5), sorgenti.get(3, false));
 }
 
 //DA FARE: non si può compiere più di un zigghezagghe
 void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 {
+	D1(PRINT("\n---------------\nGenerazione strada.."));
+	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
+	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
 	Direzionatore dir = Direzionatore();
 
 	Direzione prevDir = Direzione::ND;
@@ -129,18 +132,17 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	if (prevDir == Direzione::ND)
 		return;
 
-	D1(PRINT("\nStartPos" << startPos.x << ", " << startPos.y));
-	D1(PRINT("CurrentPos " << currentPos.x << ", " << currentPos.y));
-	D1(PRINT("PrevDir " << toInt(prevDir)));
+	
+	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
+	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
+	D1(PRINT("PrevDir " <<stampaDir(prevDir)));
 	
 	do {
 		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
 		
-
 		//Non è possibile procedere verso alcuna direzione dal punto in cui ci si trova
 		if (dir.count() == 0)
 			return;
-
 
 		if ((currentPos.y == 1 && endPos.y == 1) || (currentPos.y == blocchiY - 2 && endPos.y == blocchiY - 2))
 		{
@@ -188,12 +190,13 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 {
 	D1(PRINT("Applico blocco.."));
 	D2(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
-	D2(PRINT("CurrentDir " <<toInt(currentDir)));
-	D2(PRINT("Tipo " << toInt(tipo)));
+	D2(PRINT("CurrentDir " <<stampaDir(currentDir)));
+	D2(PRINT("Tipo " <<stampaTipoBlocco(tipo)));
+
 	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
 	prevDir = currentDir;
 
-	D2(PRINT("PrevDir " << toInt(prevDir)));
+	D2(PRINT("PrevDir " <<stampaDir(prevDir)));
 
 	switch (currentDir)
 	{
@@ -228,7 +231,7 @@ void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione pr
 		(currentPos.y == 1 || currentPos.y == blocchiY - 2) &&
 		(prevDir == Direzione::GIU || prevDir == Direzione::SU))
 	{
-		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], TipoBlocco::VERTICAL);
+		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, prevDir, prevDir));
 		return;
 	}
 
@@ -266,26 +269,43 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 	TipoBlocco tipo = blocchi[currentPos.y][currentPos.x]->getTipo();
 	switch (tipo)
 	{
+	//Blocchi rettilineo
 	case TipoBlocco::HORIZONTAL:
+		tipo = mergeRectRouteBlock(tipo, prevDir, currentDir, Direzione::SX, Direzione::SU, TipoBlocco::CROSS3_UP, TipoBlocco::CROSS3_DOWN);
 		break;
 	case TipoBlocco::VERTICAL:
+		tipo = mergeRectRouteBlock(tipo, prevDir, currentDir, Direzione::SU, Direzione::SX, TipoBlocco::CROSS3_SX, TipoBlocco::CROSS3_DX);
 		break;
+
+	//Blocchi curva
 	case TipoBlocco::SX_TO_UP:
+		tipo = mergeCurveRouteBlock(tipo, prevDir, currentDir, Direzione::DX, Direzione::GIU, TipoBlocco::CROSS3_UP, TipoBlocco::CROSS3_SX);
 		break;
 	case TipoBlocco::SX_TO_DOWN:
+		tipo = mergeCurveRouteBlock(tipo, prevDir, currentDir, Direzione::DX, Direzione::SU, TipoBlocco::CROSS3_DOWN, TipoBlocco::CROSS3_SX);
 		break;
 	case TipoBlocco::DX_TO_UP:
+		tipo = mergeCurveRouteBlock(tipo, prevDir, currentDir, Direzione::SX, Direzione::GIU, TipoBlocco::CROSS3_UP, TipoBlocco::CROSS3_DX);
 		break;
 	case TipoBlocco::DX_TO_DOWN:
+		tipo = mergeCurveRouteBlock(tipo, prevDir, currentDir, Direzione::SX, Direzione::SU, TipoBlocco::CROSS3_DOWN, TipoBlocco::CROSS3_DX);
 		break;
+
+	//Blocchi incrocio a 3
 	case TipoBlocco::CROSS3_SX:
+		tipo = mergeCross3RouteBlock(tipo, prevDir, currentDir, Direzione::DX);
 		break;
 	case TipoBlocco::CROSS3_DX:
+		tipo = mergeCross3RouteBlock(tipo, prevDir, currentDir, Direzione::SX);
 		break;
 	case TipoBlocco::CROSS3_UP:
+		tipo = mergeCross3RouteBlock(tipo, prevDir, currentDir, Direzione::GIU);
 		break;
 	case TipoBlocco::CROSS3_DOWN:
+		tipo = mergeCross3RouteBlock(tipo, prevDir, currentDir, Direzione::SU);
 		break;
+
+	//Blocco vuoto
 	case TipoBlocco::EMPTY:
 		tipo = mergeEmptyRouteBlock(prevDir, currentDir);
 		break;
@@ -293,7 +313,80 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 		break;
 	}
 
+	//Controllo se il tipo del blocco attualmente stabilito va in conflitto con eventuali sorgenti
 	tipo = checkSourceRouteBlock(currentPos, tipo);
+
+	D1(PRINT("Posiziono blocco di tipo: " <<stampaTipoBlocco(tipo)));
+	
+	return tipo;
+}
+
+TipoBlocco Mappa::mergeRectRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione rectDir, Direzione perpDir, TipoBlocco perpBlock, TipoBlocco nonPerpBlock)
+{
+	//Si verifica che si stia lavorando su un rettilineo,
+	//che perpDir sia perpendicolare a rectDir,
+	//che non si torni indietro
+	if (!isRectBlock(tipo) || 
+		perpDir == rectDir || perpDir == getDirOpposta(rectDir) ||
+		currentDir == getDirOpposta(prevDir))
+		return tipo;
+
+	if (prevDir == currentDir)
+		//Se ci si sta muovendo secondo la direzione del rettilineo
+		if (prevDir == rectDir || prevDir == getDirOpposta(rectDir))
+			return tipo;
+		else
+			//Si è perpendicolari al rettilineo
+			return TipoBlocco::CROSS4;
+	else
+		//Se si sta entrando nel rettilineo e poi in che senso
+		if (currentDir == rectDir || currentDir == getDirOpposta(rectDir))
+			return (prevDir == getDirOpposta(perpDir)) ? perpBlock : nonPerpBlock;
+		else
+			//Si sta uscendo dal rettilineo, da stabilire il senso
+			return (currentDir == perpDir) ? perpBlock : nonPerpBlock;
+
+	return tipo;
+}
+
+TipoBlocco Mappa::mergeCurveRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDirX, Direzione missingDirY, TipoBlocco typeX, TipoBlocco typeY)
+{
+	//Se si ripercorre la curva in uno dei due sensi di marcia
+	if (!isCurveBlock(tipo) ||
+		(prevDir == missingDirX && currentDir == getDirOpposta(missingDirY)) ||
+		(prevDir == missingDirY && currentDir == getDirOpposta(missingDirX)))
+		return tipo;
+
+	//Se non si ripercorre nessuna parte della curva
+	if ((prevDir == getDirOpposta(missingDirX) && currentDir == missingDirY) ||
+		(prevDir == getDirOpposta(missingDirY) && currentDir == missingDirX))
+		return TipoBlocco::CROSS4;
+	
+	//Se si forma un incrocio a 3 con il lato piatto sull'asse X
+	if ((prevDir == missingDirY && currentDir == missingDirX) ||
+		(prevDir == missingDirX && currentDir == missingDirX) ||
+		(prevDir == getDirOpposta(missingDirX) && currentDir == getDirOpposta(missingDirX)) ||
+		(prevDir == getDirOpposta(missingDirX) && currentDir == getDirOpposta(missingDirY)))
+		return typeX;
+
+	//Se si forma un incrocio a 3 con il lato piatto sull'asse X
+	if ((prevDir == missingDirX && currentDir == missingDirY) ||
+		(prevDir == missingDirY && currentDir == missingDirY) ||
+		(prevDir == getDirOpposta(missingDirY) && currentDir == getDirOpposta(missingDirY)) ||
+		(prevDir == getDirOpposta(missingDirY) && currentDir == getDirOpposta(missingDirX)))
+		return typeY;
+
+	return tipo;
+}
+
+TipoBlocco Mappa::mergeCross3RouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDir)
+{
+	if (!isCross3Block(tipo))
+		return tipo;
+
+	if (prevDir == getDirOpposta(missingDir) || currentDir == missingDir)
+		return TipoBlocco::CROSS4;
+
 	return tipo;
 }
 
@@ -384,8 +477,7 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i cornerPos, Vector2i offset, TipoBlocco base, TipoBlocco typeX, TipoBlocco typeY)
 {
 	//Si verifica che si stia controllando un blocco curva
-	if (base != TipoBlocco::SX_TO_UP && base != TipoBlocco::SX_TO_DOWN &&
-		base != TipoBlocco::DX_TO_UP && base != TipoBlocco::DX_TO_DOWN)
+	if (!isCurveBlock(base))
 		return base;
 
 	//Se il blocco si trova esattamente all'angolo

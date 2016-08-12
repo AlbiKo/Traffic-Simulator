@@ -64,6 +64,51 @@ private:
 	*/
 	TipoBlocco mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direzione currentDir);
 
+	/** Assumendo che il blocco attuale sia un rettilineo, si stabilisce il nuovo tipo di tale blocco
+	*	basandosi sul valore delle ultime due direzioni estratte e sulle direzioni derivanti dal tipo di blocco già presente.
+	*
+	*	@param tipo Tipo di blocco attuale
+	*	@param prevDir Direzione estratta precedente
+	*	@param currentDir Direzione attualmente estratta
+	*	@param rectDir Direzione parallela al rettilineo
+	*	@param perpDir Direzione perpendicolare al rettilineo
+	*	@param perpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso perpDir
+	*	@param nonPerpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso la direzione opposta a perpDir
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
+	*		attualmente presente
+	*/
+	TipoBlocco mergeRectRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione rectDir, Direzione perpDir, TipoBlocco perpBlock, TipoBlocco nonPerpBlock);
+
+	/** Assumendo che il blocco attuale sia una curva, si stabilisce il nuovo tipo di tale blocco
+	*	basandosi sul valore delle ultime due direzioni estratte e sulle due direzioni del blocco mancanti
+	*	per essere un incrocio a 4.
+	*
+	*	@param tipo Tipo di blocco attuale
+	*	@param prevDir Direzione estratta precedente
+	*	@param currentDir Direzione attualmente estratta
+	*	@param missingDirX Direzione mancante al bloccco dell'asse X per essere un incrocio a 4
+	*	@param missingDirY Direzione mancante al bloccco dell'asse Y per essere un incrocio a 4
+	*	@param typeX Tipo di blocco con lato piatto sull'asse X da assegnare se si verificano i casi appositi
+	*	@param typeY Tipo di blocco con lato piatto sull'asse Y da assegnare se si verificano i casi appositi
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
+	*		attualmente presente
+	*/
+	TipoBlocco mergeCurveRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDirX, Direzione missingDirY, TipoBlocco typeX, TipoBlocco typeY);
+
+
+	/** Assumendo che il blocco attuale sia un incrocio a 3, si stabilisce il nuovo tipo di tale blocco
+	*	basandosi sul valore delle ultime due direzioni estratte e sulla direzione del blocco mancante
+	*	per essere un incrocio a 4.
+	*
+	*	@param tipo Tipo di blocco attuale
+	*	@param prevDir Direzione estratta precedente
+	*	@param currentDir Direzione attualmente estratta
+	*	@param missingDir Direzione mancante al bloccco per essere un incrocio a 4
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
+	*		attualmente presente
+	*/
+	TipoBlocco mergeCross3RouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDir);
+	
 	/** Assumendo che il blocco attuale sia vuoto, si stabilisce il nuovo tipo di tale blocco
 	*	basandosi sul valore delle ultime due direzioni estratte
 	*
