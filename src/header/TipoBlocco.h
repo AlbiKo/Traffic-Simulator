@@ -1,5 +1,6 @@
 #ifndef TIPOBLOCCO_INCLUDE
 	#define TIPOBLOCCO_INCLUDE
+	#include <iostream>
 	enum class TipoBlocco
 	{
 		HORIZONTAL = 0, VERTICAL,
@@ -14,4 +15,6 @@
 	bool isCross3Block(TipoBlocco tipo);
 	bool isCross4Block(TipoBlocco tipo);
 	bool isEmptyBlock(TipoBlocco tipo);
+
+	std::string stampaTipoBlocco(TipoBlocco tipo);
 #endif

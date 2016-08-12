@@ -35,3 +35,42 @@ bool isEmptyBlock(TipoBlocco tipo)
 {
 	return (tipo == TipoBlocco::EMPTY) ? true : false;
 }
+
+std::string stampaTipoBlocco(TipoBlocco tipo)
+{
+	switch (tipo)
+	{
+		//Blocchi rettilineo
+	case TipoBlocco::HORIZONTAL:
+		return "Rettilineo orizzontale";
+	case TipoBlocco::VERTICAL:
+		return "Rettilineo verticale";
+
+		//Blocchi curva
+	case TipoBlocco::SX_TO_UP:
+		return "Curva da sinistra verso alto";
+	case TipoBlocco::SX_TO_DOWN:
+		return "Curva da sinistra verso basso";
+	case TipoBlocco::DX_TO_UP:
+		return "Curva da destra verso alto";
+	case TipoBlocco::DX_TO_DOWN:
+		return "Curva da destra verso basso";
+
+		//Blocchi incrocio a 3
+	case TipoBlocco::CROSS3_SX:
+		return "Incrocio3 con terza uscita a sinistra";
+	case TipoBlocco::CROSS3_DX:
+		return "Incrocio3 con terza uscita a destra";
+	case TipoBlocco::CROSS3_UP:
+		return "Incrocio3 con terza uscita in alto";
+	case TipoBlocco::CROSS3_DOWN:
+		return "Incrocio3 con terza uscita in basso";
+
+		//Blocco vuoto
+	case TipoBlocco::EMPTY:
+		return "Blocco vuoto";
+	default:
+		return "";
+	}
+}
+

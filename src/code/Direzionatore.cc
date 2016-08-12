@@ -25,27 +25,23 @@ Direzione Direzionatore::estraiDirezione()
 
 void Direzionatore::ammettiDirezione(Direzione d)
 {
-	D2(PRINT("Ammetto nel Direzionatore: "<< toInt(d)));
+	D2(PRINT("Ammetto nel Direzionatore: "<< stampaDir(d)));
 	if (d != Direzione::ND && dl.get(d, false) == Direzione::ND)
 		dl.insert(d);
 }
 
 void Direzionatore::escludiDirezione(Direzione d)
 {
-	D2(PRINT("Escludo direzione: " << toInt(d)));
+	D2(PRINT("Escludo direzione: " << stampaDir(d)));
 	dl.get(d, true);
 }
 
-/**
-
-	@param prevDir Direzione da cui si è venuti
-*/
 void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir, sf::Vector2i numBlocchi)
 {
 	D1(PRINT("\nEscludo direzioni.."));
 	D3(PRINT("Partenza: " <<partenza.x <<", " <<partenza.y));
 	D3(PRINT("Destinazione: " << destinazione.x << ", " << destinazione.y));
-	D3(PRINT("Prev dir: " <<toInt(prevDir)));
+	D3(PRINT("Prev dir: " <<stampaDir(prevDir)));
 
 	ripristina();
 	escludiDirezione(getDirOpposta(prevDir));

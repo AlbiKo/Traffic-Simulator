@@ -21,3 +21,27 @@ Direzione getDirOpposta(Direzione d)
 		return Direzione::ND;
 	}
 }
+
+
+std::string stampaDir(Direzione d)
+{
+	switch (d)
+	{
+	case Direzione::SU:
+		return "Su";
+
+	case Direzione::GIU:
+		return "Giu";
+
+	case Direzione::DX:
+		return "Destra";
+
+	case Direzione::SX:
+		return "Sinistra";
+
+	case Direzione::ND:
+	default:
+		return "Non definita";
+	}
+}
+
