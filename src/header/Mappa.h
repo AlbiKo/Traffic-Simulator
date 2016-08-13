@@ -8,8 +8,8 @@
 #include "Incrocio4.h"
 #include "Vector2i_List.h"
 #include "Direzionatore.h"
+#include "Blocco_List.h"
 #include <ctime>
-
 
 using namespace sf;
 
@@ -33,27 +33,27 @@ private:
 	*/
 	void generateRoutes();
 
-	/**
+	/** Genera casualmente la strada che inizia in startPos e si conclude in endPos
 	*
+	*	@param startPos Posizione del blocco di inizio della strada nella matrice
+	*	@param endPos Posizione del blocco di fine della strada nella matrice
 	*/
 	void generateRoute(Vector2i startPos, Vector2i endPos);
 
 	/** Inizializzazione della generazione della strada che comincia in startPos e conclude in endPos.
 	*	A seconda di dove si trova la partenza, si inizializza la posizione corrente,
 	*	che sarà immediatamente a fianco, e la direzione estratta, che sarà sinistra o destra.
-	*	A seconda di dove si trova, l'arrivo (sorgente posizionata in alto o in basso) viene spostato
-	*	alla cella superiore o inferiore.
 	*
 	*	@param startPos Posizione nella matrice della sorgente di partenza, cioè collocata a sinistra o a destra
-	*	@param endPos Parametro di uscita. Posizione nella matrice della sorgente di arrivo, cioè collocata sopra o sotto
 	*	@param currentPos Posizione nella matrice attuale corrente
 	*	@param prevDir Direzione estratta precedente
-	*	@return Restituisce la nuova posizione corrente, la nuova posizione di arrivo e la direzione precedente
+	*	@return Restituisce la nuova posizione corrente e la direzione precedente
 	*/
-	void initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i& currentPos, Direzione& prevDir);
+	void initGeneratingRoute(Vector2i startPos, Vector2i& currentPos, Direzione& prevDir);
 	void applyRouteBlock(Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
-	void autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir);
 	
+	bool checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo);
+
 	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
 	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla mappa, sorgenti comprese.
 	*

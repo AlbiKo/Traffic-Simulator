@@ -1,37 +1,35 @@
-#include "../header/Vector2i_List.h"
+#include "../header/Blocco_List.h"
 #include "../header/Debug.h"
 
-using namespace sf;
-
-Vector2i_List::Vector2i_List()
+Blocco_List::Blocco_List()
 {
 	root = NULL;
 	num_nodi = 0;
 }
 
-Vector2i_List::~Vector2i_List()
+Blocco_List::~Blocco_List()
 {
 	D2(PRINT("Distruggo vector list"));
 	this->clean();
 }
 
-Vector2i_List::Vector2i_List(sf::Vector2i r)
+Blocco_List::Blocco_List(Blocco r)
 {
-	root = new Vector2i_Node;
+	root = new Blocco_Node;
 	root->node = r;
 	root->next = NULL;
 	num_nodi = 1;
 }
 
-void Vector2i_List::insert(sf::Vector2i r)
+void Blocco_List::insert(Blocco r)
 {
-	Vector2i_Node *i = new Vector2i_Node;
+	Blocco_Node *i = new Blocco_Node;
 	i->node = r;
 	i->next = NULL;
 	if (root == NULL)
 		root = i;
 	else {
-		Vector2i_Node *n = root;
+		Blocco_Node *n = root;
 		while (n->next != NULL)
 			n = n->next;
 		n->next = i;
@@ -39,16 +37,16 @@ void Vector2i_List::insert(sf::Vector2i r)
 	num_nodi++;
 }
 
-Vector2i Vector2i_List::get(int index, bool del)
+Blocco Blocco_List::get(int index, bool del)
 {
-	if (index >= num_nodi) return Vector2i(-1, -1);
-	Vector2i_Node *t = root;
-	Vector2i_Node *previous = NULL;
+	if (index >= num_nodi) return Blocco();
+	Blocco_Node *t = root;
+	Blocco_Node *previous = NULL;
 	for (int i = 0; i < index; i++) {
 		previous = t;
 		t = t->next;
 	}
-	Vector2i temp = t->node;
+	Blocco temp = t->node;
 	if (del) {
 		if (t == root)
 			root = t->next;
@@ -62,14 +60,14 @@ Vector2i Vector2i_List::get(int index, bool del)
 	return temp;
 }
 
-Vector2i Vector2i_List::get(int x, int y, bool del)
+Blocco Blocco_List::get(int x, int y, bool del)
 {
-	Vector2i_Node *t = root;
-	Vector2i_Node *previous = NULL;
+	Blocco_Node *t = root;
+	Blocco_Node *previous = NULL;
 
-	if (t == NULL) return Vector2i(-1, -1);
+	if (t == NULL) return Blocco();
 
-	while (t != NULL && (t->node.x != x || t->node.y != y))
+	while (t != NULL && (t->node.coordBlocco().x != x || t->node.coordBlocco().y != y))
 	{
 		previous = t;
 		t = t->next;
@@ -77,7 +75,7 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 
 	if (t != NULL)
 	{
-		Vector2i temp = t->node;
+		Blocco temp = t->node;
 		if (del)
 		{
 			if (t == root)
@@ -91,10 +89,10 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 		return temp;
 	}
 
-	return Vector2i(-1, -1);
+	return Blocco();
 }
 
-void Vector2i_List::clean()
+void Blocco_List::clean()
 {
 	while (num_nodi != 0)
 		get(0, true);

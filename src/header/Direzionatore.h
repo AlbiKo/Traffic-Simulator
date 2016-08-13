@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <ctime>
 
-
+using namespace sf;
 /**
 	Costituisce una sorta di interfaccia alla lista di Direzioni, 
 	regolando in modo leggermente diverso le operazioni della lista.
@@ -25,7 +25,7 @@ public:
 	Direzione estraiDirezione();
 	void ammettiDirezione(Direzione d);
 	void escludiDirezione(Direzione d);
-	void escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir, sf::Vector2i numBlocchi);
+	void escludiDirezioni(Vector2i startPos, Vector2i endPos, Direzione prevDir, Vector2i numBlocchi);
 	void ripristina();
 
 	inline int count()
@@ -34,6 +34,7 @@ public:
 	}
 private:
 	Direzione_List dl;
+	void escludiDirezioniX(Vector2i startPos, Vector2i endPos, Vector2i border, Direzione oppositeDir);
 };
 
-#endif // !DIREZIONATORE_INCLUDE
+#endif // DIREZIONATORE_INCLUDE

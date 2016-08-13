@@ -36,34 +36,24 @@ void Direzionatore::escludiDirezione(Direzione d)
 	dl.get(d, true);
 }
 
-void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir, sf::Vector2i numBlocchi)
+void Direzionatore::escludiDirezioni(sf::Vector2i startPos, sf::Vector2i endPos, Direzione prevDir, sf::Vector2i numBlocchi)
 {
 	D1(PRINT("\nEscludo direzioni.."));
-	D3(PRINT("Partenza: " <<partenza.x <<", " <<partenza.y));
-	D3(PRINT("Destinazione: " << destinazione.x << ", " << destinazione.y));
+	D3(PRINT("Partenza: " <<startPos.x <<", " <<startPos.y));
+	D3(PRINT("Destinazione: " << endPos.x << ", " << endPos.y));
 	D3(PRINT("Prev dir: " <<stampaDir(prevDir)));
 
 	ripristina();
 	escludiDirezione(getDirOpposta(prevDir));
 
-	//Contollo dove si trova la destinazione rispetto la partenza ed escludo la direzione opposta
-	if (partenza.y < destinazione.y)
-		escludiDirezione(Direzione::SU);
-	else
-		escludiDirezione(Direzione::GIU);
+	//Si escludono direzioni se la destinazione è in alto..
+	if (endPos.y == 0)
+		escludiDirezioniX(startPos, endPos, Vector2i(numBlocchi.x - 2, 1), Direzione::GIU);
+	//.. o in basso
+	if (endPos.y == numBlocchi.y - 1)
+		escludiDirezioniX(startPos, endPos, Vector2i(numBlocchi.x - 2, numBlocchi.y - 2), Direzione::SU);
 
-	//Escludo le direzioni opportune se mi trovo sui bordi
-	if (partenza.x == 1)
-		escludiDirezione(Direzione::SX);
 
-	if (partenza.x == numBlocchi.x - 2)
-		escludiDirezione(Direzione::DX);
-
-	if (partenza.y == 1)
-		escludiDirezione(Direzione::SU);
-
-	if (partenza.y == numBlocchi.y - 2)
-		escludiDirezione(Direzione::GIU);
 }
 
 void Direzionatore::ripristina()
@@ -75,4 +65,17 @@ void Direzionatore::ripristina()
 	dl.insert(Direzione::GIU);
 	dl.insert(Direzione::SX);
 	dl.insert(Direzione::DX);
+}
+
+void Direzionatore::escludiDirezioniX(Vector2i startPos, Vector2i endPos, Vector2i border, Direzione oppositeDir)
+{
+	escludiDirezione(oppositeDir);
+	if (startPos.x == 1 || (startPos.x <= endPos.x && startPos.y == border.y))
+		escludiDirezione(Direzione::SX);
+
+	if (startPos.x == border.x|| (startPos.x >= endPos.x && startPos.y == border.y))
+		escludiDirezione(Direzione::DX);
+
+	if (startPos.y == border.y && startPos.x != endPos.x)
+		escludiDirezione(getDirOpposta(oppositeDir));
 }

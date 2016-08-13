@@ -110,11 +110,40 @@ void Mappa::generateRoutes()
 	D1(PRINT("Generazione strade.."));
 	assert(sorgenti.count() >= 4);
 
-	Vector2i vez = sorgenti.get(0, false);
-	generateRoute(vez, sorgenti.get(sorgenti.count()-1, false));
-	generateRoute(vez, sorgenti.get(3, false));
-	generateRoute(Vector2i(blocchiX-1,5), sorgenti.get(sorgenti.count() - 1, false));
-	generateRoute(Vector2i(blocchiX - 1, 5), sorgenti.get(3, false));
+	Vector2i_List	partenzeSx		= Vector2i_List(),
+					destinazioniSx	= Vector2i_List(),
+					partenzeDx		= Vector2i_List(),
+					destinazioniDx	= Vector2i_List();
+
+	for (int i = 0; i < sorgenti.count(); i++)
+	{
+		Vector2i sorg = sorgenti.get(i, false);
+
+		if (sorg.x == 0)
+			partenzeSx.insert(sorg);
+
+		if (sorg.x == blocchiX - 1)
+			partenzeDx.insert(sorg);
+
+		if (sorg.x != 0 && sorg.x < blocchiX / 2)
+			destinazioniSx.insert(sorg);
+
+		if (sorg.x != blocchiX - 1 && sorg.x >= blocchiX / 2)
+			destinazioniDx.insert(sorg);
+	}
+
+/*	for (int i = 0; i < partenzeSx.count(); i++)
+		for (int j = 0; j < destinazioniSx.count(); j++)
+			generateRoute(partenzeSx.get(i, false), destinazioniSx.get(j, false));
+
+	for (int i = 0; i < partenzeDx.count(); i++)
+		for (int j = 0; j < destinazioniDx.count(); j++)
+			generateRoute(partenzeDx.get(i, false), destinazioniDx.get(j, false));*/
+	for (int i = 0; i < partenzeSx.count(); i++)
+			generateRoute(partenzeSx.get(i, false), destinazioniDx.get(rand() % destinazioniDx.count(), false));
+
+	for (int i = 0; i < partenzeDx.count(); i++)
+		generateRoute(partenzeDx.get(i, false), destinazioniSx.get(rand() % destinazioniSx.count(), false));
 }
 
 //DA FARE: non si può compiere più di un zigghezagghe
@@ -123,46 +152,38 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	D1(PRINT("\n---------------\nGenerazione strada.."));
 	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
 	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
-	Direzionatore dir = Direzionatore();
 
+	Direzionatore dir = Direzionatore();
 	Direzione prevDir = Direzione::ND;
 	Vector2i currentPos(0,0);
-	initGeneratingRoute(startPos, endPos, currentPos, prevDir);
-	
-	if (prevDir == Direzione::ND)
-		return;
+	Blocco_List bloccoList = Blocco_List();
 
+	int tentativi = 4;
+
+	initGeneratingRoute(startPos, currentPos, prevDir);
 	
 	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
 	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
 	D1(PRINT("PrevDir " <<stampaDir(prevDir)));
 	
-	do {
+	do
+	{
 		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
-		
+
 		//Non è possibile procedere verso alcuna direzione dal punto in cui ci si trova
 		if (dir.count() == 0)
-			return;
+			break;
 
-		if ((currentPos.y == 1 && endPos.y == 1) || (currentPos.y == blocchiY - 2 && endPos.y == blocchiY - 2))
-		{
-			autocompleteRoute(currentPos, endPos, prevDir);
-			return;
-		}
 		Direzione currentDir = dir.estraiDirezione();
-		applyRouteBlock(currentPos, prevDir, currentDir, mergeRouteBlocks(currentPos, prevDir, currentDir));
+		TipoBlocco tipo = mergeRouteBlocks(currentPos, prevDir, currentDir);
+
+		applyRouteBlock(currentPos, prevDir, currentDir, tipo);
 	} while (currentPos.x != endPos.x || currentPos.y != endPos.y);
 
-	autocompleteRoute(currentPos, endPos, prevDir);
 }
 
-void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i& endPos, Vector2i & currentPos, Direzione & prevDir)
+void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzione & prevDir)
 {
-	if (endPos.y == 0)
-		endPos.y++;
-	else
-		endPos.y--;
-
 	if (startPos.x == 0 && startPos.y > 0 && startPos.y < blocchiY - 1)
 	{
 		//Si sta partendo da una sorgente sul lato sinistro,
@@ -194,9 +215,10 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 	D2(PRINT("Tipo " <<stampaTipoBlocco(tipo)));
 
 	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], tipo);
-	prevDir = currentDir;
+	
+	D2(PRINT("PrevDir " << stampaDir(prevDir)));
 
-	D2(PRINT("PrevDir " <<stampaDir(prevDir)));
+	prevDir = currentDir;
 
 	switch (currentDir)
 	{
@@ -223,45 +245,18 @@ void Mappa::applyRouteBlock(Vector2i & currentPos, Direzione & prevDir, Direzion
 	D3(PRINT("Nuova CurrentPos " << currentPos.x << ", " << currentPos.y));
 }
 
-void Mappa::autocompleteRoute(Vector2i currentPos, Vector2i endPos, Direzione prevDir)
+bool Mappa::checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo)
 {
-	D1(PRINT("Autocompletamento.."));
-	//Se ci si ritrova esattamente sulla destinazione e si viene dal basso/alto
-	if (currentPos.x == endPos.x && 
-		(currentPos.y == 1 || currentPos.y == blocchiY - 2) &&
-		(prevDir == Direzione::GIU || prevDir == Direzione::SU))
-	{
-		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, prevDir, prevDir));
-		return;
-	}
+	if (!isCross3Block(tipo) && !isCross4Block(tipo))
+		return false;
 
-	//Dove si trova la destinazione rispetto alla pos corrente
-	Direzione dirPos; 
-	//Coefficiente di avvicinamento alla destinazione
-	int coeff = 1;
-	if (currentPos.x > endPos.x)
-	{
-		dirPos = Direzione::SX;
-		coeff = -1;
-	}
-	else
-		dirPos = Direzione::DX;
+	if ((isCross3Block(blocchi[currentPos.y + 1][currentPos.x]->getTipo()) || isCross4Block(blocchi[currentPos.y + 1][currentPos.x]->getTipo())) ||
+		(isCross3Block(blocchi[currentPos.y - 1][currentPos.x]->getTipo()) || isCross4Block(blocchi[currentPos.y - 1][currentPos.x]->getTipo())) ||
+		(isCross3Block(blocchi[currentPos.y][currentPos.x + 1]->getTipo()) || isCross4Block(blocchi[currentPos.y][currentPos.x + 1]->getTipo())) ||
+		(isCross3Block(blocchi[currentPos.y][currentPos.x - 1]->getTipo()) || isCross4Block(blocchi[currentPos.y][currentPos.x - 1]->getTipo())))
+			return true;
 
-	
-	Direzione check = prevDir;
-	//Ci si avvicina alla destinazione
-	while (currentPos.x != endPos.x)
-	{
-		cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, check, dirPos));
-		currentPos.x += coeff;
-
-		check = dirPos;
-	}
-
-	Direzione currentDir = (currentPos.y == 1) ? Direzione::SU : Direzione::GIU;
-
-	//Siamo sulla destinazione
-	cambiaTipoBlocco(blocchi[currentPos.y][currentPos.x], mergeRouteBlocks(currentPos, dirPos, currentDir));
+	return false;
 }
 
 TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direzione currentDir)
@@ -316,7 +311,7 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 	//Controllo se il tipo del blocco attualmente stabilito va in conflitto con eventuali sorgenti
 	tipo = checkSourceRouteBlock(currentPos, tipo);
 
-	D1(PRINT("Posiziono blocco di tipo: " <<stampaTipoBlocco(tipo)));
+	D1(PRINT("Posizionerei blocco di tipo: " <<stampaTipoBlocco(tipo)));
 	
 	return tipo;
 }
