@@ -12,6 +12,7 @@
 
 	bool isRectBlock(TipoBlocco tipo);
 	bool isCurveBlock(TipoBlocco tipo);
+	bool isCrossBlock(TipoBlocco tipo);
 	bool isCross3Block(TipoBlocco tipo);
 	bool isCross4Block(TipoBlocco tipo);
 	bool isEmptyBlock(TipoBlocco tipo);

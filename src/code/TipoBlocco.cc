@@ -17,6 +17,14 @@ bool isCurveBlock(TipoBlocco tipo)
 	return false;
 }
 
+bool isCrossBlock(TipoBlocco tipo)
+{
+	if (isCross3Block(tipo) || isCross4Block(tipo))
+		return true;
+
+	return false;
+}
+
 bool isCross3Block(TipoBlocco tipo)
 {
 	if (tipo == TipoBlocco::CROSS3_DOWN || tipo == TipoBlocco::CROSS3_DX ||
@@ -65,6 +73,10 @@ std::string stampaTipoBlocco(TipoBlocco tipo)
 		return "Incrocio3 con terza uscita in alto";
 	case TipoBlocco::CROSS3_DOWN:
 		return "Incrocio3 con terza uscita in basso";
+
+		//Blocco incrocio a 4
+	case TipoBlocco::CROSS4:
+		return "Incrocio4";
 
 		//Blocco vuoto
 	case TipoBlocco::EMPTY:

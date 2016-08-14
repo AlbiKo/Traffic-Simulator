@@ -9,7 +9,7 @@ Blocco_List::Blocco_List()
 
 Blocco_List::~Blocco_List()
 {
-	D2(PRINT("Distruggo vector list"));
+	D2(PRINT("Distruggo Blocco list"));
 	this->clean();
 }
 

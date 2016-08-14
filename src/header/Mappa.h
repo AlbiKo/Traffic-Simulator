@@ -50,9 +50,11 @@ private:
 	*	@return Restituisce la nuova posizione corrente e la direzione precedente
 	*/
 	void initGeneratingRoute(Vector2i startPos, Vector2i& currentPos, Direzione& prevDir);
-	void applyRouteBlock(Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
-	
+	void nextStepRouteBlock(Blocco_List & bloccoList, Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
+	void applyRouteBlocks(Blocco_List & bloccoList);
+
 	bool checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo);
+	bool checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, TipoBlocco tipo);
 
 	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
 	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla mappa, sorgenti comprese.
