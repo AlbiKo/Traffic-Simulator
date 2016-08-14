@@ -16,7 +16,7 @@ using namespace sf;
 class Mappa
 {
 private:
-
+	const int MAX_TENTATIVI = 10;
 	int blocchiX, blocchiY;
 	Blocco *** blocchi;
 	Vector2i_List sorgenti;
@@ -47,14 +47,16 @@ private:
 	*	@param startPos Posizione nella matrice della sorgente di partenza, cioè collocata a sinistra o a destra
 	*	@param currentPos Posizione nella matrice attuale corrente
 	*	@param prevDir Direzione estratta precedente
+	*	@param prevBlock
 	*	@return Restituisce la nuova posizione corrente e la direzione precedente
 	*/
-	void initGeneratingRoute(Vector2i startPos, Vector2i& currentPos, Direzione& prevDir);
+	void initGeneratingRoute(Vector2i startPos, Vector2i& currentPos, Direzione& prevDir, TipoBlocco& prevBlock);
 	void nextStepRouteBlock(Blocco_List & bloccoList, Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
 	void applyRouteBlocks(Blocco_List & bloccoList);
 
 	bool checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo);
 	bool checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, TipoBlocco tipo);
+	bool checkZigZag(TipoBlocco prevBlock, TipoBlocco currentBlock);
 
 	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
 	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla mappa, sorgenti comprese.

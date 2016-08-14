@@ -156,14 +156,15 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
 	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
 
+	int tentativi = MAX_TENTATIVI;
 	Direzionatore dir = Direzionatore();
-	Direzione prevDir = Direzione::ND;
-	Vector2i currentPos(0,0);
 	Blocco_List bloccoList = Blocco_List();
 
-	int tentativi = 10;
-
-	initGeneratingRoute(startPos, currentPos, prevDir);
+	Direzione prevDir = Direzione::ND;
+	TipoBlocco prevBlock = TipoBlocco::EMPTY;
+	Vector2i currentPos(0,0);
+	
+	initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 	
 	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
 	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
@@ -186,17 +187,22 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 			currentDir = dir.estraiDirezione();
 			tipo = mergeRouteBlocks(currentPos, prevDir, currentDir);
 
-		} while ((checkAdjacentCross(currentPos, tipo) || checkAdjacentCross(bloccoList, currentPos, tipo)) && dir.count() != 0);
+		} while ((checkAdjacentCross(currentPos, tipo) || 
+				  checkAdjacentCross(bloccoList, currentPos, tipo) ||
+				  checkZigZag(prevBlock, tipo)) && dir.count() != 0);
 
 		if (dir.count() == 0)
 		{
 			bloccoList.clean();
 			tentativi--;
 			D1(PRINT("Fallimento strada.. " <<tentativi));
-			initGeneratingRoute(startPos, currentPos, prevDir);
+			initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 		} 
 		else
+		{
+			prevBlock = tipo;
 			nextStepRouteBlock(bloccoList, currentPos, prevDir, currentDir, tipo);
+		}
 
 	} while ((currentPos.x != endPos.x || currentPos.y != endPos.y) && tentativi != 0);
 
@@ -204,8 +210,10 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	applyRouteBlocks(bloccoList);
 }
 
-void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzione & prevDir)
+void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzione & prevDir, TipoBlocco& prevBlock)
 {
+	prevBlock = TipoBlocco::HORIZONTAL;
+
 	if (startPos.x == 0 && startPos.y > 0 && startPos.y < blocchiY - 1)
 	{
 		//Si sta partendo da una sorgente sul lato sinistro,
@@ -304,6 +312,36 @@ bool Mappa::checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, Tip
 		(isCrossBlock(bloccoList.get(currentPos.x, currentPos.y + 1, false).getTipo())) ||
 		(isCrossBlock(bloccoList.get(currentPos.x, currentPos.y - 1, false).getTipo())) )
 		return true;
+
+	return false;
+}
+
+bool Mappa::checkZigZag(TipoBlocco prevBlock, TipoBlocco currentBlock)
+{
+	if (!isCurveBlock(prevBlock) || !isCurveBlock(currentBlock))
+		return false;
+
+	switch (prevBlock)
+	{
+	case TipoBlocco::SX_TO_UP:
+		if (currentBlock == TipoBlocco::DX_TO_DOWN)
+			return true;
+		break;
+	case TipoBlocco::SX_TO_DOWN:
+		if (currentBlock == TipoBlocco::DX_TO_UP)
+			return true;
+		break;
+	case TipoBlocco::DX_TO_UP:
+		if (currentBlock == TipoBlocco::SX_TO_DOWN)
+			return true;
+		break;
+	case TipoBlocco::DX_TO_DOWN:
+		if (currentBlock == TipoBlocco::SX_TO_UP)
+			return true;
+		break;
+	default:
+		break;
+	}
 
 	return false;
 }
