@@ -16,6 +16,7 @@ private:
 
 public:
 	Direzione_List();
+	~Direzione_List();
 	Direzione_List(Direzione r);
 	
 	inline int count()

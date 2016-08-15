@@ -12,4 +12,7 @@ void CoreInit()
 void update(RenderWindow &widget)
 {
 	mappa.draw(widget);
+	if (Keyboard::isKeyPressed(Keyboard::R))
+		mappa.generate();
+
 }

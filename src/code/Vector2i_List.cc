@@ -9,6 +9,12 @@ Vector2i_List::Vector2i_List()
 	num_nodi = 0;
 }
 
+Vector2i_List::~Vector2i_List()
+{
+	D2(PRINT("Distruggo vector list"));
+	this->clean();
+}
+
 Vector2i_List::Vector2i_List(sf::Vector2i r)
 {
 	root = new Vector2i_Node;
@@ -52,7 +58,7 @@ Vector2i Vector2i_List::get(int index, bool del)
 		num_nodi--;
 		
 	}
-	D1(PRINT(num_nodi));
+
 	return temp;
 }
 
@@ -63,7 +69,7 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 
 	if (t == NULL) return Vector2i(-1, -1);
 
-	while (t != NULL && (t->node.x != x && t->node.y != y))
+	while (t != NULL && (t->node.x != x || t->node.y != y))
 	{
 		previous = t;
 		t = t->next;

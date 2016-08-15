@@ -29,9 +29,12 @@ private:
 public:
 	/**Costruttore che inizializza una lista vuota*/
 	Vector2i_List();
+
 	/**Costruttore che inizializza una lista con un elemento passato per parametro*/
 	Vector2i_List(Vector2i r);
-
+	
+	~Vector2i_List();	
+	
 	/**Restituisce il numero di elementi nella lista*/
 	inline int count()
 	{

@@ -1,34 +1,35 @@
-#include "../header/Direzione_List.h"
+#include "../header/Blocco_List.h"
 #include "../header/Debug.h"
 
-Direzione_List::Direzione_List()
+Blocco_List::Blocco_List()
 {
 	root = NULL;
 	num_nodi = 0;
 }
 
-Direzione_List::~Direzione_List()
+Blocco_List::~Blocco_List()
 {
+	D2(PRINT("Distruggo Blocco list"));
 	this->clean();
 }
 
-Direzione_List::Direzione_List(Direzione r)
+Blocco_List::Blocco_List(Blocco r)
 {
-	root = new Direzione_Node;
+	root = new Blocco_Node;
 	root->node = r;
 	root->next = NULL;
 	num_nodi = 1;
 }
 
-void Direzione_List::insert(Direzione r)
+void Blocco_List::insert(Blocco r)
 {
-	Direzione_Node *i = new Direzione_Node;
+	Blocco_Node *i = new Blocco_Node;
 	i->node = r;
 	i->next = NULL;
 	if (root == NULL)
 		root = i;
 	else {
-		Direzione_Node *n = root;
+		Blocco_Node *n = root;
 		while (n->next != NULL)
 			n = n->next;
 		n->next = i;
@@ -36,18 +37,16 @@ void Direzione_List::insert(Direzione r)
 	num_nodi++;
 }
 
-Direzione Direzione_List::get(int index, bool del)
+Blocco Blocco_List::get(int index, bool del)
 {
-	if (index >= num_nodi)
-		return Direzione::ND;
-
-	Direzione_Node *t = root;
-	Direzione_Node *previous = NULL;
+	if (index >= num_nodi) return Blocco();
+	Blocco_Node *t = root;
+	Blocco_Node *previous = NULL;
 	for (int i = 0; i < index; i++) {
 		previous = t;
 		t = t->next;
 	}
-	Direzione temp = t->node;
+	Blocco temp = t->node;
 	if (del) {
 		if (t == root)
 			root = t->next;
@@ -57,17 +56,18 @@ Direzione Direzione_List::get(int index, bool del)
 		num_nodi--;
 		
 	}
+
 	return temp;
 }
 
-Direzione Direzione_List::get(Direzione d, bool del)
+Blocco Blocco_List::get(int x, int y, bool del)
 {
-	Direzione_Node *t = root;
-	Direzione_Node *previous = NULL;
+	Blocco_Node *t = root;
+	Blocco_Node *previous = NULL;
 
-	if (t == NULL) return Direzione::ND;
+	if (t == NULL) return Blocco();
 
-	while (t != NULL && (t->node != d))
+	while (t != NULL && (t->node.coordBlocco().x != x || t->node.coordBlocco().y != y))
 	{
 		previous = t;
 		t = t->next;
@@ -75,7 +75,7 @@ Direzione Direzione_List::get(Direzione d, bool del)
 
 	if (t != NULL)
 	{
-		Direzione temp = t->node;
+		Blocco temp = t->node;
 		if (del)
 		{
 			if (t == root)
@@ -89,10 +89,10 @@ Direzione Direzione_List::get(Direzione d, bool del)
 		return temp;
 	}
 
-	return Direzione::ND;
+	return Blocco();
 }
 
-void Direzione_List::clean()
+void Blocco_List::clean()
 {
 	while (num_nodi != 0)
 		get(0, true);

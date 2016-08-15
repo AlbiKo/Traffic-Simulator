@@ -1,4 +1,4 @@
-BLOCCHI = Blocco.o Rettilineo.o Curva.o Incrocio3.o Incrocio4.o
+BLOCCHI = Blocco.o Rettilineo.o Curva.o Incrocio3.o Incrocio4.o TipoBlocco.o Blocco_List.o
 OBJ = main.o Core.o Mappa.o Nodo.o $(BLOCCHI) Direzione.o Direzionatore.o Direzione_List.o Vector2i_List.o SFMLWidget.o
 CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -std=c++11 -I ../src/header/
 LDFLAGS=-rdynamic

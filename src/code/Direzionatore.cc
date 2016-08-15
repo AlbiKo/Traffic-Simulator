@@ -12,6 +12,7 @@ Direzionatore::Direzionatore()
 Direzionatore::~Direzionatore()
 {
 	D2(PRINT("Distruzione Direzionatore.."));
+	dl.clean();
 }
 
 Direzione Direzionatore::estraiDirezione()
@@ -19,41 +20,39 @@ Direzione Direzionatore::estraiDirezione()
 	if (dl.count() == 0)
 		return Direzione::ND;
 
-	srand(time(0));
 	return dl.get(rand() % dl.count(),false);
 }
 
 void Direzionatore::ammettiDirezione(Direzione d)
 {
-	D2(PRINT("Ammetto nel Direzionatore: "<< toInt(d)));
+	D2(PRINT("Ammetto nel Direzionatore: "<< stampaDir(d)));
 	if (d != Direzione::ND && dl.get(d, false) == Direzione::ND)
 		dl.insert(d);
 }
 
 void Direzionatore::escludiDirezione(Direzione d)
 {
-		D2(PRINT("Escludo direzione: " << toInt(d)));
-		dl.get(d, true);
+	D2(PRINT("Escludo direzione: " << stampaDir(d)));
+	dl.get(d, true);
 }
 
-/**
-
-	@param prevDir Direzione da cui si è venuti
-*/
-void Direzionatore::escludiDirezioni(sf::Vector2i partenza, sf::Vector2i destinazione, Direzione prevDir)
+void Direzionatore::escludiDirezioni(sf::Vector2i startPos, sf::Vector2i endPos, Direzione prevDir, sf::Vector2i numBlocchi)
 {
 	D1(PRINT("\nEscludo direzioni.."));
-	D1(PRINT("Partenza: " <<partenza.x <<", " <<partenza.y));
-	D1(PRINT("Destinazione: " << destinazione.x << ", " << destinazione.y));
-	D1(PRINT("Prev dir: " <<toInt(prevDir)));
+	D3(PRINT("Partenza: " <<startPos.x <<", " <<startPos.y));
+	D3(PRINT("Destinazione: " << endPos.x << ", " << endPos.y));
+	D3(PRINT("Prev dir: " <<stampaDir(prevDir)));
 
 	ripristina();
-	escludiDirezione(prevDir);
+	escludiDirezione(getDirOpposta(prevDir));
 
-	if (partenza.y < destinazione.y)
-		escludiDirezione(Direzione::SU);
-	else
-		escludiDirezione(Direzione::GIU);
+	//Si escludono direzioni se la destinazione è in alto..
+	if (endPos.y == 0)
+		escludiDirezioniX(startPos, endPos, Vector2i(numBlocchi.x - 2, 1), Direzione::GIU);
+	//.. o in basso
+	if (endPos.y == numBlocchi.y - 1)
+		escludiDirezioniX(startPos, endPos, Vector2i(numBlocchi.x - 2, numBlocchi.y - 2), Direzione::SU);
+
 
 }
 
@@ -66,4 +65,17 @@ void Direzionatore::ripristina()
 	dl.insert(Direzione::GIU);
 	dl.insert(Direzione::SX);
 	dl.insert(Direzione::DX);
+}
+
+void Direzionatore::escludiDirezioniX(Vector2i startPos, Vector2i endPos, Vector2i border, Direzione oppositeDir)
+{
+	escludiDirezione(oppositeDir);
+	if (startPos.x == 1 || (startPos.x <= endPos.x && startPos.y == border.y))
+		escludiDirezione(Direzione::SX);
+
+	if (startPos.x == border.x|| (startPos.x >= endPos.x && startPos.y == border.y))
+		escludiDirezione(Direzione::DX);
+
+	if (startPos.y == border.y && startPos.x != endPos.x)
+		escludiDirezione(getDirOpposta(oppositeDir));
 }

@@ -1,8 +1,10 @@
 #ifndef TIPOBLOCCO_INCLUDE
 	#define TIPOBLOCCO_INCLUDE
 
-	/**Enum che rappresenta la/e direzione/i dei vari tipi di blocco.
-	*/
+	
+	#include <iostream>
+
+	/** Enum che rappresenta la/e direzione/i dei vari tipi di blocco. */
 	enum class TipoBlocco
 	{
 		HORIZONTAL = 0, VERTICAL,
@@ -11,4 +13,13 @@
 		CROSS4,
 		EMPTY
 	};
+
+	bool isRectBlock(TipoBlocco tipo);
+	bool isCurveBlock(TipoBlocco tipo);
+	bool isCrossBlock(TipoBlocco tipo);
+	bool isCross3Block(TipoBlocco tipo);
+	bool isCross4Block(TipoBlocco tipo);
+	bool isEmptyBlock(TipoBlocco tipo);
+
+	std::string stampaTipoBlocco(TipoBlocco tipo);
 #endif
