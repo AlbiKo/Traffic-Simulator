@@ -28,12 +28,6 @@ Mappa::Mappa()
 		for (int j = 0; j < blocchiX; j++)
 			blocchi[i][j] = new Blocco(i, j, TipoBlocco::EMPTY);
 	}
-
-	/*
-	Rettilineo * ret = dynamic_cast<Rettilineo *>(blocchi[0][0]);
-	if (ret != NULL)
-		ret->cambiaVerso(TipoBlocco::HORIZONTAL);
-	*/
 }
 
 void Mappa::generate()
@@ -52,21 +46,27 @@ void Mappa::generateSources()
 
 	sorgenti.clean();
 
+	//Bordo sinistro
 	generateSource(0, 0, true);
+
+	//Bordo in alto
 	generateSource(0, 0, false);
+
+	//Bordo a destra
 	generateSource(blocchiX - 1, 0, true);
+
+	//Bordo in basso
 	generateSource(0, blocchiY - 1, false);
 }
 
-//DA FARE: non si può mettere una sorgente nei primi due blocchi di un lato se c'è già nei primi due blocchi dell'altro lato (in senso orario)
-void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizontal
+void Mappa::generateSource(int x, int y, bool vertical)
 { 
-	int min			= 1, 
-		max			= vertical ? blocchiY - 2 : blocchiX - 2,
-		max_source	= max / 3,
-		start_pos	= rand() % max + min,
-		i			= start_pos, 
-		count		= 0;
+	int min			= 1,											//Indice minimo del bordo
+		max			= vertical ? blocchiY - 2 : blocchiX - 2,		//Indice massimo del bordo
+		max_source	= max / 3,										//Numero massimo di sorgenti
+		start_pos	= rand() % max + min,							//Posizione iniziale da cui partire per inserire le sorgenti
+		i			= start_pos,									//Indice attuale
+		count		= 0;											//Numero di sorgenti posizionate
 
 	//Per completare il calcolo del numero di sorgenti massime
 	if (max % 3)
@@ -77,7 +77,7 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 		{
 			if (vertical)
 			{
-				if (i==max || (blocchi[i + 1][x]->getTipo() == TipoBlocco::EMPTY && blocchi[i + 2][x]->getTipo() == TipoBlocco::EMPTY))
+				if (i==max || (isEmptyBlock(blocchi[i + 1][x]->getTipo()) && isEmptyBlock(blocchi[i + 2][x]->getTipo())) )
 				{					
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
 
@@ -87,7 +87,7 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 					i+=2;
 				}
 			}
-			else if (i==max || (blocchi[y][i + 1]->getTipo() == TipoBlocco::EMPTY && blocchi[y][i + 2]->getTipo() == TipoBlocco::EMPTY))
+			else if (i==max || (isEmptyBlock(blocchi[y][i + 1]->getTipo()) && isEmptyBlock(blocchi[y][i + 2]->getTipo())) )
 				{
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
 
@@ -102,7 +102,107 @@ void Mappa::generateSource(int x, int y, bool vertical) //vertical=false->horizo
 		if (i > max)
 			i = min;
 
-	} while (i != start_pos && count<max_source);
+	} while (i != start_pos && count<max_source); //Finché non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
+}
+
+void Mappa::deleteSource(Vector2i source)
+{
+	Vector2i temp = sorgenti.get(source.x, source.y, true);
+
+	//Se c'era effetivamente sulla lista
+	if (temp.x == source.x && temp.y == source.y)
+		cambiaTipoBlocco(blocchi[source.y][source.x], TipoBlocco::EMPTY);
+}
+
+void Mappa::checkUnlinkedSources(Vector2i_List starts, Vector2i_List ends)
+{
+	//Controllo delle partenze
+	for (int i = 0; i < starts.count(); i++)
+	{
+		Vector2i startPos = starts.get(i, false);
+		if ((startPos.x == 0 && isEmptyBlock(blocchi[startPos.y][startPos.x + 1]->getTipo())) ||
+			(startPos.x == blocchiX - 1 && isEmptyBlock(blocchi[startPos.y][startPos.x - 1]->getTipo())) )
+		{
+			//Se non riesce a creare la strada
+			if (!generateRoute(startPos, getNearestSource(startPos)))
+				deleteSource(startPos);
+		}
+	}
+
+	//Controllo delle destinazioni
+	for (int i = 0; i < ends.count(); i++)
+	{
+		Vector2i endPos = ends.get(i, false);
+		if ((endPos.y == 0 && isEmptyBlock(blocchi[endPos.y + 1][endPos.x]->getTipo())) ||
+			(endPos.y == blocchiY - 1 && isEmptyBlock(blocchi[endPos.y - 1][endPos.x]->getTipo())) )
+		{
+			//Se non riesce a creare la strada
+			if (!generateRoute(getNearestSource(endPos), endPos))
+				deleteSource(endPos);
+		}
+	}
+}
+
+//C'è del codice ripetuto, magari migliorare
+Vector2i Mappa::getNearestSource(Vector2i source)
+{
+	Vector2i temp = Vector2i(-1, -1);
+
+	int fixedCoord = 0;
+
+	//Sorgente a sinistra
+	if (source.x == 0)
+	{
+		fixedCoord = (source.y < blocchiY / 2) ? 0 : blocchiY - 1;
+
+		for (int i = 1; i < blocchiX - 1; i++)
+		{
+			temp = sorgenti.get(i, fixedCoord, false); 
+			if (temp != Vector2i(-1, -1))
+				return temp;
+		}
+	}
+
+	//Sorgente sopra
+	if (source.y == 0)
+	{
+		fixedCoord = (source.x < blocchiX / 2) ? 0 : blocchiX - 1;
+
+		for (int i = 1; i < blocchiY - 1; i++)
+		{
+			temp = sorgenti.get(fixedCoord, i, false); 
+			if (temp != Vector2i(-1, -1))
+				return temp;
+		}
+	}
+
+	//Sorgente a destra
+	if (source.x == blocchiX - 1)
+	{
+		fixedCoord = (source.y < blocchiY / 2) ? 0 : blocchiY - 1;
+
+		for (int i = blocchiX - 2; i > 0; i--)
+		{
+			temp = sorgenti.get(i, fixedCoord, false); 
+			if (temp != Vector2i(-1, -1))
+				return temp;
+		}
+	}
+
+	//Sorgente sotto
+	if (source.y == blocchiY - 1)
+	{
+		fixedCoord = (source.x < blocchiX / 2) ? 0 : blocchiX - 1;
+
+		for (int i = blocchiY - 2; i > 0; i--)
+		{
+			temp = sorgenti.get(fixedCoord, i, false); 
+			if (temp != Vector2i(-1, -1))
+				return temp;
+		}
+	}
+
+	return Vector2i(-1,-1);
 }
 
 void Mappa::generateRoutes()
@@ -110,57 +210,47 @@ void Mappa::generateRoutes()
 	D1(PRINT("Generazione strade.."));
 	assert(sorgenti.count() >= 4);
 
-	Vector2i_List	partenzeSx		= Vector2i_List(),
-					destinazioniSx	= Vector2i_List(),
-					partenzeDx		= Vector2i_List(),
-					destinazioniDx	= Vector2i_List();
+	Vector2i_List	partenze		= Vector2i_List(),
+					destinazioni	= Vector2i_List();
 
+	//Le sorgenti vengono suddivise in due liste:
+	//partenze, quelle a lato
+	//destinazioni, quelle sopra e sotto
 	for (int i = 0; i < sorgenti.count(); i++)
 	{
 		Vector2i sorg = sorgenti.get(i, false);
 
-		if (sorg.x == 0)
-			partenzeSx.insert(sorg);
+		if (sorg.x == 0 || sorg.x == blocchiX - 1)
+			partenze.insert(sorg);
 
-		if (sorg.x == blocchiX - 1)
-			partenzeDx.insert(sorg);
-
-		if (sorg.x != 0 && sorg.x < blocchiX / 2)
-			destinazioniSx.insert(sorg);
-
-		if (sorg.x != blocchiX - 1 && sorg.x >= blocchiX / 2)
-			destinazioniDx.insert(sorg);
+		if (sorg.y == 0 || sorg.y == blocchiY - 1)
+			destinazioni.insert(sorg);
 	}
 
-	/*for (int i = 0; i < partenzeSx.count(); i++)
-		for (int j = 0; j < destinazioniSx.count(); j++)
-			generateRoute(partenzeSx.get(i, false), destinazioniSx.get(j, false));
+	//Si collegano le partenze con una destinazione scelta in modo casuale
+	for (int i = 0; i < partenze.count(); i++)
+		generateRoute(partenze.get(i, false), destinazioni.get(rand() % destinazioni.count(), false));
 
-	for (int i = 0; i < partenzeDx.count(); i++)
-		for (int j = 0; j < destinazioniDx.count(); j++)
-			generateRoute(partenzeDx.get(i, false), destinazioniDx.get(j, false));*/
-	for (int i = 0; i < partenzeSx.count(); i++)
-			generateRoute(partenzeSx.get(i, false), destinazioniDx.get(rand() % destinazioniDx.count(), false));
-
-	for (int i = 0; i < partenzeDx.count(); i++)
-		generateRoute(partenzeDx.get(i, false), destinazioniSx.get(rand() % destinazioniSx.count(), false));
-
-	generateRoute(partenzeSx.get(rand() % partenzeSx.count(), false), destinazioniDx.get(rand() % destinazioniDx.count(), false));
-	generateRoute(partenzeDx.get(rand() % partenzeDx.count(), false), destinazioniSx.get(rand() % destinazioniSx.count(), false));
+	checkUnlinkedSources(partenze, destinazioni);
 }
 
-//DA FARE: non si può compiere più di un zigghezagghe
-void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
+bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 {
 	D1(PRINT("\n---------------\nGenerazione strada.."));
 	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
 	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
 
+	//Numero di tentativi rimasti per la costruzione della strada
 	int tentativi = MAX_TENTATIVI;
 	Direzionatore dir = Direzionatore();
+
+	//Il percorso come lista di blocchi
 	Blocco_List bloccoList = Blocco_List();
 
+	//Direzione estratta precedente
 	Direzione prevDir = Direzione::ND;
+
+	//Ultimo blocco piazzato
 	TipoBlocco prevBlock = TipoBlocco::EMPTY;
 	Vector2i currentPos(0,0);
 	
@@ -174,10 +264,9 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	{
 		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
 
-		//Non è possibile procedere verso alcuna direzione dal punto in cui ci si trova
-		
-
 		Direzione currentDir = Direzione::ND;
+
+		//Tipo del blocco da inserire
 		TipoBlocco tipo = TipoBlocco::EMPTY;
 
 		D1(PRINT("Controllo incroci"));
@@ -187,27 +276,35 @@ void Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 			currentDir = dir.estraiDirezione();
 			tipo = mergeRouteBlocks(currentPos, prevDir, currentDir);
 
-		} while ((checkAdjacentCross(currentPos, tipo) || 
-				  checkAdjacentCross(bloccoList, currentPos, tipo) ||
-				  checkZigZag(prevBlock, tipo)) && dir.count() != 0);
+		} while ((checkAdjacentCross(currentPos, tipo)				||		//Si controllano conflitti con gli incroci sulla matrice
+				  checkAdjacentCross(bloccoList, currentPos, tipo)	||		//Si controllano conflitti con gli incroci sul percorso temporaneo
+				  checkZigZag(prevBlock, tipo)						) &&	
+				 dir.count() != 0);											//Se c'è ancora almeno una direzione percorribile
 
+		//Se non ci sono più direzioni percorribi si azzera il percorso e 
+		//si diminuiscono il numero di tentativi rimasti
 		if (dir.count() == 0)
 		{
 			bloccoList.clean();
 			tentativi--;
-			D1(PRINT("Fallimento strada.. " <<tentativi));
+			D1(PRINT("Fallimento strada.. tentativi rimasti: " <<tentativi));
 			initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 		} 
 		else
 		{
+			//Si percorre la direzione estratta
 			prevBlock = tipo;
 			nextStepRouteBlock(bloccoList, currentPos, prevDir, currentDir, tipo);
 		}
 
 	} while ((currentPos.x != endPos.x || currentPos.y != endPos.y) && tentativi != 0);
 
-	
+	if (tentativi == 0)
+		return false;
+
+	//Si applica il percorso
 	applyRouteBlocks(bloccoList);
+	return true;
 }
 
 void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzione & prevDir, TipoBlocco& prevBlock)
@@ -224,7 +321,6 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzi
 		prevDir = Direzione::DX;
 	}
 	else
-	{
 		if (startPos.x == blocchiX - 1 && startPos.y > 0 && startPos.y < blocchiY - 1)
 		{
 			//Si sta partendo da una sorgente sul lato destro,
@@ -234,7 +330,6 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzi
 			//.. e quindi ci si è spostati verso sinistra
 			prevDir = Direzione::SX;
 		}
-	}
 }
 
 void Mappa::nextStepRouteBlock(Blocco_List& bloccoList, Vector2i & currentPos, Direzione & prevDir, Direzione currentDir, TipoBlocco tipo)
@@ -293,10 +388,17 @@ bool Mappa::checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo)
 	if (!isCrossBlock(tipo))
 		return false;
 
+		//Controlla ai lati
 	if ((isCrossBlock(blocchi[currentPos.y + 1][currentPos.x]->getTipo())) ||
 		(isCrossBlock(blocchi[currentPos.y - 1][currentPos.x]->getTipo())) ||
 		(isCrossBlock(blocchi[currentPos.y][currentPos.x + 1]->getTipo())) ||
-		(isCrossBlock(blocchi[currentPos.y][currentPos.x - 1]->getTipo())) )
+		(isCrossBlock(blocchi[currentPos.y][currentPos.x - 1]->getTipo())) ||
+		
+		//Controllo agli angoli
+		(isCrossBlock(blocchi[currentPos.y + 1][currentPos.x - 1]->getTipo())) ||
+		(isCrossBlock(blocchi[currentPos.y + 1][currentPos.x + 1]->getTipo())) ||
+		(isCrossBlock(blocchi[currentPos.y - 1][currentPos.x + 1]->getTipo())) ||
+		(isCrossBlock(blocchi[currentPos.y - 1][currentPos.x - 1]->getTipo())) )
 			return true;
 
 	return false;
@@ -307,10 +409,17 @@ bool Mappa::checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, Tip
 	if (!isCrossBlock(tipo))
 		return false;
 
+		//Controllo ai lati
 	if ((isCrossBlock(bloccoList.get(currentPos.x + 1, currentPos.y, false).getTipo())) ||
 		(isCrossBlock(bloccoList.get(currentPos.x - 1, currentPos.y, false).getTipo())) ||
 		(isCrossBlock(bloccoList.get(currentPos.x, currentPos.y + 1, false).getTipo())) ||
-		(isCrossBlock(bloccoList.get(currentPos.x, currentPos.y - 1, false).getTipo())) )
+		(isCrossBlock(bloccoList.get(currentPos.x, currentPos.y - 1, false).getTipo())) ||
+
+		//Controllo agli angoli
+		(isCrossBlock(bloccoList.get(currentPos.x + 1, currentPos.y - 1, false).getTipo())) ||
+		(isCrossBlock(bloccoList.get(currentPos.x - 1, currentPos.y - 1, false).getTipo())) ||
+		(isCrossBlock(bloccoList.get(currentPos.x + 1, currentPos.y + 1, false).getTipo())) ||
+		(isCrossBlock(bloccoList.get(currentPos.x - 1, currentPos.y + 1, false).getTipo())) )
 		return true;
 
 	return false;
@@ -611,36 +720,31 @@ void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)
 	Vector2i coord = blocco->coordBlocco();
 	delete blocco;
 
-	switch (tipo)
+	if (isRectBlock(tipo))
 	{
-	case TipoBlocco::HORIZONTAL:
-	case TipoBlocco::VERTICAL:
 		blocco = new Rettilineo(coord.y, coord.x, tipo);
-		break;
-
-	case TipoBlocco::SX_TO_UP:
-	case TipoBlocco::SX_TO_DOWN:
-	case TipoBlocco::DX_TO_UP:
-	case TipoBlocco::DX_TO_DOWN:
-		blocco = new Curva(coord.y, coord.x, tipo);
-		break;
-
-	case TipoBlocco::CROSS3_SX:
-	case TipoBlocco::CROSS3_DX:
-	case TipoBlocco::CROSS3_UP:
-	case TipoBlocco::CROSS3_DOWN:
-		blocco = new Incrocio3(coord.y, coord.x, tipo);
-		break;
-
-	case TipoBlocco::CROSS4:
-		blocco = new Incrocio4(coord.y, coord.x);
-		break;
-
-	case TipoBlocco::EMPTY:
-	default:
-		blocco = new Blocco(coord.y, coord.x, tipo);
-		break;
+		return;
 	}
+
+	if (isCurveBlock(tipo))
+	{
+		blocco = new Curva(coord.y, coord.x, tipo);
+		return;
+	}
+
+	if (isCross3Block(tipo))
+	{
+		blocco = new Incrocio3(coord.y, coord.x, tipo);
+		return;
+	}
+
+	if (isCross4Block(tipo))
+	{
+		blocco = new Incrocio4(coord.y, coord.x);
+		return;
+	}
+
+	blocco = new Blocco(coord.y, coord.x, tipo);
 }
 
 void Mappa::loadTextures()
@@ -695,6 +799,8 @@ void Mappa::loadTextures()
 
 void Mappa::clean()
 {
+	sorgenti.clean();
+
 	for (int i = 0; i < blocchiY; i++)
 		for (int j = 0; j < blocchiX; j++)
 			cambiaTipoBlocco(blocchi[i][j], TipoBlocco::EMPTY);
