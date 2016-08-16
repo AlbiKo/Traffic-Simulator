@@ -114,7 +114,7 @@ void Mappa::deleteSource(Vector2i source)
 		cambiaTipoBlocco(blocchi[source.y][source.x], TipoBlocco::EMPTY);
 }
 
-void Mappa::checkUnlinkedSources(Vector2i_List starts, Vector2i_List ends)
+void Mappa::checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends)
 {
 	//Controllo delle partenze
 	for (int i = 0; i < starts.count(); i++)
@@ -239,7 +239,8 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	D1(PRINT("\n---------------\nGenerazione strada.."));
 	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
 	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
-
+	assert(startPos.x >= 0 && startPos.y >= 0 && startPos.x < blocchiX && startPos.y < blocchiY);
+	assert(endPos.x >= 0 && endPos.y >= 0 && endPos.x < blocchiX && endPos.y < blocchiY);
 	//Numero di tentativi rimasti per la costruzione della strada
 	int tentativi = MAX_TENTATIVI;
 	Direzionatore dir = Direzionatore();
@@ -377,8 +378,9 @@ void Mappa::applyRouteBlocks(Blocco_List & bloccoList)
 	{
 		Blocco b = bloccoList.get(i, false);
 		Vector2i coord = b.coordBlocco();
-		D3(PRINT("\nPosizione " << coord.x << ", " << coord.y));
-		D3(PRINT("Tipo " << stampaTipoBlocco(b.getTipo())));
+		D2(PRINT("\nPosizione " << coord.x << ", " << coord.y));
+		assert(coord.x >= 0 && coord.y >= 0 && coord.x < blocchiX && coord.y < blocchiY);
+		D2(PRINT("Tipo " << stampaTipoBlocco(b.getTipo())));
 		cambiaTipoBlocco(blocchi[coord.y][coord.x], b.getTipo());
 	}
 }
