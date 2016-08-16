@@ -6,14 +6,14 @@ Blocco_List.o: ../src/code/Blocco_List.cc \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Debug.h
 Core.o: ../src/code/Core.cc ../src/code/../header/Core.h \
- ../src/code/../header/Mappa.h ../src/code/../header/TipoBlocco.h \
- ../src/code/../header/enum_toInt.h ../src/code/../header/Blocco.h \
- ../src/code/../header/Rettilineo.h ../src/code/../header/Curva.h \
- ../src/code/../header/Incrocio3.h ../src/code/../header/Incrocio4.h \
- ../src/code/../header/Vector2i_List.h \
+ ../src/code/../header/Debug.h ../src/code/../header/Mappa.h \
+ ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
+ ../src/code/../header/Blocco.h ../src/code/../header/Rettilineo.h \
+ ../src/code/../header/Curva.h ../src/code/../header/Incrocio3.h \
+ ../src/code/../header/Incrocio4.h ../src/code/../header/Vector2i_List.h \
  ../src/code/../header/Direzionatore.h ../src/code/../header/Direzione.h \
  ../src/code/../header/Direzione_List.h \
- ../src/code/../header/Blocco_List.h ../src/code/../header/Debug.h
+ ../src/code/../header/Blocco_List.h ../src/code/../header/Macchina.h
 Curva.o: ../src/code/Curva.cc ../src/code/../header/Curva.h \
  ../src/code/../header/Blocco.h ../src/code/../header/TipoBlocco.h \
  ../src/code/../header/enum_toInt.h ../src/code/../header/Debug.h
@@ -31,6 +31,8 @@ Incrocio3.o: ../src/code/Incrocio3.cc ../src/code/../header/Incrocio3.h \
 Incrocio4.o: ../src/code/Incrocio4.cc ../src/code/../header/Incrocio4.h \
  ../src/code/../header/Blocco.h ../src/code/../header/TipoBlocco.h \
  ../src/code/../header/enum_toInt.h ../src/code/../header/Debug.h
+Macchina.o: ../src/code/Macchina.cc ../src/code/../header/Macchina.h \
+ ../src/code/../header/Debug.h
 Mappa.o: ../src/code/Mappa.cc ../src/code/../header/Mappa.h \
  ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
  ../src/code/../header/Blocco.h ../src/code/../header/Rettilineo.h \
@@ -50,12 +52,13 @@ TipoBlocco.o: ../src/code/TipoBlocco.cc \
 Vector2i_List.o: ../src/code/Vector2i_List.cc \
  ../src/code/../header/Vector2i_List.h ../src/code/../header/Debug.h
 main.o: ../src/code/main.cc ../src/code/../header/SFMLWidget.h \
- ../src/code/../header/Core.h ../src/code/../header/Mappa.h \
- ../src/code/../header/TipoBlocco.h ../src/code/../header/enum_toInt.h \
- ../src/code/../header/Blocco.h ../src/code/../header/Rettilineo.h \
- ../src/code/../header/Curva.h ../src/code/../header/Incrocio3.h \
- ../src/code/../header/Incrocio4.h ../src/code/../header/Vector2i_List.h \
+ ../src/code/../header/Core.h ../src/code/../header/Debug.h \
+ ../src/code/../header/Mappa.h ../src/code/../header/TipoBlocco.h \
+ ../src/code/../header/enum_toInt.h ../src/code/../header/Blocco.h \
+ ../src/code/../header/Rettilineo.h ../src/code/../header/Curva.h \
+ ../src/code/../header/Incrocio3.h ../src/code/../header/Incrocio4.h \
+ ../src/code/../header/Vector2i_List.h \
  ../src/code/../header/Direzionatore.h ../src/code/../header/Direzione.h \
  ../src/code/../header/Direzione_List.h \
- ../src/code/../header/Blocco_List.h ../src/code/../header/Debug.h \
+ ../src/code/../header/Blocco_List.h ../src/code/../header/Macchina.h \
  ../src/code/../header/Debug.h
