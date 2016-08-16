@@ -76,7 +76,7 @@ private:
 	*	@param starts Lista con le coordinate delle partenze
 	*	@param ends Lista con le coordinate delle destinazioni
 	*/
-	void checkUnlinkedSources(Vector2i_List starts, Vector2i_List ends);
+	void checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends);
 
 	/** Individua e restituisce la sorgente più vicina a quella passata come parametro
 	*
