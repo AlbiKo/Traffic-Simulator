@@ -40,6 +40,25 @@ void Mappa::generate()
 
 }
 
+Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
+{
+	if ((rowIndex < 0 && rowIndex >= blocchiY) || 
+		(columnIndex < 0 && columnIndex >= blocchiX))
+		return NULL;
+
+	return blocchi[rowIndex][columnIndex];
+}
+
+Blocco * Mappa::getBlocco(Vector2i pos)
+{
+	return getBlocco(pos.y / Blocco::size, pos.x / Blocco::size);
+}
+
+Vector2i Mappa::getMapSize()
+{
+	return Vector2i(blocchiX, blocchiY);
+}
+
 void Mappa::generateSources()
 {
 	D1(PRINT("Generazione sorgenti.."));

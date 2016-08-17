@@ -259,4 +259,22 @@ public:
 
 	/** Genera la mappa	*/
     void generate();
+
+	/**	Restituisce il blocco alle date coordinate nella matrice
+	*
+	*	@param rowIndex Indice di riga
+	*	@param columnIndex Indice di colonna
+	*	@return Puntatore del blocco
+	*/
+	Blocco * getBlocco(int rowIndex, int columnIndex);
+
+	/** Restituisce il blocco alle date coordinate del punto sulla finestra
+	*
+	*	@param pos Coordinate del punto
+	*	@return Puntatore del blocco
+	*/
+	Blocco * getBlocco(Vector2i pos);
+
+	/** Restituisce la dimensione della mappa */
+	Vector2i getMapSize();
 };
