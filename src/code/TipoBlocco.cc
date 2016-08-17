@@ -44,7 +44,7 @@ bool isEmptyBlock(TipoBlocco tipo)
 	return (tipo == TipoBlocco::EMPTY) ? true : false;
 }
 
-std::string stampaTipoBlocco(TipoBlocco tipo)
+std::string toString(TipoBlocco tipo)
 {
 	switch (tipo)
 	{

@@ -1,25 +1,63 @@
 #ifndef TIPOBLOCCO_INCLUDE
 	#define TIPOBLOCCO_INCLUDE
-
-	
 	#include <iostream>
 
-	/** Enum che rappresenta la/e direzione/i dei vari tipi di blocco. */
+	/** Rappresenta i tipi che un blocco può assumere con eventuali orientamenti. */
 	enum class TipoBlocco
 	{
-		HORIZONTAL = 0, VERTICAL,
-		SX_TO_UP, SX_TO_DOWN, DX_TO_UP, DX_TO_DOWN,
-		CROSS3_SX, CROSS3_DX, CROSS3_UP, CROSS3_DOWN,
-		CROSS4,
-		EMPTY
+		HORIZONTAL = 0, VERTICAL,						//Rettilinei
+		SX_TO_UP, SX_TO_DOWN, DX_TO_UP, DX_TO_DOWN,		//Curve
+		CROSS3_SX, CROSS3_DX, CROSS3_UP, CROSS3_DOWN,	//Incrocio a tre vie. La direzione indicata alla fine, indica dove si trova la via di immissione.
+		CROSS4,											//Incrocio a quattro vie
+		EMPTY											//Blocco vuoto
 	};
 
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria dei rettilinei.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isRectBlock(TipoBlocco tipo);
+
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria delle curve.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isCurveBlock(TipoBlocco tipo);
+
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci (a tre e a quattro compresi).
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isCrossBlock(TipoBlocco tipo);
+
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci a tre.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isCross3Block(TipoBlocco tipo);
+
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria dell'incrocio a 4.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isCross4Block(TipoBlocco tipo);
+
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria del blocco vuoto.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return True se appartiene alla categoria. False altrimenti
+	*/
 	bool isEmptyBlock(TipoBlocco tipo);
 
-	std::string stampaTipoBlocco(TipoBlocco tipo);
+	/** Stringhizza il tipo del blocco.
+	*
+	*	@param tipo Tipo del blocco
+	*	@return La stringa che rappresenta il tipo di blocco
+	*/
+	std::string toString(TipoBlocco tipo);
 #endif
