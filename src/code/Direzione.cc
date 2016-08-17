@@ -23,7 +23,7 @@ Direzione getDirOpposta(Direzione d)
 }
 
 
-std::string stampaDir(Direzione d)
+std::string toString(Direzione d)
 {
 	switch (d)
 	{

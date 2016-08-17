@@ -13,6 +13,16 @@
 
 using namespace sf;
 
+/**	La classe Mappa descrive l'area di gioco rappresentata attraverso una matrice di blocchi.
+*	La mappa viene generata casualmente passando attraverso tre fasi:
+*
+*	1) Posizionamento delle sorgenti, ovvero i blocchi da cui le macchine possono entrare/uscire, sui bordi.
+*	2) Si collegano le sorgenti fra loro: ogni sorgente posizionata sul bordo sinistro o destro viene collegata
+*		con una sorgente posizionata sul bordo in alto o in basso scelta casualmente.
+*	3) Se al termine della fase due risultano delle sorgenti che non sono collegate a qualcosa,  si cerca di 
+*		collegare tali sorgenti con la sorgente a loro più vicina. In caso di insuccesso la sorgente viene eliminata.
+*/
+
 class Mappa
 {
 private:
@@ -259,4 +269,22 @@ public:
 
 	/** Genera la mappa	*/
     void generate();
+
+	/**	Restituisce il blocco alle date coordinate nella matrice
+	*
+	*	@param rowIndex Indice di riga
+	*	@param columnIndex Indice di colonna
+	*	@return Puntatore del blocco
+	*/
+	Blocco * getBlocco(int rowIndex, int columnIndex);
+
+	/** Restituisce il blocco alle date coordinate del punto sulla finestra
+	*
+	*	@param pos Coordinate del punto
+	*	@return Puntatore del blocco
+	*/
+	Blocco * getBlocco(Vector2i pos);
+
+	/** Restituisce la dimensione della mappa */
+	Vector2i getMapSize();
 };

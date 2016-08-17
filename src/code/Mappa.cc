@@ -40,6 +40,25 @@ void Mappa::generate()
 
 }
 
+Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
+{
+	if ((rowIndex < 0 && rowIndex >= blocchiY) || 
+		(columnIndex < 0 && columnIndex >= blocchiX))
+		return NULL;
+
+	return blocchi[rowIndex][columnIndex];
+}
+
+Blocco * Mappa::getBlocco(Vector2i pos)
+{
+	return getBlocco(pos.y / Blocco::size, pos.x / Blocco::size);
+}
+
+Vector2i Mappa::getMapSize()
+{
+	return Vector2i(blocchiX, blocchiY);
+}
+
 void Mappa::generateSources()
 {
 	D1(PRINT("Generazione sorgenti.."));
@@ -239,8 +258,10 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	D1(PRINT("\n---------------\nGenerazione strada.."));
 	D1(PRINT("Sorgente iniziale " << startPos.x << ", " << startPos.y));
 	D1(PRINT("Sorgente finale " << endPos.x << ", " << endPos.y));
+	
 	assert(startPos.x >= 0 && startPos.y >= 0 && startPos.x < blocchiX && startPos.y < blocchiY);
 	assert(endPos.x >= 0 && endPos.y >= 0 && endPos.x < blocchiX && endPos.y < blocchiY);
+	
 	//Numero di tentativi rimasti per la costruzione della strada
 	int tentativi = MAX_TENTATIVI;
 	Direzionatore dir = Direzionatore();
@@ -259,11 +280,11 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	
 	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
 	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
-	D1(PRINT("PrevDir " <<stampaDir(prevDir)));
+	D1(PRINT("PrevDir " <<toString(prevDir)));
 	
 	do
 	{
-		dir.escludiDirezioni(currentPos, endPos, prevDir, Vector2i(blocchiX, blocchiY));
+		dir.escludiDirezioni(currentPos, endPos, prevDir, getMapSize());
 
 		Direzione currentDir = Direzione::ND;
 
@@ -337,12 +358,12 @@ void Mappa::nextStepRouteBlock(Blocco_List& bloccoList, Vector2i & currentPos, D
 {
 	D1(PRINT("Inserimento blocco in lista.."));
 	D2(PRINT("CurrentPos "<<currentPos.x <<", " <<currentPos.y));
-	D2(PRINT("CurrentDir " <<stampaDir(currentDir)));
-	D2(PRINT("Tipo --------------> " <<stampaTipoBlocco(tipo)));
+	D2(PRINT("CurrentDir " <<toString(currentDir)));
+	D2(PRINT("Tipo --------------> " <<toString(tipo)));
 
 	bloccoList.insert(Blocco(currentPos.y, currentPos.x, tipo));
 	
-	D2(PRINT("PrevDir " << stampaDir(prevDir)));
+	D2(PRINT("PrevDir " << toString(prevDir)));
 
 	prevDir = currentDir;
 
@@ -380,7 +401,7 @@ void Mappa::applyRouteBlocks(Blocco_List & bloccoList)
 		Vector2i coord = b.coordBlocco();
 		D2(PRINT("\nPosizione " << coord.x << ", " << coord.y));
 		assert(coord.x >= 0 && coord.y >= 0 && coord.x < blocchiX && coord.y < blocchiY);
-		D2(PRINT("Tipo " << stampaTipoBlocco(b.getTipo())));
+		D2(PRINT("Tipo " << toString(b.getTipo())));
 		cambiaTipoBlocco(blocchi[coord.y][coord.x], b.getTipo());
 	}
 }
@@ -509,7 +530,7 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 	//Controllo se il tipo del blocco attualmente stabilito va in conflitto con eventuali sorgenti
 	tipo = checkSourceRouteBlock(currentPos, tipo);
 
-	D1(PRINT("Posizionerei blocco di tipo ------> " <<stampaTipoBlocco(tipo)));
+	D1(PRINT("Posizionerei blocco di tipo ------> " <<toString(tipo)));
 	
 	return tipo;
 }

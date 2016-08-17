@@ -25,23 +25,23 @@ Direzione Direzionatore::estraiDirezione()
 
 void Direzionatore::ammettiDirezione(Direzione d)
 {
-	D2(PRINT("Ammetto nel Direzionatore: "<< stampaDir(d)));
+	D2(PRINT("Ammetto nel Direzionatore: "<< toString(d)));
 	if (d != Direzione::ND && dl.get(d, false) == Direzione::ND)
 		dl.insert(d);
 }
 
 void Direzionatore::escludiDirezione(Direzione d)
 {
-	D2(PRINT("Escludo direzione: " << stampaDir(d)));
+	D2(PRINT("Escludo direzione: " << toString(d)));
 	dl.get(d, true);
 }
 
-void Direzionatore::escludiDirezioni(sf::Vector2i startPos, sf::Vector2i endPos, Direzione prevDir, sf::Vector2i numBlocchi)
+void Direzionatore::escludiDirezioni(Vector2i startPos, Vector2i endPos, Direzione prevDir, Vector2i numBlocchi)
 {
 	D1(PRINT("\nEscludo direzioni.."));
 	D3(PRINT("Partenza: " <<startPos.x <<", " <<startPos.y));
 	D3(PRINT("Destinazione: " << endPos.x << ", " << endPos.y));
-	D3(PRINT("Prev dir: " <<stampaDir(prevDir)));
+	D3(PRINT("Prev dir: " <<toString(prevDir)));
 
 	ripristina();
 	escludiDirezione(getDirOpposta(prevDir));
@@ -70,12 +70,16 @@ void Direzionatore::ripristina()
 void Direzionatore::escludiDirezioniX(Vector2i startPos, Vector2i endPos, Vector2i border, Direzione oppositeDir)
 {
 	escludiDirezione(oppositeDir);
+
+	//Se ci si trova a ridosso della destinazione o alla sua sinistra
 	if (startPos.x == 1 || (startPos.x <= endPos.x && startPos.y == border.y))
 		escludiDirezione(Direzione::SX);
 
+	//Se ci si trova a ridosso della destinazione o alla sua destra
 	if (startPos.x == border.x|| (startPos.x >= endPos.x && startPos.y == border.y))
 		escludiDirezione(Direzione::DX);
 
+	//Se ci si trova sul bordo ma non a ridosso della destinazione
 	if (startPos.y == border.y && startPos.x != endPos.x)
 		escludiDirezione(getDirOpposta(oppositeDir));
 }
