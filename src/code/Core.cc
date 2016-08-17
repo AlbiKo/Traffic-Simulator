@@ -9,23 +9,44 @@ void CoreInit()
 	mappa.generate();
 }
 
-Macchina m = Macchina(Vector2i(34, 2 * 68 - 20));
 Macchina m1 = Macchina(Vector2i(34, 3 * 68 - 20));
-void update(RenderWindow &widget)
-{
-	
-	mappa.draw(widget);
-	if (Keyboard::isKeyPressed(Keyboard::R))
-		mappa.generate();
-	
-	m.draw(widget);
-	m1.draw(widget);
-	m.update();
-	m1.update();
-	
-	int x = m.getShape().getPosition().x; 
-	m.setPosition(Vector2i(x % 1000, m.getShape().getPosition().y));
+Macchina m2 = Macchina(Vector2i(0, 1 * 68 - 20));
+Macchina m3 = Macchina(Vector2i(0, 5 * 68 - 20));
 
-	x = m1.getShape().getPosition().x;
-	m1.setPosition(Vector2i(x % 1000, m1.getShape().getPosition().y));
+void updateMacchina(Macchina &macchina) {
+	macchina.update();
+	Vector2f f = macchina.getShape().getPosition();
+	Blocco * b = mappa.getBlocco(Vector2i(f.x, f.y));
+	if (b != NULL) {
+		Curva * c = dynamic_cast<Curva *>(b);
+		if (c != NULL) {
+			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition()));
+		}
+		if (isEmptyBlock(b->getTipo()))
+			macchina.stop();
+	}
+	else
+		macchina.stop(); //improve this in the future
 }
+
+void update(RenderWindow &widget)
+{	
+	mappa.draw(widget);
+	if (Keyboard::isKeyPressed(Keyboard::R)) {
+		mappa.generate();
+		m1.setPosition(Vector2i(34, 3 * 68 - 20));
+		m1.changeDirection(Direzione::DX);
+	}
+	
+	m2.setColor(Color::Magenta);
+	m3.setColor(Color::Green);
+	m1.draw(widget);
+	m2.draw(widget);
+	m3.draw(widget);
+
+	updateMacchina(m1);
+	updateMacchina(m2);
+	updateMacchina(m3);
+}
+
+

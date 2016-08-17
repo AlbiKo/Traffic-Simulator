@@ -31,6 +31,7 @@ public:
 	bool changeDirection(Direzione dir);
 	void stop();
 	void update();
+	Direzione getDirection();
 	
 private:
 	RectangleShape shape;

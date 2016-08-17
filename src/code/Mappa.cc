@@ -38,12 +38,58 @@ void Mappa::generate()
 	generateSources();
 	generateRoutes();
 
+
+
+	//DEBUG ONLY
+	D1(PRINT("DebugSource1"));
+	cambiaTipoBlocco(blocchi[0][0], TipoBlocco::DX_TO_DOWN);
+	//cambiaTipoBlocco(blocchi[1][0], TipoBlocco::DX_TO_UP);
+	cambiaTipoBlocco(blocchi[0][1], TipoBlocco::SX_TO_DOWN);
+	//cambiaTipoBlocco(blocchi[1][1], TipoBlocco::SX_TO_UP);
+
+
+
+	cambiaTipoBlocco(blocchi[4][0], TipoBlocco::DX_TO_UP);
+
+	cambiaTipoBlocco(blocchi[3][0], TipoBlocco::VERTICAL);
+	cambiaTipoBlocco(blocchi[2][0], TipoBlocco::VERTICAL);
+	cambiaTipoBlocco(blocchi[1][0], TipoBlocco::VERTICAL);
+
+	cambiaTipoBlocco(blocchi[3][4], TipoBlocco::VERTICAL);
+	cambiaTipoBlocco(blocchi[2][4], TipoBlocco::VERTICAL);
+	cambiaTipoBlocco(blocchi[1][4], TipoBlocco::VERTICAL);
+
+	cambiaTipoBlocco(blocchi[0][1], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[0][2], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[0][3], TipoBlocco::HORIZONTAL);
+
+	cambiaTipoBlocco(blocchi[4][1], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[4][2], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[4][3], TipoBlocco::HORIZONTAL);
+
+	cambiaTipoBlocco(blocchi[4][4], TipoBlocco::SX_TO_UP);
+	cambiaTipoBlocco(blocchi[0][4], TipoBlocco::SX_TO_DOWN);
+
+
+
+	cambiaTipoBlocco(blocchi[2][1], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][2], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][3], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][5], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][6], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][7], TipoBlocco::SX_TO_DOWN);
+	cambiaTipoBlocco(blocchi[3][7], TipoBlocco::DX_TO_UP);
+	cambiaTipoBlocco(blocchi[3][8], TipoBlocco::HORIZONTAL);
+	//DEBUG ONLY
+
+
+
 }
 
 Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
 {
-	if ((rowIndex < 0 && rowIndex >= blocchiY) || 
-		(columnIndex < 0 && columnIndex >= blocchiX))
+	if ((rowIndex < 0 || rowIndex >= blocchiY) || 
+		(columnIndex < 0 || columnIndex >= blocchiX))
 		return NULL;
 
 	return blocchi[rowIndex][columnIndex];
@@ -76,6 +122,7 @@ void Mappa::generateSources()
 
 	//Bordo in basso
 	generateSource(0, blocchiY - 1, false);
+
 }
 
 void Mappa::generateSource(int x, int y, bool vertical)
@@ -733,6 +780,39 @@ void Mappa::draw(RenderWindow &widget)
 		for (int j = 0; j < blocchiX; j++)
 			if (blocchi[i][j]->getTipo() != TipoBlocco::EMPTY)
 				widget.draw(blocchi[i][j]->getSprite());
+	//widget.draw(blocchi[]);
+	
+	for (int i=0; i<blocchiY; i++) 
+		for (int j=0; j<blocchiX; j++) {
+			Curva * c = dynamic_cast<Curva *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+	}
+	for (int i = 0; i<blocchiY; i++)
+		for (int j = 0; j<blocchiX; j++) {
+			Incrocio3 * c = dynamic_cast<Incrocio3 *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+		}
+	for (int i = 0; i<blocchiY; i++)
+		for (int j = 0; j<blocchiX; j++) {
+			Incrocio4 * c = dynamic_cast<Incrocio4 *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+		}
+			
 }
 
 void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)

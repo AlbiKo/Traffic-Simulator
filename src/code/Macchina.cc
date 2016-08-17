@@ -51,7 +51,7 @@ bool Macchina::isMoving()
 
 bool Macchina::changeDirection(Direzione dir)
 {
-	if (dir == Direzione::ND)
+	if (dir == Direzione::ND || dir == moving)
 		return false;
 
 	moving = dir;
@@ -87,8 +87,13 @@ void Macchina::update()
 		return;
 	}
 
-	shape.move(velX * 1.5, velY * 1.5);
+	shape.move(velX * 1, velY * 1);
 	updateColliders();
+}
+
+Direzione Macchina::getDirection()
+{
+	return moving;
 }
 
 void Macchina::initMacchina()
