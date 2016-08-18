@@ -14,6 +14,8 @@ Macchina m2 = Macchina(Vector2i(0, 1 * 68 - 20));
 Macchina m3 = Macchina(Vector2i(0, 5 * 68 - 20));
 
 
+
+
 void updateMacchina(Macchina &macchina)
 {
 	macchina.update();
@@ -22,7 +24,12 @@ void updateMacchina(Macchina &macchina)
 	if (b != NULL) {
 		Curva * c = dynamic_cast<Curva *>(b);
 		if (c != NULL)
-			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition())); //delego al blocco il cambio direzione della macchina
+			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition())); //delego alla il cambio direzione della macchina
+		Incrocio4 * i4 = dynamic_cast<Incrocio4 *>(b);
+		if (i4 != NULL) {
+			Direzionatore random = Direzionatore();
+			macchina.changeDirection(i4->getChangeDir(macchina.getShape().getPosition(), Direzione::SX)); //delego all'incrocio instradare correttamente la macchina
+		}
 		if (isEmptyBlock(b->getTipo()))
 			macchina.stop();
 	}
