@@ -26,6 +26,7 @@ Incrocio4::Incrocio4(int rowIndex, int columnIndex)
 	pos4.x = 48 + (size*columnIndex);
 	pos4.y = 48 + (size*rowIndex);
 
+	//DEBUG
 	shape_1 = RectangleShape();
 	shape_1.setPosition(pos1.x, pos1.y);
 	shape_1.setSize(Vector2f(1, 1));
@@ -45,4 +46,43 @@ Incrocio4::Incrocio4(int rowIndex, int columnIndex)
 	shape_4.setPosition(pos4.x, pos4.y);
 	shape_4.setSize(Vector2f(1, 1));
 	shape_4.setFillColor(Color::Red);
+	//DEBUG
 }
+
+Direzione Incrocio4::getChangeDir(Vector2f pos, Direzione dir)
+{
+	//Direzione dir = Direzione::DX;
+	Vector2i posizione = Vector2i(pos.x, pos.y);
+	switch (dir)
+	{
+		case Direzione::SU:
+			if (posizione.x == pos1.x && posizione.y == pos1.y)
+				return Direzione::DX;
+			if ((posizione.x == pos2.x && posizione.y == pos2.y) || (posizione.x == pos4.x && posizione.y == pos4.y))
+				return Direzione::SU;
+			break;
+		case Direzione::GIU:
+			if (posizione.x == pos4.x && posizione.y == pos4.y)
+				return Direzione::SX;
+			if ((posizione.x == pos1.x && posizione.y == pos1.y) || (posizione.x == pos3.x && posizione.y == pos3.y))
+				return Direzione::GIU;
+			break;
+		case Direzione::DX:
+			if (posizione.x == pos2.x && posizione.y == pos2.y)
+				return Direzione::GIU;
+			if ((posizione.x == pos4.x && posizione.y == pos4.y) || (posizione.x == pos3.x && posizione.y == pos3.y))
+				return Direzione::DX;
+			break;
+		case Direzione::SX:
+			if (posizione.x == pos3.x && posizione.y == pos3.y)
+				return Direzione::SU;
+			if ((posizione.x == pos1.x && posizione.y == pos1.y) || (posizione.x == pos2.x && posizione.y == pos2.y))
+				return Direzione::SX;
+			break;
+		default:
+			break;
+	}
+	return Direzione::ND;
+}
+
+
