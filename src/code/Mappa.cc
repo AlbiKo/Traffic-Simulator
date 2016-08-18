@@ -36,11 +36,11 @@ void Mappa::generate()
 	srand(time(NULL));
 	clean();
 	generateSources();
-	//generateRoutes(); //disattivata per DEBUG
+	generateRoutes(); //disattivata per DEBUG
 
 
 
-	//DEBUG
+	/*//DEBUG
 	D1(PRINT("DebugSource1"));
 	cambiaTipoBlocco(blocchi[0][0], TipoBlocco::DX_TO_DOWN);
 	cambiaTipoBlocco(blocchi[0][1], TipoBlocco::SX_TO_DOWN);
@@ -76,7 +76,9 @@ void Mappa::generate()
 	cambiaTipoBlocco(blocchi[2][5], TipoBlocco::HORIZONTAL);
 	cambiaTipoBlocco(blocchi[2][6], TipoBlocco::HORIZONTAL);
 	cambiaTipoBlocco(blocchi[2][7], TipoBlocco::HORIZONTAL);
-	cambiaTipoBlocco(blocchi[2][8], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][8], TipoBlocco::SX_TO_DOWN);
+	cambiaTipoBlocco(blocchi[3][8], TipoBlocco::CROSS3_UP);*/
+
 	//DEBUG
 
 
@@ -101,6 +103,14 @@ Vector2i Mappa::getMapSize()
 {
 	return Vector2i(blocchiX, blocchiY);
 }
+
+Vector2i Mappa::getRandomSource()
+{
+	int i = rand() % sorgenti.count();
+	return sorgenti.get(i, false);
+}
+
+
 
 void Mappa::generateSources()
 {

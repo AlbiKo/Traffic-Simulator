@@ -290,5 +290,8 @@ public:
 
 	/** Restituisce la dimensione della mappa */
 	Vector2i getMapSize();
+
+	Vector2i getRandomSource();
+
 };
 #endif
