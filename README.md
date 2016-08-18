@@ -16,6 +16,7 @@ Prerequisiti:
     sudo apt-get install glade
     
 4) Installare SFML
+
     sudo apt-get install libsfml-dev
 
 
