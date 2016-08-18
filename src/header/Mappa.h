@@ -1,3 +1,6 @@
+#ifndef MAPPA_INCLUDE
+#define MAPPA_INCLUDE
+
 #include <SFML/Graphics.hpp>
 #include "TipoBlocco.h"
 #include "enum_toInt.h"
@@ -288,3 +291,4 @@ public:
 	/** Restituisce la dimensione della mappa */
 	Vector2i getMapSize();
 };
+#endif
