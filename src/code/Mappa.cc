@@ -36,16 +36,14 @@ void Mappa::generate()
 	srand(time(NULL));
 	clean();
 	generateSources();
-	generateRoutes();
+	//generateRoutes(); //disattivata per DEBUG
 
 
 
-	//DEBUG ONLY
+	//DEBUG
 	D1(PRINT("DebugSource1"));
 	cambiaTipoBlocco(blocchi[0][0], TipoBlocco::DX_TO_DOWN);
-	//cambiaTipoBlocco(blocchi[1][0], TipoBlocco::DX_TO_UP);
 	cambiaTipoBlocco(blocchi[0][1], TipoBlocco::SX_TO_DOWN);
-	//cambiaTipoBlocco(blocchi[1][1], TipoBlocco::SX_TO_UP);
 
 
 
@@ -77,10 +75,9 @@ void Mappa::generate()
 	cambiaTipoBlocco(blocchi[2][3], TipoBlocco::HORIZONTAL);
 	cambiaTipoBlocco(blocchi[2][5], TipoBlocco::HORIZONTAL);
 	cambiaTipoBlocco(blocchi[2][6], TipoBlocco::HORIZONTAL);
-	cambiaTipoBlocco(blocchi[2][7], TipoBlocco::SX_TO_DOWN);
-	cambiaTipoBlocco(blocchi[3][7], TipoBlocco::DX_TO_UP);
-	cambiaTipoBlocco(blocchi[3][8], TipoBlocco::HORIZONTAL);
-	//DEBUG ONLY
+	cambiaTipoBlocco(blocchi[2][7], TipoBlocco::HORIZONTAL);
+	cambiaTipoBlocco(blocchi[2][8], TipoBlocco::HORIZONTAL);
+	//DEBUG
 
 
 
