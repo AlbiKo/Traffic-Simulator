@@ -37,6 +37,7 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 	pos4.x = 48 + (size*columnIndex);
 	pos4.y = 48 + (size*rowIndex);
 
+	//DEBUG
 	shape_1 = RectangleShape();
 	shape_1.setPosition(pos1.x, pos1.y);
 	shape_1.setSize(Vector2f(1, 1));
@@ -56,6 +57,7 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 	shape_4.setPosition(pos4.x, pos4.y);
 	shape_4.setSize(Vector2f(1, 1));
 	shape_4.setFillColor(Color::Green);
+	//DEBUG
 
 }
 
@@ -72,17 +74,6 @@ Direzione Curva::getChangeDir(Vector2f pos)
 	Vector2i posizione = Vector2i(pos.x, pos.y);
 	switch (tipo)
 	{
-	/*case TipoBlocco::SX_TO_UP:
-		return (direzione == Direzione::DX) ? pos4 : pos1;
-	case TipoBlocco::SX_TO_DOWN:
-		return (direzione == Direzione::DX) ? pos3 : pos2;
-	case TipoBlocco::DX_TO_UP:
-		return (direzione == Direzione::SX) ? pos2 : pos3;
-	case TipoBlocco::DX_TO_DOWN:
-		return (direzione == Direzione::SX) ? pos1 : pos4;
-	default:
-		return Direzione::ND;*/
-
 		case TipoBlocco::SX_TO_UP:
 			if (posizione.x == pos4.x && posizione.y == pos4.y)
 				return Direzione::SU;
@@ -107,8 +98,7 @@ Direzione Curva::getChangeDir(Vector2f pos)
 			if (posizione.x == pos4.x && posizione.y == pos4.y)
 				return Direzione::DX;
 			break;
-		default:
-			return Direzione::ND;
+		default:;
 	}
 	return Direzione::ND;
 }
