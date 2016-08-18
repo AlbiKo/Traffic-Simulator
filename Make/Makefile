@@ -29,3 +29,4 @@ clean:
 	rm -f *.o
 cleanall:
 	rm -f ../bin/Traffic-Simulator *.o *~
+	rm -rf ../doc/html
