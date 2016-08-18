@@ -13,5 +13,5 @@ public:
 	Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo);
 
 	void cambiaVerso(TipoBlocco verso);
-	RectangleShape shape_1, shape_2, shape_3, shape_4;
+	RectangleShape shape_1, shape_2, shape_3, shape_4; //DEBUG
 };

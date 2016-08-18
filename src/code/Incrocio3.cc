@@ -26,6 +26,7 @@ Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 	pos4.x = 48 + (size*columnIndex);
 	pos4.y = 48 + (size*rowIndex);
 
+	//DEBUG
 	shape_1 = RectangleShape();
 	shape_1.setPosition(pos1.x, pos1.y);
 	shape_1.setSize(Vector2f(1, 1));
@@ -45,6 +46,7 @@ Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 	shape_4.setPosition(pos4.x, pos4.y);
 	shape_4.setSize(Vector2f(1, 1));
 	shape_4.setFillColor(Color::Yellow);
+	//DEBUG
 }
 
 void Incrocio3::cambiaVerso(TipoBlocco verso)
