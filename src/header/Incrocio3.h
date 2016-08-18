@@ -1,13 +1,11 @@
-#include "Blocco.h"
+#include "Incroci.h"
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
 
-class Incrocio3: public Blocco
+class Incrocio3: public Incroci
 {
 
-private:
-	Vector2i pos1, pos2, pos3, pos4;
 public:
 	Incrocio3() ;
 	Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo);

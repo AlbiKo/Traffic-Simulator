@@ -12,19 +12,7 @@ Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 	sprite.setPosition(columnIndex * size, rowIndex * size);
 	cambiaVerso(tipo);
 
-	pos1.x = 19 + (size*columnIndex);
-	pos1.y = 19 + (size*rowIndex);
-	D1(PRINT("pos1=" << pos1.x << "," << pos1.y));
-
-	pos2.x = 48 + (size*columnIndex);
-	pos2.y = 19 + (size*rowIndex);
-	D1(PRINT("pos2=" << pos2.x << "," << pos2.y));
-
-	pos3.x = 19 + (size*columnIndex);
-	pos3.y = 48 + (size*rowIndex);
-
-	pos4.x = 48 + (size*columnIndex);
-	pos4.y = 48 + (size*rowIndex);
+	setPos(rowIndex, columnIndex);
 
 	//DEBUG
 	shape_1 = RectangleShape();
