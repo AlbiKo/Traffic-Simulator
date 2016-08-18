@@ -1,22 +1,41 @@
+#ifndef GRAPHNODE_INCLUDE
+#define GRAPHNODE_INCLUDE
+
+
 #include <SFML/Graphics.hpp>
+#include "Direzione.h"
 
 using namespace sf;
 
+/*
+Mi serve un qualcosa che tiene traccia nel singolo nodo di:
+- Posizione (identificatore del nodo)
+- 4 vicini (puntatori a posizioni?)
+
+
+Si potrebbe rendere il peso delle categorie di blocco diverso:
+- Rect -> 1
+- Curve -> 2
+- Incrocio 3 -> 3
+- Incrocio 4 -> 4
+*/
+
 /** La classe nodo rappresenta l'elemento base del grafo
-*	utilizzato per calcolare il percorso delle macchine e
-*	per capire come si dovrà disegnare la mappa.
+*	utilizzato per calcolare il percorso delle macchine.
 *
-*	Per quest'ultima cosa, tornerà utile il numero di adiacenze che,
-*	in base al valore, si capirà che tipo di strada si dovrà disegnare.\n
-*	Per esempio, se il numero adiacenze valesse 1 si avrebbe un rettilineo
-*	Invece, se valesse 4 si avrebbe un incrocio.
 *	@author Quello bravo
 */
 
-class Nodo
+class GraphNode
 {
 
 private:
+
+	//Indici dell'array per individuare la posizione delle adiacenze
+	const int	UP_INDEX	= 0,
+				DOWN_INDEX	= 1,
+				LEFT_INDEX	= 2,
+				RIGHT_INDEX = 3;
 
 	/**	Posizione del nodo basandosi sui pixel della finestra.
 	*	Per esempio (0,0) sarà l'angolo in alto a sinistra.
@@ -29,28 +48,37 @@ private:
 	*/
 	struct Adiacenza
 	{
-		Nodo * nodo;
+		GraphNode * nodo;
 		int peso;
 	} adiacenze[4];
-
-    int numAdiacenze;
 
 	/**	Imposta e memorizza un'adiacenza con un certo nodo nell'apposito array.
 	*	Viene aggiornato il peso, calcolato come distanza in pixel fra i due nodi.
 	*	@param i Posizione dell'array in cui verrà memorizzata l'adiacenza
 	*	@param nodo Puntatore al nodo adiacente.
 	*/
-	void setAdiacenza(int i, Nodo * nodo);
+	bool setAdiacenza(int i, GraphNode * nodo, int peso);
 
+	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
+	*	@param i Posizione nell'array delle adiacenze
+	*	@param peso Parametro di uscita: peso del collegamento
+	*	@return Puntatore al nodo adiacente
+	*/
+	GraphNode * getAdiacenza(int i, int &peso);
+
+	void initNodo();
 public:
 	/** Costruttore base.  */
-    Nodo();
+    GraphNode();
 
     /** Costruttore che imposta la posizione di partenza  del nodo.
     *	Richiama il costruttore base.
     *	@param startPos Posizione iniziale
     */
-    Nodo(Vector2i startPos);
+    GraphNode(Vector2i pos);
+	~GraphNode();
+
+	void copy(GraphNode gn);
 
 	/** Cambia la posizione del nodo.
     *	Richiama il costruttore base.
@@ -58,12 +86,7 @@ public:
     */
 	void setPos(Vector2i newPos);
 
-	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
-    *	@param i Posizione nell'array delle adiacenze
-    *	@param peso Parametro di uscita: peso del collegamento
-	*	@return Puntatore al nodo adiacente
-    */
-	Nodo * getAdiacenza(int i, int &peso);
+	bool setAdiacenza(Direzione dir, GraphNode * nodo, int peso);
 
 	/** Imposta alla prima posizione libera la nuova adiacenza e
 	*	il peso del collegamento.
@@ -71,15 +94,15 @@ public:
 	*	@return True se ha trovato una posizione libera e inserito l'adiacenza.\n
 	*			False in caso contrario.
 	*/
-	bool setAdiacenza(Nodo * nodo);
+	bool setAdiacenza(GraphNode * nodo);
 
-	inline int getNumAdiacenze()
-	{
-		return numAdiacenze;
-	}
+	GraphNode * getAdiacenza(Direzione dir, int &peso);
 
 	inline Vector2i getPos()
 	{
 		return pos;
 	}
+
 };
+
+#endif // !GRAPHNODE_INCLUDE
