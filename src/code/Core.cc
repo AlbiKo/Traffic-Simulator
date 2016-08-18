@@ -13,20 +13,21 @@ Macchina m1 = Macchina(Vector2i(34, 3 * 68 - 20));
 Macchina m2 = Macchina(Vector2i(0, 1 * 68 - 20));
 Macchina m3 = Macchina(Vector2i(0, 5 * 68 - 20));
 
-void updateMacchina(Macchina &macchina) {
+
+void updateMacchina(Macchina &macchina)
+{
 	macchina.update();
 	Vector2f f = macchina.getShape().getPosition();
-	Blocco * b = mappa.getBlocco(Vector2i(f.x, f.y));
+	Blocco * b = mappa.getBlocco(Vector2i(f.x, f.y)); //prendo il blocco su cui si trova la macchina
 	if (b != NULL) {
 		Curva * c = dynamic_cast<Curva *>(b);
-		if (c != NULL) {
-			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition()));
-		}
+		if (c != NULL)
+			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition())); //delego al blocco il cambio direzione della macchina
 		if (isEmptyBlock(b->getTipo()))
 			macchina.stop();
 	}
 	else
-		macchina.stop(); //improve this in the future
+		macchina.stop();
 }
 
 void update(RenderWindow &widget)
