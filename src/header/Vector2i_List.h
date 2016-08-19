@@ -16,9 +16,7 @@ struct Vector2i_Node {
 *	Gli elementi Vector2i sono vettori che contengono 2 numeri interi.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
-*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca
-*	@author Alberto Beccari
-*/
+*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca*/
 class Vector2i_List {
 
 private:
