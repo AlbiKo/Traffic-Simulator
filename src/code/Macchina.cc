@@ -41,6 +41,18 @@ RectangleShape Macchina::getShape()
 	return shape;
 }
 
+Color Macchina::getColor()
+{
+	return shape.getFillColor();
+}
+
+void Macchina::copy(Macchina m)
+{
+	setPosition(m.getPosition());
+	setColor(m.getColor());
+	moving = m.moving;
+}
+
 bool Macchina::isMoving()
 {
 	if (moving == Direzione::ND)
@@ -98,7 +110,7 @@ Direzione Macchina::getDirection()
 
 void Macchina::initMacchina()
 {
-	moving = Direzione::DX; 
+	moving = Direzione::ND; 
 
 	//Inizializzazione sprite macchina
 	shape = RectangleShape();
