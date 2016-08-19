@@ -47,7 +47,7 @@ void GraphNode::setPos(Vector2i pos)
 
 bool GraphNode::setAdiacenza(Direzione dir, GraphNode * nodo, int peso)
 {
-	D1(PRINT("Imposto adiacenza di " << pos.x << ", " << pos.y <<" direzione " <<toString(dir)));
+	D1(PRINT("\nImposto adiacenza di " << pos.x << ", " << pos.y <<" direzione " <<toString(dir)));
 	switch (dir)
 	{
 	case Direzione::SU:
@@ -66,7 +66,7 @@ bool GraphNode::setAdiacenza(Direzione dir, GraphNode * nodo, int peso)
 bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 {
 	assert(i >= 0 && i <= 3);
-	D1(PRINT("Nodo: scrivo adiacenza in " <<i <<": " <<nodo));
+	D1( if (nodo != NULL) PRINT("Nodo: scrivo adiacenza in dir " <<i <<": " <<nodo->getPos().x <<", " <<nodo->getPos().y));
 
 	if (i >= 0 && i <= 3 && adiacenze[i].nodo == NULL)
 	{
@@ -77,8 +77,11 @@ bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 		else
 			adiacenze[i].peso = peso;
 
+		D1(PRINT("Peso: " <<peso));
+
 		return true;
 	}
+	D1(PRINT("Adiacenza non inserita (già presente o fuori range)"));
 	return false;
 }
 

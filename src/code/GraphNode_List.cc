@@ -124,6 +124,28 @@ GraphNode * GraphNode_List::get(int x, int y)
 	return NULL;
 }
 
+int GraphNode_List::getIndex(Vector2i pos)
+{
+	GraphNode_Node *t = root;
+	GraphNode_Node *previous = NULL;
+
+	int i = 0;
+
+	if (t == NULL) return -1;
+
+	while (t != NULL && (t->node.getPos().x != pos.x || t->node.getPos().y != pos.y))
+	{
+		previous = t;
+		t = t->next;
+		i++;
+	}
+
+	if (t != NULL)
+		return i;
+
+	return -1;
+}
+
 void GraphNode_List::clean()
 {
 	while (num_nodi != 0)

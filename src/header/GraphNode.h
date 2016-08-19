@@ -59,12 +59,7 @@ private:
 	*/
 	bool setAdiacenza(int i, GraphNode * nodo, int peso);
 
-	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
-	*	@param i Posizione nell'array delle adiacenze
-	*	@param peso Parametro di uscita: peso del collegamento
-	*	@return Puntatore al nodo adiacente
-	*/
-	GraphNode * getAdiacenza(int i, int &peso);
+	
 
 	void initNodo();
 public:
@@ -97,6 +92,13 @@ public:
 	bool setAdiacenza(GraphNode * nodo);
 
 	GraphNode * getAdiacenza(Direzione dir, int &peso);
+
+	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
+	*	@param i Posizione nell'array delle adiacenze
+	*	@param peso Parametro di uscita: peso del collegamento
+	*	@return Puntatore al nodo adiacente
+	*/
+	GraphNode * getAdiacenza(int i, int &peso);
 
 	inline Vector2i getPos()
 	{

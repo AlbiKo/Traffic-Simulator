@@ -42,8 +42,8 @@ void Mappa::generate()
 
 Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
 {
-	if ((rowIndex < 0 && rowIndex >= blocchiY) || 
-		(columnIndex < 0 && columnIndex >= blocchiX))
+	if ((rowIndex < 0 || rowIndex >= blocchiY) || 
+		(columnIndex < 0 || columnIndex >= blocchiX))
 		return NULL;
 
 	return blocchi[rowIndex][columnIndex];
@@ -57,6 +57,11 @@ Blocco * Mappa::getBlocco(Vector2i pos)
 Vector2i Mappa::getMapSize()
 {
 	return Vector2i(blocchiX, blocchiY);
+}
+
+void Mappa::getSorgenti(Vector2i_List &dest)
+{
+	dest.copy(sorgenti);
 }
 
 void Mappa::generateSources()

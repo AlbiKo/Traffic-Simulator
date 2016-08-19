@@ -67,6 +67,7 @@ public:
 	*/
 	GraphNode get(int x, int y, bool del);
 	GraphNode * get(int x, int y);
+	int getIndex(Vector2i pos);
 	/** Svuota la lista, cancellando tutti gli elementi. */
 	void clean();
 };
