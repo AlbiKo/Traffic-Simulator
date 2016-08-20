@@ -63,7 +63,7 @@ void Graph::findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path)
 		return;
 
 	D1(PRINT("\n\nTrovo percorso fra " <<startPos.x <<", " <<startPos.y <<" e " <<endPos.x <<", " <<endPos.y));
-
+	std::cerr << "Destinazione " << endPos.x << ", " << endPos.y << " \n";
 	const int count = nodes.count();
 
 	int * dist = new int[count];
@@ -120,9 +120,6 @@ void Graph::addLink(GraphNode & currentNode, GraphNode & nextNode, Mappa &map, i
 
 	int weight = getWeight(map.getBlocco(currentPos.y, currentPos.x)->getTipo()) + getWeight(map.getBlocco(nextPos.y, nextPos.x)->getTipo()) + numRect - 1;
 	
-	if (adjDir != Direzione::ND)
-		std::cerr << currentPos.x << ", " << currentPos.y << " <--> " << nextPos.x << ", " << nextPos.y <<" peso: "<<weight<< std::endl;
-
 	//Si mettono le adiacenze
 	currentNode.setAdiacenza(adjDir, &nextNode, weight);
 	nextNode.setAdiacenza(getDirOpposta(adjDir), &currentNode, weight);

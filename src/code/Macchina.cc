@@ -41,6 +41,18 @@ RectangleShape Macchina::getShape()
 	return shape;
 }
 
+Color Macchina::getColor()
+{
+	return shape.getFillColor();
+}
+
+void Macchina::copy(Macchina m)
+{
+	setPosition(m.getPosition());
+	setColor(m.getColor());
+	moving = m.moving;
+}
+
 bool Macchina::isMoving()
 {
 	if (moving == Direzione::ND)
@@ -51,7 +63,7 @@ bool Macchina::isMoving()
 
 bool Macchina::changeDirection(Direzione dir)
 {
-	if (dir == Direzione::ND)
+	if (dir == Direzione::ND || dir == moving)
 		return false;
 
 	moving = dir;
@@ -87,13 +99,18 @@ void Macchina::update()
 		return;
 	}
 
-	shape.move(velX * 1.5, velY * 1.5);
+	shape.move(velX * 1, velY * 1);
 	updateColliders();
+}
+
+Direzione Macchina::getDirection()
+{
+	return moving;
 }
 
 void Macchina::initMacchina()
 {
-	moving = Direzione::DX; 
+	moving = Direzione::ND; 
 
 	//Inizializzazione sprite macchina
 	shape = RectangleShape();

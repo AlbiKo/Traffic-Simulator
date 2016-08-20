@@ -37,7 +37,6 @@ void Mappa::generate()
 	clean();
 	generateSources();
 	generateRoutes();
-
 }
 
 Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
@@ -64,6 +63,14 @@ void Mappa::getSorgenti(Vector2i_List &dest)
 	dest.copy(sorgenti);
 }
 
+Vector2i Mappa::getRandomSource()
+{
+	int i = rand() % sorgenti.count();
+	return sorgenti.get(i, false);
+}
+
+
+
 void Mappa::generateSources()
 {
 	D1(PRINT("Generazione sorgenti.."));
@@ -81,6 +88,7 @@ void Mappa::generateSources()
 
 	//Bordo in basso
 	generateSource(0, blocchiY - 1, false);
+
 }
 
 void Mappa::generateSource(int x, int y, bool vertical)
@@ -252,6 +260,7 @@ void Mappa::generateRoutes()
 	}
 
 	//Si collegano le partenze con una destinazione scelta in modo casuale
+
 	for (int i = 0; i < partenze.count(); i++)
 		generateRoute(partenze.get(i, false), destinazioni.get(rand() % destinazioni.count(), false));
 
@@ -726,7 +735,6 @@ TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i corne
 
 	return base;
 }
-
 bool Mappa::randomBool()
 {
 	return (rand() % RAND_MAX) % 2;
@@ -738,6 +746,39 @@ void Mappa::draw(RenderWindow &widget)
 		for (int j = 0; j < blocchiX; j++)
 			if (blocchi[i][j]->getTipo() != TipoBlocco::EMPTY)
 				widget.draw(blocchi[i][j]->getSprite());
+	//widget.draw(blocchi[]);
+	
+	for (int i=0; i<blocchiY; i++) 
+		for (int j=0; j<blocchiX; j++) {
+			Curva * c = dynamic_cast<Curva *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+	}
+	for (int i = 0; i<blocchiY; i++)
+		for (int j = 0; j<blocchiX; j++) {
+			Incrocio3 * c = dynamic_cast<Incrocio3 *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+		}
+	for (int i = 0; i<blocchiY; i++)
+		for (int j = 0; j<blocchiX; j++) {
+			Incrocio4 * c = dynamic_cast<Incrocio4 *>(blocchi[i][j]);
+			if (c != NULL) {
+				widget.draw(c->shape_1);
+				widget.draw(c->shape_2);
+				widget.draw(c->shape_3);
+				widget.draw(c->shape_4);
+			}
+		}
+			
 }
 
 void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)

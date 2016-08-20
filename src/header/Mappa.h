@@ -1,7 +1,6 @@
 #ifndef MAPPA_INCLUDE
 #define MAPPA_INCLUDE
 
-
 #include <SFML/Graphics.hpp>
 #include "TipoBlocco.h"
 #include "enum_toInt.h"
@@ -295,5 +294,8 @@ public:
 
 	void getSorgenti(Vector2i_List &dest);
 
+	Vector2i getRandomSource();
+
 };
-#endif // !MAPPA_INCLUDE
+#endif
+
