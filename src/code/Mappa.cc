@@ -404,9 +404,9 @@ void Mappa::applyRouteBlocks(Blocco_List & bloccoList)
 	{
 		Blocco b = bloccoList.get(i, false);
 		Vector2i coord = b.coordBlocco();
-		D2(PRINT("\nPosizione " << coord.x << ", " << coord.y));
+		D3(PRINT("\nPosizione " << coord.x << ", " << coord.y));
 		assert(coord.x >= 0 && coord.y >= 0 && coord.x < blocchiX && coord.y < blocchiY);
-		D2(PRINT("Tipo " << toString(b.getTipo())));
+		D3(PRINT("Tipo " << toString(b.getTipo())));
 		cambiaTipoBlocco(blocchi[coord.y][coord.x], b.getTipo());
 	}
 }

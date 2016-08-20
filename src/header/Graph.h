@@ -12,7 +12,7 @@ public:
 	~Graph();
 
 	void buildGraph(Mappa &m);
-	Vector2i_List findPath(Vector2i startPos, Vector2i endPos);
+	void findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path);
 private:
 	GraphNode_List nodes;
 	Vector2i mapSize;
@@ -30,7 +30,12 @@ private:
 	void checkLinkUp(GraphNode * currentPtr, TipoBlocco tipo, Mappa &map);
 	void checkLinkDown(GraphNode * currentPtr, TipoBlocco tipo, Mappa &map);
 
-	int getPeso(TipoBlocco tipo);
+	int getWeight(TipoBlocco tipo);
+
+	void buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2i endPos);
+	void buildParentArray(Vector2i parent[], int dist[], int count, Vector2i startPos);
+	void insertStack(Vector2i_List &stack, Vector2i adj[], int weight[]);
+	int findMaxAdj(int weight[]);
 };
 
 

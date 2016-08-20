@@ -108,7 +108,7 @@ bool GraphNode::setAdiacenza(GraphNode * nodo)
 GraphNode * GraphNode::getAdiacenza(int i, int &peso)
 {
 	assert(i >= 0 && i <= 3);
-	D1(PRINT("Nodo: leggo adiacenza in " << i));
+	D3(PRINT("Nodo: leggo adiacenza in " << i));
 
 	if (i < 0 || i > 3)
 	{

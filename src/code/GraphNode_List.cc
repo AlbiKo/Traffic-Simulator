@@ -64,11 +64,8 @@ GraphNode * GraphNode_List::get(int index)
 {
 	if (index >= num_nodi) return NULL;
 	GraphNode_Node *t = root;
-	GraphNode_Node *previous = NULL;
-	for (int i = 0; i < index; i++) {
-		previous = t;
+	for (int i = 0; i < index; i++)
 		t = t->next;
-	}
 
 	return &(t->node);
 }
@@ -108,15 +105,11 @@ GraphNode GraphNode_List::get(int x, int y, bool del)
 GraphNode * GraphNode_List::get(int x, int y)
 {
 	GraphNode_Node *t = root;
-	GraphNode_Node *previous = NULL;
 
 	if (t == NULL) return NULL;
 
 	while (t != NULL && (t->node.getPos().x != x || t->node.getPos().y != y))
-	{
-		previous = t;
 		t = t->next;
-	}
 
 	if (t != NULL)
 		return &(t->node);
@@ -127,7 +120,6 @@ GraphNode * GraphNode_List::get(int x, int y)
 int GraphNode_List::getIndex(Vector2i pos)
 {
 	GraphNode_Node *t = root;
-	GraphNode_Node *previous = NULL;
 
 	int i = 0;
 
@@ -135,7 +127,6 @@ int GraphNode_List::getIndex(Vector2i pos)
 
 	while (t != NULL && (t->node.getPos().x != pos.x || t->node.getPos().y != pos.y))
 	{
-		previous = t;
 		t = t->next;
 		i++;
 	}

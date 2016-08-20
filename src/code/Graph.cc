@@ -55,33 +55,14 @@ void Graph::buildGraph(Mappa &map)
 
 }
 
-int max(int v[], int n, int val)
-{
-	int max = v[0];
-	int imax = 0;
-	for (int i = 1; i < n; i++)
-		if (max < v[i])
-		{
-			max = v[i];
-			imax = i;
-		}
-
-	if (v[imax] == val)
-		return -1;
-
-	v[imax] = val;
-	return imax;
-}
 
 
-Vector2i_List Graph::findPath(Vector2i startPos, Vector2i endPos)
+void Graph::findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path)
 {
 	if (nodes.getIndex(startPos) == -1 || nodes.getIndex(endPos) == -1)
-		return Vector2i_List();
+		return;
 
 	D1(PRINT("\n\nTrovo percorso fra " <<startPos.x <<", " <<startPos.y <<" e " <<endPos.x <<", " <<endPos.y));
-
-	Vector2i_List percorso, stack;
 
 	const int count = nodes.count();
 
@@ -93,74 +74,14 @@ Vector2i_List Graph::findPath(Vector2i startPos, Vector2i endPos)
 	for (int i = 0; i < count; i++)
 		parent[i] = nodes.get(i, false).getPos();
 
-	stack.insertHead(startPos);
-	dist[nodes.getIndex(startPos)] = 0;
-
-	GraphNode * tempNode = NULL;
-	Vector2i temp;
-	int index;
-	while (stack.count() != 0)
-	{
-		temp = stack.get(0, true);
-		index = nodes.getIndex(temp);
-		assert(index >= 0 && index < count);
-		tempNode = nodes.get(index);
-		
-		Vector2i adj[4];
-		int w[4];
-		for (int i = 0; i < 4; i++)
-		{
-			adj[i] = Vector2i(-1, -1);
-			w[i] = -1;
-			int peso = 0;
-			GraphNode * adjPtr = tempNode->getAdiacenza(i, peso);
-			if (adjPtr != NULL)
-			{
-				Vector2i adjPos = adjPtr->getPos();
-				int tempIndex = nodes.getIndex(adjPos);
-				assert(tempIndex >= 0 && tempIndex < count);
-				Vector2i pos = parent[tempIndex];
-				
-				if ((pos.x == adjPos.x && pos.y == adjPos.y) || dist[tempIndex] > dist[index] + peso)
-				{
-					if (pos.x == adjPos.x && pos.y == adjPos.y)//Controllo se è stata visitata
-					{
-						w[i] = peso;
-						adj[i] = pos;
-					}
-					parent[tempIndex] = temp;
-					dist[tempIndex] = dist[index] + peso;
-				}
-			}
-		}
-		
-		for (int i = 0; i < 4; i++)
-		{
-			int j = max(w, 4, -1);
-			if (j != -1)
-				stack.insertHead(adj[j]);
-		}
-	}
-
-	//Matrice di struttura per parent e dist
-	//Lista dei nodi già visitati (potrei fare i non visitati abbiano se stessi come parent)
-	//Decidere chi viene scelto in caso di peso uguale
-	//Usare uno stack per la visita di percorsi alternativi (serve inserimento in testa in vector list
-
-	//Mi prendo dalla lista la startPos
-	//Aggiungo ai già visitati e aggiorno la matrice
-	//Prendo l'adiacenza con peso minore (se uguale ci si deve basare sul criterio scelto)
-	//Aggiungo ai già visitati e aggiorno la matrice se non già visitato ho dist minore
+	buildParentArray(parent, dist, count, startPos);
 
 	D1(PRINT("\nStampo array"));
-	for (int i = 0; i < count; i++)
-	{
-		D1(PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
-	}
+	D1(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
 
+	buildPath(path, parent, count, endPos);
 	delete [] dist;
 	delete [] parent;
-	return percorso;
 }
 
 
@@ -197,14 +118,14 @@ void Graph::addLink(GraphNode & currentNode, GraphNode & nextNode, Mappa &map, i
 	if (numRect < 0)
 		numRect *= -1;
 
-	int peso = getPeso(map.getBlocco(currentPos.y, currentPos.x)->getTipo()) + getPeso(map.getBlocco(nextPos.y, nextPos.x)->getTipo()) + numRect - 1;
+	int weight = getWeight(map.getBlocco(currentPos.y, currentPos.x)->getTipo()) + getWeight(map.getBlocco(nextPos.y, nextPos.x)->getTipo()) + numRect - 1;
 	
 	if (adjDir != Direzione::ND)
-		std::cerr << currentPos.x << ", " << currentPos.y << " <--> " << nextPos.x << ", " << nextPos.y <<" peso: "<<peso<< std::endl;
+		std::cerr << currentPos.x << ", " << currentPos.y << " <--> " << nextPos.x << ", " << nextPos.y <<" peso: "<<weight<< std::endl;
 
 	//Si mettono le adiacenze
-	currentNode.setAdiacenza(adjDir, &nextNode, peso);
-	nextNode.setAdiacenza(getDirOpposta(adjDir), &currentNode, peso);
+	currentNode.setAdiacenza(adjDir, &nextNode, weight);
+	nextNode.setAdiacenza(getDirOpposta(adjDir), &currentNode, weight);
 }
 
 bool Graph::checkLinkable(TipoBlocco blocco, TipoBlocco curva1, TipoBlocco curva2, TipoBlocco cross3)
@@ -317,7 +238,7 @@ void Graph::checkLinkDown(GraphNode * currentPtr, TipoBlocco tipo, Mappa & map)
 	}
 }
 
-int Graph::getPeso(TipoBlocco tipo)
+int Graph::getWeight(TipoBlocco tipo)
 {
 	if (isRectBlock(tipo))
 		return RECT_WEIGHT;
@@ -332,4 +253,119 @@ int Graph::getPeso(TipoBlocco tipo)
 		return CROSS4_WEIGHT;
 
 	return 0;
+}
+
+void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2i endPos)
+{
+	D1(PRINT("Costruzione percorso: " <<count));
+
+	Vector2i temp = endPos;
+	int index = nodes.getIndex(temp);
+	assert(index != -1 && index < count);
+	while (parent[index] != temp)
+	{
+		D1(PRINT(temp.x <<" " <<temp.y <<" index " <<index));
+		path.insertHead(temp);
+		temp = parent[index];
+		index = nodes.getIndex(temp);
+		assert(index != -1 && index < count);
+	}
+
+	if (path.count() != 0)
+	{
+		assert(index != -1 && index < count);
+		D1(PRINT(temp.x << " " << temp.y<< " index " << index));
+		path.insertHead(temp);
+	}
+}
+
+void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i startPos)
+{
+	Vector2i_List stack;
+	stack.insertHead(startPos);
+	dist[nodes.getIndex(startPos)] = 0;
+
+	GraphNode * currentNode = NULL;
+	Vector2i currentPos;
+	int currentIndex;
+	while (stack.count() != 0)
+	{
+		currentPos = stack.get(0, true);
+		currentIndex = nodes.getIndex(currentPos);
+		currentNode = nodes.get(currentIndex);
+
+		D3(PRINT("\nNodo attaule " << currentPos.x << ", " << currentPos.y << " di indice " << currentIndex << " tempNode " << currentNode->getPos().x << ", " << currentNode->getPos().y));
+
+		//Array di supporto per la visita delle adiacenze
+		Vector2i adj[4];	//Posizione dei nodi adiacenti
+		int w[4];			//Peso del collegamento dei nodi adiacenti			
+
+		for (int i = 0; i < 4; i++)
+		{
+			//Inizializzazione degli array di supporto per la visita delle adiacenze
+			adj[i] = Vector2i(-1, -1);
+			w[i] = -1;
+
+			int adjWeight = 0;
+			GraphNode * adjPtr = currentNode->getAdiacenza(i, adjWeight);
+			if (adjPtr != NULL)
+			{
+				Vector2i adjPos = adjPtr->getPos();
+				int adjIndex = nodes.getIndex(adjPos);
+				
+				assert(adjIndex >= 0 && adjIndex < count);
+				D3(PRINT("adjPos " << adjPos.x << ", " << adjPos.y << " di indice " << adjIndex << " e peso " << adjWeight << " pos " << parent[adjIndex].x << ", " << parent[adjIndex].y));
+
+				//Se il nodo non è ancora stato visitato, cioè il parent del nodo è uguale al nodo stesso, e se il nodo non è il nodo iniziale..
+				if ((parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y)) || 
+					//.. o se si trova una via più breve per raggiungere il nodo adiacente
+					dist[adjIndex] > dist[currentIndex] + adjWeight)
+				{
+					//Se il nodo non è ancora stato visitato si aggiornano gli array
+					if (parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y))
+					{
+						D3(PRINT("Non visitato"));
+						w[i] = adjWeight;
+						adj[i] = parent[adjIndex];
+					}
+
+					//Aggiorno le informazioni del nodo adiacente
+					parent[adjIndex] = currentPos;
+					dist[adjIndex] = dist[currentIndex] + adjWeight;
+				}
+			}
+		}
+
+		//Inserisco nello stack i nodi in ordine di peso decrescente
+		//(quindi il prossimo ad essere estratto sarà il nodo con peso minore)
+		insertStack(stack, adj, w);
+	}
+}
+
+void Graph::insertStack(Vector2i_List & stack, Vector2i adj[], int weight[])
+{
+	for (int i = 0; i < 4; i++)
+	{
+		int j = findMaxAdj(weight);
+		if (j != -1)
+			stack.insertHead(adj[j]);
+	}
+}
+
+int Graph::findMaxAdj(int weight[])
+{
+	int max = weight[0];
+	int imax = 0;
+	for (int i = 1; i < 4; i++)
+		if (max < weight[i])
+		{
+			max = weight[i];
+			imax = i;
+		}
+
+	if (weight[imax] == -1)
+		return -1;
+
+	weight[imax] = -1;
+	return imax;
 }

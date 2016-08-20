@@ -59,8 +59,6 @@ private:
 	*/
 	bool setAdiacenza(int i, GraphNode * nodo, int peso);
 
-	
-
 	void initNodo();
 public:
 	/** Costruttore base.  */
