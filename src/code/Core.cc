@@ -9,9 +9,8 @@ Macchina_List carlist;
 Vector2i_List sorg;
 Vector2i_List percorso;
 Vector2i currentBlock;
-Macchina m;
 
-int NUM_MACCHINE = 200;
+int NUM_MACCHINE = 100;
 void CoreInit()
 {
 	mappa.generate();
@@ -103,10 +102,32 @@ void updateMacchina(Macchina &macchina)
 			macchina.changeDirection(i->getChangeDir(macchina.getShape().getPosition(), d)); //delego all'incrocio instradare correttamente la macchina
 		}
 		if (isEmptyBlock(b->getTipo()))
-			macchina.stop();
+		{
+			//macchina.stop();
+			percorso.clean();
+			Vector2i start = sorg.get(rand() % sorg.count(), false);
+			Direzione d;
+			Vector2i temp = start;
+			placeCar(temp, d);
+			macchina.setPosition(temp);
+			macchina.changeDirection(d);
+			g.findPath(start, sorg.get(rand() % sorg.count(), false), macchina.percorso);
+			macchina.currentBlock = macchina.percorso.get(0, false);
+		}
+			
 	}
 	else
-		macchina.stop();
+	{
+		percorso.clean();
+		Vector2i start = sorg.get(rand() % sorg.count(), false);
+		Direzione d;
+		Vector2i temp = start;
+		placeCar(temp, d);
+		macchina.setPosition(temp);
+		macchina.changeDirection(d);
+		g.findPath(start, sorg.get(rand() % sorg.count(), false), macchina.percorso);
+		macchina.currentBlock = macchina.percorso.get(0, false);
+	}
 }
 
 void placeCar(Vector2i &source, Direzione &d)
