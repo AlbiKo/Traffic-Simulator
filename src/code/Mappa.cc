@@ -24,9 +24,14 @@ Mappa::Mappa()
 	blocchi = new Blocco**[blocchiY];
 
 	for (int i = 0; i < blocchiY; i++)
-	{	blocchi[i] = new Blocco*[blocchiX];
+	{	
+		blocchi[i] = new Blocco*[blocchiX];
 		for (int j = 0; j < blocchiX; j++)
+		{
 			blocchi[i][j] = new Blocco(i, j, TipoBlocco::EMPTY);
+			blocchi[i][j]->collider = IntRect(j * Blocco::size, i*Blocco::size, Blocco::size, Blocco::size);
+			blocchi[i][j]->collider.left = j * Blocco::size;
+		}
 	}
 }
 
@@ -69,7 +74,12 @@ Vector2i Mappa::getRandomSource()
 	return sorgenti.get(i, false);
 }
 
-
+void Mappa::checkCarCollision()
+{
+	for (int i = 0; i < blocchiY; i++)
+		for (int j = 0; j < blocchiX; j++)
+			blocchi[i][j]->checkCollision();
+}
 
 void Mappa::generateSources()
 {
@@ -250,13 +260,13 @@ void Mappa::generateRoutes()
 	//destinazioni, quelle sopra e sotto
 	for (int i = 0; i < sorgenti.count(); i++)
 	{
-		Vector2i sorg = sorgenti.get(i, false);
+		Vector2i sources = sorgenti.get(i, false);
 
-		if (sorg.x == 0 || sorg.x == blocchiX - 1)
-			partenze.insert(sorg);
+		if (sources.x == 0 || sources.x == blocchiX - 1)
+			partenze.insert(sources);
 
-		if (sorg.y == 0 || sorg.y == blocchiY - 1)
-			destinazioni.insert(sorg);
+		if (sources.y == 0 || sources.y == blocchiY - 1)
+			destinazioni.insert(sources);
 	}
 
 	//Si collegano le partenze con una destinazione scelta in modo casuale

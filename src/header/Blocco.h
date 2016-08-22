@@ -1,12 +1,13 @@
 #include "TipoBlocco.h"
 #include "enum_toInt.h"
+#include "MacchinaPtr_List.h"
 #include <SFML/Graphics.hpp>
 
 #ifndef BLOCCO_INCLUDE
 #define BLOCCO_INCLUDE
 using namespace sf;
 
-/**La classe blocco rappresenta il blocco generico che deve essere posizionato sulla mappa.
+/**La classe blocco rappresenta il blocco generico che deve essere posizionato sulla map.
 */
 class Blocco
 {
@@ -14,10 +15,16 @@ protected:
 	Sprite sprite;
 	TipoBlocco tipo;
 
+
+
 	/**Impsta il tipo di blocco con quello indicato*/
 	void setTipo(TipoBlocco tipo);
 public:
 	static const int size = 68;
+
+	MacchinaPtr_List cars;
+	IntRect collider;
+	void checkCollision();
 
 	Blocco();
 	virtual ~Blocco();

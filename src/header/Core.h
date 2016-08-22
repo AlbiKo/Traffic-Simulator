@@ -10,6 +10,8 @@ void update(sf::RenderWindow &widget);
 
 /**Aggiorna la posizione della macchina\n
 *  Se la macchina si trova su una curva o su un incrocio, cambia la direzione della macchina*/
-void updateMacchina(Macchina &macchina);
+void updateCar(Macchina &car);
 void placeCar(Vector2i &source, Direzione &d);
+void replaceCar(Macchina &car);
+void refreshMap();
 void addCar(Vector2i source);

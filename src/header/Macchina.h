@@ -7,7 +7,7 @@
 
 using namespace sf;
 
-/** La classe Macchina rappresenta il veicolo che viene posizionato sulla mappa.
+/** La classe Macchina rappresenta il veicolo che viene posizionato sulla map.
 *   Ogni macchina ha una sua posizione, un colore e la direzione in cui deve viaggiare.
 */
 class Macchina
@@ -20,13 +20,19 @@ public:
 	Vector2i_List percorso;
 
 	Vector2i currentBlock;
+	Vector2i nextBlock;
+
+	Direzione nextDir;
+	Direzione currentDir;
 
 	IntRect colliderDx,
 			colliderSx,
 			colliderUp,
 			colliderDown;
 
-	
+	IntRect collider;
+
+	Macchina * carBy = NULL;
 	/** Costruttore che inizializza una macchina senza specificare la posizione. */
 	Macchina();
 	
@@ -84,10 +90,11 @@ public:
 	Direzione getDirection();
 	
 private:
+
+	const int SPEED = 1;
+
 	RectangleShape shape;
 
-
-	
 	/** Direzione della macchina. */
 	Direzione moving;
 

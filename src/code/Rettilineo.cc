@@ -11,6 +11,7 @@ Rettilineo::Rettilineo(int rowIndex, int columnIndex, TipoBlocco tipo)
 {
 	//D1(PRINT("Constructo Rect"));
 	sprite.setPosition(columnIndex * size, rowIndex * size);
+	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
 	cambiaVerso(tipo);
 }
 

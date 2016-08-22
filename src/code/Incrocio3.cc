@@ -10,6 +10,8 @@ Incrocio3::Incrocio3()
 Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 {
 	sprite.setPosition(columnIndex * size, rowIndex * size);
+	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
+
 	cambiaVerso(tipo);
 
 	setPos(rowIndex, columnIndex);

@@ -51,6 +51,7 @@ void Macchina::copy(Macchina m)
 	setPosition(m.getPosition());
 	setColor(m.getColor());
 	moving = m.moving;
+	currentDir = m.currentDir;
 }
 
 bool Macchina::isMoving()
@@ -66,6 +67,7 @@ bool Macchina::changeDirection(Direzione dir)
 	if (dir == Direzione::ND || dir == moving)
 		return false;
 
+	currentDir = dir;
 	moving = dir;
 	return true;
 }
@@ -77,29 +79,29 @@ void Macchina::stop()
 
 void Macchina::update()
 {
-	int velX = 1, velY = 1;
+	int baseX = 1, baseY = 1;
 
 	switch (moving)
 	{
 	case Direzione::SU:
-		velX = 0;
-		velY = -1;
+		baseX = 0;
+		baseY = -1;
 		break;
 	case Direzione::GIU:
-		velX = 0;
+		baseX = 0;
 		break;
 	case Direzione::DX:
-		velY = 0;
+		baseY = 0;
 		break;
 	case Direzione::SX:
-		velX = -1;
-		velY = 0;
+		baseX = -1;
+		baseY = 0;
 		break;
 	default:
 		return;
 	}
 
-	shape.move(velX * 1, velY * 1);
+	shape.move(baseX * SPEED, baseY * SPEED);
 	updateColliders();
 }
 
@@ -119,7 +121,7 @@ void Macchina::initMacchina()
 	shape.setOrigin(SIZE / 2, SIZE / 2);
 	shape.setSize(Vector2f(SIZE, SIZE));
 
-	setColor(Color::Red);
+	setColor(Color(rand() % 210 + 30, rand() % 210 + 30, rand() % 200 + 30, 255));
 
 	//Inizializzazione collider
 	colliderSx = IntRect();
@@ -127,32 +129,37 @@ void Macchina::initMacchina()
 	colliderUp = IntRect();
 	colliderDown = IntRect();
 
-	colliderSx.width = SIZE / 2;
+	collider = IntRect(getPosition().x - SIZE / 2 - 4, getPosition().y - SIZE / 2 - 4, SIZE + 4, SIZE + 4);
+
+	colliderSx.width = SIZE;
 	colliderSx.height = SIZE;
 
-	colliderDx.width = SIZE / 2;
+	colliderDx.width = SIZE;
 	colliderDx.height = SIZE;
 
 	colliderUp.width = SIZE;
-	colliderUp.height = SIZE / 2;
+	colliderUp.height = SIZE;
 
 	colliderDown.width = SIZE;
-	colliderDown.height = SIZE / 2;
+	colliderDown.height = SIZE;
 
 	updateColliders();
 }
 
 void Macchina::updateColliders()
 {
-	colliderSx.left = shape.getPosition().x - SIZE + 1;
+	colliderSx.left = shape.getPosition().x - SIZE - SIZE/2 + 1;
 	colliderSx.height = shape.getPosition().y - SIZE / 2;
 
 	colliderDx.left = shape.getPosition().x + SIZE / 2 + 1;
 	colliderDx.height = shape.getPosition().y - SIZE / 2;
 
 	colliderUp.left = shape.getPosition().x - SIZE / 2;
-	colliderUp.height = shape.getPosition().y - SIZE + 1;
+	colliderUp.height = shape.getPosition().y - SIZE - SIZE/2 + 1;
 
 	colliderDown.left = shape.getPosition().x - SIZE / 2;
 	colliderDown.height = shape.getPosition().y + SIZE / 2 + 1;
+
+	collider.left = getPosition().x - SIZE / 2 - 4;
+	collider.top = getPosition().y - SIZE / 2 - 4;
 }

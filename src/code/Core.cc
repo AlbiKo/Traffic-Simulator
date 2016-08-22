@@ -2,48 +2,82 @@
 
 using namespace sf;
 
-static Mappa mappa;
-static Graph g;
+static Mappa map;
+static Graph graph;
 
-Macchina_List carlist;
-Vector2i_List sorg;
-Vector2i_List percorso;
-Vector2i currentBlock;
+static Macchina_List carList;
+static Vector2i_List sources;
 
-int NUM_MACCHINE = 100;
+Vector2i mapSize;
+
+int NUM_MACCHINE = 5;
+
+extern int RESX, RESY;
+
+int pause = false;
+
 void CoreInit()
 {
-	mappa.generate();
-	g.buildGraph(mappa);
-
+	map.generate();
+	mapSize = map.getMapSize();
+	graph.buildGraph(map);
 	
-	mappa.getSorgenti(sorg);
+	map.getSorgenti(sources);
 	for (int i = 0; i < NUM_MACCHINE; i++)
 	{
-		Vector2i start = sorg.get(rand() % sorg.count(), false);
+		Vector2i start = sources.get(rand() % sources.count(), false);
 		addCar(start);
-		g.findPath(start, sorg.get(rand() % sorg.count(), false), carlist.get(0)->percorso);
-		carlist.get(0)->currentBlock = carlist.get(0)->percorso.get(0, false);
+		graph.findPath(start, sources, carList.get(0)->percorso);
+		carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
+		carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
 	}
 }
 
-
-
 void update(RenderWindow &widget)
 {
-	mappa.draw(widget);
-	if (Keyboard::isKeyPressed(Keyboard::R))
-	{
-		mappa.generate();
-	}
+	map.draw(widget);
 
-	for (int i = 0; i < NUM_MACCHINE; i++)
+	if (Keyboard::isKeyPressed(Keyboard::R))
+		refreshMap();
+
+	if (Keyboard::isKeyPressed(Keyboard::A))
+		replaceCar(*carList.get(rand() % carList.count()));
+
+	if (Keyboard::isKeyPressed(Keyboard::D))
+		carList.get(0)->changeDirection(carList.get(0)->currentDir);
+
+	if (Keyboard::isKeyPressed(Keyboard::S))
+		carList.get(1)->stop();
+
+	if (Keyboard::isKeyPressed(Keyboard::X))
+		carList.get(0)->stop();
+
+	if (Keyboard::isKeyPressed(Keyboard::P))
+		pause = true;
+
+	if (Keyboard::isKeyPressed(Keyboard::L))
+		pause = false;
+
+	if (Keyboard::isKeyPressed(Keyboard::U))
 	{
-		carlist.get(i)->draw(widget);
-		updateMacchina(*carlist.get(i));
+		Vector2i start = sources.get(rand() % sources.count(), false);
+		addCar(start);
+		graph.findPath(start, sources, carList.get(0)->percorso);
+		carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
+		carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
+		NUM_MACCHINE++;
 	}
 
 	
+		for (int i = 0; i < NUM_MACCHINE; i++)
+		{
+			Macchina * car = carList.get(i);
+			car->draw(widget);
+			if (!pause)
+				updateCar(*car);
+		}
+		if (!pause)
+			map.checkCarCollision();
 
 }
 
@@ -72,62 +106,86 @@ Direzione findDir(Vector2f carPos, Vector2i nextBlock)
 			return Direzione::SU;
 	}
 
-	//assert(0);
 	return Direzione::ND;
 }
 
-void updateMacchina(Macchina &macchina)
+void updateCar(Macchina &car)
 {
-	macchina.update();
-	Vector2f f = macchina.getShape().getPosition();
-	Blocco * b = mappa.getBlocco(Vector2i(f.x, f.y)); //prendo il blocco su cui si trova la macchina
-	if (b != NULL) {
-		if (static_cast<int>(f.x / Blocco::size) == macchina.currentBlock.x && static_cast<int>(f.y / Blocco::size) == macchina.currentBlock.y)
+	std::cerr << "Sono su macchina " << &car << "\n";
+	car.update();
+	Vector2f f = car.getShape().getPosition();
+	Blocco * b = map.getBlocco(Vector2i(f.x, f.y)); //prendo il blocco su cui si trova la macchina
+
+	if (b != NULL)
+	{
+		if (static_cast<int>(f.x) / Blocco::size == car.nextBlock.x && static_cast<int>(f.y)  / Blocco::size== car.nextBlock.y)
 		{
-			Vector2i t = macchina.percorso.get(0, false);
-			if (t != Vector2i(-1,-1))
-			std::cerr << "sono su " << t.x << ", " << t.y << " curBlock " 
-				<< macchina.currentBlock.x << ", " << macchina.currentBlock.y <<"\n";
-			macchina.percorso.get(0, true);
-			macchina.currentBlock = macchina.percorso.get(0, false);
+			
+			Blocco * blocco = map.getBlocco(car.currentBlock.y, car.currentBlock.x);
+			if (car.collider.intersects(blocco->collider))
+			{
+			/*	std::cerr << "cur " << car.currentBlock.x << ", " << car.currentBlock.y << "\n";
+				std::cerr << "next " <<car.nextBlock.x <<", " <<car.nextBlock.y  <<"\n";
+				std::cerr << blocco->collider.left << ", " << blocco->collider.top << "  " << blocco->getSprite().getPosition().x << ", " << blocco->getSprite().getPosition().y << "\n";
+				std::cerr << car.getPosition().x << ", " << car.getPosition().y << "\n";
+				*/
+				//Aggiungo la macchina al blocco appena lasciato
+				blocco->cars.insert(&car);
+			}
+
+			car.currentBlock = car.nextBlock;
+
+			blocco = map.getBlocco(car.currentBlock.y, car.currentBlock.x);
+			if (car.collider.intersects(blocco->collider))
+				//Aggiungo la macchina al blocco corrente
+				blocco->cars.insert(&car);
+
+			//Trovo il prossimo nodo nel percorso se ho raggiunto il nodo attuale
+			if (car.nextBlock == car.percorso.get(0, false) && car.percorso.count() > 1)
+			{
+				car.percorso.get(0, true);
+				car.nextDir = findDir(f, car.percorso.get(0, false));
+			}
+		
+			//Trovo il prossimo blocco
+			switch (car.nextDir)
+			{
+			case Direzione::SU:
+				car.nextBlock.y--;
+				break;
+			case Direzione::GIU:
+				car.nextBlock.y++;
+				break;
+			case Direzione::DX:
+				car.nextBlock.x++;
+				break;
+			case Direzione::SX:
+				car.nextBlock.x--;
+				break;
+			default:
+				break;
+
+			}
 		}
+
+		Blocco * blocco = map.getBlocco(car.nextBlock.y, car.nextBlock.x);
+		if (blocco != NULL)
+			//Aggiungo la macchina al blocco successivo
+			blocco->cars.insert(&car);
 
 		Curva * c = dynamic_cast<Curva *>(b);
 		if (c != NULL)
-			macchina.changeDirection(c->getChangeDir(macchina.getShape().getPosition())); //delego alla il cambio direzione della macchina
+			car.changeDirection(c->getChangeDir(car.getShape().getPosition())); //delego alla il cambio direzione della macchina
+		
 		Incroci * i = dynamic_cast<Incroci *>(b);
-		if (i != NULL) {
-			Direzione d = findDir(f, macchina.percorso.get(0, false));
-			//std::cerr << "Direzione " << toString(d) << "\n";
-			macchina.changeDirection(i->getChangeDir(macchina.getShape().getPosition(), d)); //delego all'incrocio instradare correttamente la macchina
-		}
+		if (i != NULL)
+			car.changeDirection(i->getChangeDir(car.getShape().getPosition(), car.nextDir)); //delego all'incrocio instradare correttamente la macchina
+		
 		if (isEmptyBlock(b->getTipo()))
-		{
-			//macchina.stop();
-			percorso.clean();
-			Vector2i start = sorg.get(rand() % sorg.count(), false);
-			Direzione d;
-			Vector2i temp = start;
-			placeCar(temp, d);
-			macchina.setPosition(temp);
-			macchina.changeDirection(d);
-			g.findPath(start, sorg.get(rand() % sorg.count(), false), macchina.percorso);
-			macchina.currentBlock = macchina.percorso.get(0, false);
-		}
-			
+			replaceCar(car);
 	}
 	else
-	{
-		percorso.clean();
-		Vector2i start = sorg.get(rand() % sorg.count(), false);
-		Direzione d;
-		Vector2i temp = start;
-		placeCar(temp, d);
-		macchina.setPosition(temp);
-		macchina.changeDirection(d);
-		g.findPath(start, sorg.get(rand() % sorg.count(), false), macchina.percorso);
-		macchina.currentBlock = macchina.percorso.get(0, false);
-	}
+		replaceCar(car);
 }
 
 void placeCar(Vector2i &source, Direzione &d)
@@ -136,31 +194,59 @@ void placeCar(Vector2i &source, Direzione &d)
 	d = Direzione::ND;
 	if (source.x == 0 && source.y != 0) {
 		d = Direzione::DX;
-		x1 = 40;
+		x1 = 0;
 		y1 = 48;
 	}
-	if (source.x == mappa.getMapSize().x - 1 && source.y != 0) {
+	if (source.x == map.getMapSize().x - 1 && source.y != 0) {
 		d = Direzione::SX;
-		x1 = 40;
+		x1 = 66;
 		y1 = 19;
 	}
 	if (source.x != 0 && source.y == 0) {
 		d = Direzione::GIU;
 		x1 = 19;
-		y1 = 40;
+		y1 = 0;
 	}
-	if (source.x != 0 && source.y == mappa.getMapSize().y - 1) {
+	if (source.x != 0 && source.y == map.getMapSize().y - 1) {
 		d = Direzione::SU;
 		x1 = 48;
-		y1 = 40;
+		y1 = 66;
 	}
 	source.x = source.x * Blocco::size + x1;
 	source.y = source.y * Blocco::size + y1;
+}
+
+void replaceCar(Macchina & car)
+{
+	Vector2i startSource = sources.get(rand() % sources.count(), false);
+	Direzione startDir;
+	Vector2i screenPos = startSource;
+
+	placeCar(screenPos, startDir);
+	car.setPosition(screenPos);
+	car.changeDirection(startDir);
+
+	graph.findPath(startSource, sources, car.percorso);
+	car.nextBlock = car.percorso.get(0, false);
+	car.currentBlock = car.percorso.get(0, false);
+}
+
+void refreshMap()
+{
+	map.generate();
+
+	sources.clean();
+	map.getSorgenti(sources);
+	graph.buildGraph(map);
+
+	for (int i = 0; i < NUM_MACCHINE; i++)
+		replaceCar(*carList.get(i));
 }
 
 void addCar(Vector2i source)
 {
 	Direzione d;
 	placeCar(source, d);
-	carlist.add(source, d);
+	carList.add(source, d);
 }
+

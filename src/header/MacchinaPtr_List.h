@@ -1,35 +1,35 @@
-#ifndef MACCHINA_LIST_INCLUDE
-#define MACCHINA_LIST_INCLUDE
+#ifndef MACCHINAPTR_LIST_INCLUDE
+#define MACCHINAPTR_LIST_INCLUDE
 
 #include "Macchina.h"
 
 /** Struttura che rappresenta il singolo nodo della lista */
-struct Macchina_Node {
-	Macchina node;
-	Macchina_Node * next;
+struct MacchinaPtr_Node {
+	Macchina * node;
+	MacchinaPtr_Node * next;
 };
 
-/** La classe Macchina_List rappresenta una lista di Macchine.
+
+/** La classe MacchinaPtr_List rappresenta una lista di Macchine.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
 *	I metodi disponibili sono: aggiunta di una nuova macchina, aggiunta di macchina esistente, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.*/
-class Macchina_List {
+class MacchinaPtr_List {
 
 private:
 	/** Puntatore alla radice della lista */
-	Macchina_Node *root;
+	MacchinaPtr_Node *root;
 
 	/** Numero di nodi della lista */
 	int num_nodi;
 
 public:
 
-
 	/** Costruttore che inizializza una lista vuota */
-	Macchina_List();
+	MacchinaPtr_List();
 	
 	/** Distruttuore che elimina tutti i nodi presenti nella lista */
-	~Macchina_List();	
+	~MacchinaPtr_List();	
 	
 	/** Restituisce il numero di elementi nella lista */
 	inline int count()
@@ -37,24 +37,12 @@ public:
 		return num_nodi;
 	}
 
-	/**Aggiunta di una macchina alla lista
-	*  @param pos Posizione iniziale della macchina
-	*  @param dir Direzione iniziale della macchina
-	*/
-	void add(Vector2i pos, Direzione dir);
-
-	/**Aggiunta di una macchina alla lista
-	*  @param pos Posizione iniziale della macchina
-	*  @param dir Direzione iniziale della macchina
-	*  @param color Colore della macchina
-	*/
-	void add(Vector2i pos, Direzione dir, Color color);
 
 	/** Inserimento di una macchina esistente nella lista 
 	*
 	*	@param i Macchina da inserire
 	*/
-	void insert(Macchina i);
+	void insert(Macchina * i);
 
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro. 
 	*
@@ -72,5 +60,8 @@ public:
 	*  @return true se la rimozione è avvenuta, false altrimenti.
 	*/
 	bool remove(int index);
+
+	bool remove(Macchina * m);
 };
+
 #endif

@@ -12,7 +12,7 @@ public:
 	~Graph();
 
 	void buildGraph(Mappa &m);
-	void findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path);
+	void findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &path);
 private:
 	GraphNode_List nodes;
 	Vector2i mapSize;

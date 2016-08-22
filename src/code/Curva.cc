@@ -21,6 +21,7 @@ Curva::Curva()
 Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 {
 	sprite.setPosition(columnIndex * size, rowIndex * size);
+	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
 	cambiaVerso(tipo);
 	
 	pos1.x = 19+(size*columnIndex);

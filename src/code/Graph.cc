@@ -20,13 +20,13 @@ void Graph::buildGraph(Mappa &map)
 	mapSize = map.getMapSize();
 	
 	int count = 0; //PER DEBUG
-	Vector2i_List sorg;
-	map.getSorgenti(sorg);
+	Vector2i_List sources;
+	map.getSorgenti(sources);
 	
-	while (sorg.count() != 0)
+	while (sources.count() != 0)
 	{
 		std::cout << count << " ";
-		nodes.insert(sorg.get(0, true));
+		nodes.insert(sources.get(0, true));
 		count++;
 	}
 	for (int i = 1; i < mapSize.y - 1; i++)
@@ -50,20 +50,15 @@ void Graph::buildGraph(Mappa &map)
 		checkLinkDx(currentPtr, tipo, map);
 		checkLinkUp(currentPtr, tipo, map);
 		checkLinkDown(currentPtr, tipo, map);
-	
 	}
-
 }
 
 
-
-void Graph::findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path)
+void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &path)
 {
-	if (nodes.getIndex(startPos) == -1 || nodes.getIndex(endPos) == -1)
+	if (nodes.getIndex(startPos) == -1 )
 		return;
 
-	D1(PRINT("\n\nTrovo percorso fra " <<startPos.x <<", " <<startPos.y <<" e " <<endPos.x <<", " <<endPos.y));
-	std::cerr << "Destinazione " << endPos.x << ", " << endPos.y << " \n";
 	const int count = nodes.count();
 
 	int * dist = new int[count];
@@ -79,7 +74,26 @@ void Graph::findPath(Vector2i startPos, Vector2i endPos, Vector2i_List &path)
 	D1(PRINT("\nStampo array"));
 	D1(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
 
+	Vector2i_List endSources;
+	Vector2i endPos(0,0);
+	for (int i = 0; i < count; i++)
+	{
+		endPos = nodes.get(i)->getPos();
+		if (endPos != startPos && sources.get(endPos.x, endPos.y, false) != Vector2i(-1, -1) && dist[i] != 0)
+			endSources.insertHead(endPos);
+	}
+
+	assert(endSources.count() > 0);
+	endPos = endSources.get(rand() % endSources.count(), false);
+
+	assert(endPos != startPos);
+	assert(endPos.x != startPos.x || endPos.y != startPos.y);
+
+	D1(PRINT("\n\nTrovo percorso fra " << startPos.x << ", " << startPos.y << " e " << endPos.x << ", " << endPos.y));
+	std::cerr << "Destinazione " << endPos.x << ", " << endPos.y << " \n";
+
 	buildPath(path, parent, count, endPos);
+
 	delete [] dist;
 	delete [] parent;
 }
@@ -255,6 +269,8 @@ int Graph::getWeight(TipoBlocco tipo)
 void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2i endPos)
 {
 	D1(PRINT("Costruzione percorso: " <<count));
+
+	path.clean();
 
 	Vector2i temp = endPos;
 	int index = nodes.getIndex(temp);

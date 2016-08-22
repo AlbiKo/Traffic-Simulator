@@ -2,7 +2,6 @@
 #include "../header/Debug.h"
 
 
-
 Macchina_List::Macchina_List()
 {
 	root = NULL;
@@ -13,7 +12,6 @@ Macchina_List::~Macchina_List()
 {
 	this->clean();
 }
-
 
 void Macchina_List::add(Vector2i pos, Direzione dir)
 {
@@ -39,7 +37,6 @@ void Macchina_List::insert(Macchina i)
 {
 	Macchina_Node *t = new Macchina_Node;
 	t->node.copy(i);
-
 	if (root == NULL)
 		t->next = NULL;
 	else
@@ -77,6 +74,7 @@ bool Macchina_List::remove(int index)
 		previous = t;
 		t = t->next;
 	}
+	num_nodi--;
 	previous->next = t->next;
 	delete t;
 	return true;

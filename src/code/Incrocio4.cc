@@ -10,6 +10,7 @@ Incrocio4::Incrocio4()
 Incrocio4::Incrocio4(int rowIndex, int columnIndex)
 {
 	sprite.setPosition(columnIndex * size, rowIndex * size);
+	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
 	setTipo(TipoBlocco::CROSS4);
 
 	setPos(rowIndex, columnIndex);
