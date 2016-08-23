@@ -17,7 +17,7 @@ protected:
 
 
 
-	/**Impsta il tipo di blocco con quello indicato*/
+	/**Imposta il tipo di blocco con quello indicato*/
 	void setTipo(TipoBlocco tipo);
 public:
 	static const int size = 68;
@@ -25,6 +25,9 @@ public:
 	MacchinaPtr_List cars;
 	IntRect collider;
 	void checkCollision();
+
+
+
 
 	Blocco();
 	virtual ~Blocco();

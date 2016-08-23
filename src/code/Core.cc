@@ -72,6 +72,7 @@ void update(RenderWindow &widget)
 		for (int i = 0; i < NUM_MACCHINE; i++)
 		{
 			Macchina * car = carList.get(i);
+
 			car->draw(widget);
 			if (!pause)
 				updateCar(*car);
@@ -111,7 +112,6 @@ Direzione findDir(Vector2f carPos, Vector2i nextBlock)
 
 void updateCar(Macchina &car)
 {
-	std::cerr << "Sono su macchina " << &car << "\n";
 	car.update();
 	Vector2f f = car.getShape().getPosition();
 	Blocco * b = map.getBlocco(Vector2i(f.x, f.y)); //prendo il blocco su cui si trova la macchina

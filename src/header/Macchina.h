@@ -32,6 +32,8 @@ public:
 
 	IntRect collider;
 
+	RectangleShape globo, sx, dx, up, down;
+
 	Macchina * carBy = NULL;
 	/** Costruttore che inizializza una macchina senza specificare la posizione. */
 	Macchina();

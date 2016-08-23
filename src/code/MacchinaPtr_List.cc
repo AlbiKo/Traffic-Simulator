@@ -53,7 +53,8 @@ Macchina * MacchinaPtr_List::get(int index)
 
 void MacchinaPtr_List::clean()
 {
-	while (root != NULL) {
+	while (root != NULL)
+	{
 		MacchinaPtr_Node *t = root->next;
 		delete root;
 		root = t;
@@ -63,7 +64,6 @@ void MacchinaPtr_List::clean()
 
 bool MacchinaPtr_List::remove(int index)
 {
-	std::cerr << "Rimuovo \n";
 	if (index >= num_nodi) return NULL;
 	MacchinaPtr_Node *t = root;
 	MacchinaPtr_Node *previous = NULL;
@@ -80,12 +80,9 @@ bool MacchinaPtr_List::remove(int index)
 
 bool MacchinaPtr_List::remove(Macchina * m)
 {
-	
 	MacchinaPtr_Node *t = root;
 	MacchinaPtr_Node *previous = NULL;
 	
-	assert(m != NULL && 34);
-
 	while (t != NULL && t->node != m)
 	{
 		previous = t;
@@ -94,10 +91,8 @@ bool MacchinaPtr_List::remove(Macchina * m)
 
 	if (t != NULL)
 	{
-		std::cerr << "Rimuovo " << m << " \n";
 		if (t == root)
 			root = root->next;
-		
 		else
 			previous->next = t->next;
 
