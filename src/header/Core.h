@@ -15,3 +15,4 @@ void placeCar(Vector2i &source, Direzione &d);
 void replaceCar(Macchina &car);
 void refreshMap();
 void addCar(Vector2i source);
+void createCar();

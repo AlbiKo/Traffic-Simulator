@@ -18,15 +18,15 @@ Macchina::Macchina(Vector2i pos)
 
 void Macchina::draw(RenderWindow & widget)
 {
-	widget.draw(globo);
+//	widget.draw(globo);
 	
 	widget.draw(shape);
 
-	widget.draw(sx);
+/*	widget.draw(sx);
 	widget.draw(dx);
 	widget.draw(up);
 	widget.draw(down);
-
+	*/
 	
 }
 
@@ -126,7 +126,7 @@ void Macchina::initMacchina()
 	//Inizializzazione sprite macchina
 	shape = RectangleShape();
 
-	shape.setPosition(SIZE / 2, SIZE / 2);
+	shape.setPosition(-SIZE / 2, -SIZE / 2);
 	shape.setOrigin(SIZE / 2, SIZE / 2);
 	shape.setSize(Vector2f(SIZE, SIZE));
 

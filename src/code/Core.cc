@@ -10,8 +10,11 @@ static Vector2i_List sources;
 
 Vector2i mapSize;
 
-int NUM_MACCHINE = 5;
+Clock clocks;
 
+int NUM_MACCHINE = 50;
+int spawned = 0;
+Time timeLastSpawned;
 extern int RESX, RESY;
 
 int pause = false;
@@ -23,19 +26,26 @@ void CoreInit()
 	graph.buildGraph(map);
 	
 	map.getSorgenti(sources);
-	for (int i = 0; i < NUM_MACCHINE; i++)
+	/*for (int i = 0; i < NUM_MACCHINE; i++)
 	{
 		Vector2i start = sources.get(rand() % sources.count(), false);
 		addCar(start);
 		graph.findPath(start, sources, carList.get(0)->percorso);
 		carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
 		carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
-	}
+	}*/
 }
 
 void update(RenderWindow &widget)
 {
 	map.draw(widget);
+
+	timeLastSpawned += clocks.restart();
+	if (!pause && spawned < NUM_MACCHINE && timeLastSpawned.asSeconds() >= 0.75)
+	{
+		createCar();
+		timeLastSpawned = Time::Zero;
+	}
 
 	if (Keyboard::isKeyPressed(Keyboard::R))
 		refreshMap();
@@ -59,17 +69,12 @@ void update(RenderWindow &widget)
 		pause = false;
 
 	if (Keyboard::isKeyPressed(Keyboard::U))
-	{
-		Vector2i start = sources.get(rand() % sources.count(), false);
-		addCar(start);
-		graph.findPath(start, sources, carList.get(0)->percorso);
-		carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
-		carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
 		NUM_MACCHINE++;
-	}
 
+	if (pause && Mouse::isButtonPressed(Mouse::Left))
+		std::cerr << "Mouse: " << Mouse::getPosition().x << ", " << Mouse::getPosition().y << "\n";
 	
-		for (int i = 0; i < NUM_MACCHINE; i++)
+		for (int i = 0; i < spawned; i++)
 		{
 			Macchina * car = carList.get(i);
 
@@ -248,5 +253,16 @@ void addCar(Vector2i source)
 	Direzione d;
 	placeCar(source, d);
 	carList.add(source, d);
+}
+
+void createCar()
+{
+	std::cerr << "Creo\n";
+	Vector2i start = sources.get(rand() % sources.count(), false);
+	addCar(start);
+	graph.findPath(start, sources, carList.get(0)->percorso);
+	carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
+	carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
+	spawned++;
 }
 
