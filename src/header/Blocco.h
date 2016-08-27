@@ -12,10 +12,14 @@ using namespace sf;
 class Blocco
 {
 protected:
+
 	Sprite sprite;
 	TipoBlocco tipo;
 
-
+	bool checkBlockCollision(Macchina &currentCar);
+	bool checkSameDirCollision(Macchina &currentCar, Macchina &collidingCar);
+	bool checkCurveCollison(Macchina &currentCar, Macchina &collidingCar);
+	bool checkCrossCollision(Macchina &currentCar, Macchina &collidingCar);
 
 	/**Imposta il tipo di blocco con quello indicato*/
 	void setTipo(TipoBlocco tipo);

@@ -41,7 +41,7 @@ Incrocio3::Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo)
 
 void Incrocio3::cambiaVerso(TipoBlocco verso)
 {
-	if (verso == TipoBlocco::CROSS3_UP || verso == TipoBlocco::CROSS3_DOWN || verso == TipoBlocco::CROSS3_SX || verso == TipoBlocco::CROSS3_DX)
+	if (isCross3Block(verso))
 		setTipo(verso);
 	else
 		setTipo(TipoBlocco::CROSS3_UP);
