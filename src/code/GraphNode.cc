@@ -9,24 +9,16 @@ GraphNode::GraphNode()
 	D3(PRINT("Nodo base creato"));
 }
 
-GraphNode::GraphNode(Vector2i pos)
+GraphNode::GraphNode(Vector2i startPos)
 {
     initNodo();
-	this->pos = pos;
+	pos = startPos;
 
 	D1(PRINT("Nodo creato: posizione " << pos.x << ", " << pos.y));
 }
 
 GraphNode::~GraphNode()
 {
-}
-
-void GraphNode::copy(GraphNode gn)
-{
-	pos = gn.pos;
-
-	for (int i = 0; i < 4; i++)
-		adiacenze[i] = gn.adiacenze[i];
 }
 
 void GraphNode::initNodo()
@@ -40,9 +32,12 @@ void GraphNode::initNodo()
 	}
 }
 
-void GraphNode::setPos(Vector2i pos)
+void GraphNode::copy(const GraphNode &node)
 {
-	this->pos = pos;
+	pos = node.pos;
+
+	for (int i = 0; i < 4; i++)
+		adiacenze[i] = node.adiacenze[i];
 }
 
 bool GraphNode::setAdiacenza(Direzione dir, GraphNode * nodo, int peso)
@@ -65,8 +60,10 @@ bool GraphNode::setAdiacenza(Direzione dir, GraphNode * nodo, int peso)
 
 bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 {
-	assert(i >= 0 && i <= 3);
-	D1( if (nodo != NULL) PRINT("Nodo: scrivo adiacenza in dir " <<i <<": " <<nodo->getPos().x <<", " <<nodo->getPos().y));
+	if (i < 0 || i > 3)
+		return NULL;
+	
+	D1( if (nodo != NULL) PRINT("Nodo: scrivo adiacenza in dir " <<i <<": " <<nodo->pos.x <<", " <<nodo->pos.y));
 
 	if (i >= 0 && i <= 3 && adiacenze[i].nodo == NULL)
 	{
@@ -85,38 +82,13 @@ bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 	return false;
 }
 
-bool GraphNode::setAdiacenza(GraphNode * nodo)
-{
-	int i;
-
-	//Si cerca la prima posizione libera
-	for (i = 0; i < 4 && adiacenze[i].nodo != NULL; i++);
-
-	if (i == 4)
-	{
-		D2(PRINT("Nodo: adiacenza "<<nodo <<" non impostata; nessuna posizione libera"));
-		return false;
-	}
-	else
-	{
-		setAdiacenza(i, nodo, 0);
-		D1(PRINT("Nodo adiacenza "<<nodo <<"impostata alla posizione " <<i));
-		return true;
-	}
-}
-
 GraphNode * GraphNode::getAdiacenza(int i, int &peso)
 {
-	assert(i >= 0 && i <= 3);
-	D3(PRINT("Nodo: leggo adiacenza in " << i));
-
 	if (i < 0 || i > 3)
-	{
-		D1(PRINT("Nodo: letta adiacenza " << adiacenze[i].nodo << " di peso " << adiacenze[i].peso));
-		adiacenze[i].peso = 0;
 		return NULL;
-	}
 
+	D2(PRINT("Nodo: letta adiacenza " << adiacenze[i].nodo << " di peso " << adiacenze[i].peso));
+	
 	peso = adiacenze[i].peso;
 	return adiacenze[i].nodo;
 }

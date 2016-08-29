@@ -2,7 +2,6 @@
 #include "../header/Debug.h"
 Graph::Graph()
 {
-	//nodes = GraphNode_List();
 	mapSize = Vector2i(0, 0);
 }
 
@@ -16,24 +15,28 @@ void Graph::buildGraph(Mappa &map)
 	D1(PRINT("\n\n****************\nCostruzione grafo da mappa\n"));
 
 	nodes.clean();
-
 	mapSize = map.getMapSize();
 	
-	int count = 0; //PER DEBUG
+	//Usato per numerare i nodi e poterli distinguere quando si stampano i parent.
+	int count = 0;
+
 	Vector2i_List sources;
 	map.getSorgenti(sources);
 	
+	//Aggiungo alla lista dei nodi le sorgenti
 	while (sources.count() != 0)
 	{
-		std::cout << count << " ";
+		D1(PRINT(count << " "));
 		nodes.insert(sources.get(0, true));
 		count++;
 	}
+
+	//Aggiungo alla lista dei nodi i blocchi interni che sono curve o incroci.
 	for (int i = 1; i < mapSize.y - 1; i++)
 		for (int j = 1; j < mapSize.x-1; j++)
 			if (!isEmptyBlock(map.getBlocco(i, j)->getTipo()) && !isRectBlock(map.getBlocco(i, j)->getTipo()))
 			{
-				std::cout << count << " ";
+				D1(PRINT(count << " "));
 				nodes.insert(Vector2i(j, i));
 				count++;
 			}
@@ -41,10 +44,11 @@ void Graph::buildGraph(Mappa &map)
 	GraphNode * currentPtr;
 	TipoBlocco tipo;
 
+	//Per ogni nodo, individuo e imposto dove possibile i collegamnti con i nodi vicini seguendo le quattro direzioni.
 	for (int i = 0; i < nodes.count(); i++)
 	{
 		currentPtr = nodes.get(i);
-		tipo = map.getBlocco(currentPtr->getPos().y, currentPtr->getPos().x)->getTipo();
+		tipo = map.getBlocco(currentPtr->pos.y, currentPtr->pos.x)->getTipo();
 
 		checkLinkSx(currentPtr, tipo, map);
 		checkLinkDx(currentPtr, tipo, map);
@@ -56,41 +60,46 @@ void Graph::buildGraph(Mappa &map)
 
 void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &path)
 {
+	//Se la posizione di partenza non esiste nella lista dei nodi
 	if (nodes.getIndex(startPos) == -1 )
 		return;
 
 	const int count = nodes.count();
 
+	//Creazione e inizializzazione dell'array delle distanze
 	int * dist = new int[count];
 	for (int i = 0; i < count; i++)
 		dist[i] = 0;
 
+	//Creazione e inizializzazione dell'array dei parent
 	Vector2i * parent = new Vector2i[count];
 	for (int i = 0; i < count; i++)
-		parent[i] = nodes.get(i, false).getPos();
+		parent[i] = nodes.get(i, false).pos;
 
 	buildParentArray(parent, dist, count, startPos);
 
-	D1(PRINT("\nStampo array"));
-	D1(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
+	D2(PRINT("\nStampo array"));
+	D2(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
 
+	//Lista delle destinazioni raggiungibili
 	Vector2i_List endSources;
 	Vector2i endPos(0,0);
+
+	//Indivuazione e inserimento delle destinazioni raggiungibili nella lista apposita.
+	//Una nodo è considerato destinazione se è una sorgente e se il suo rispettivo valore 
+	//nell'array delle distanze è diverso da 0.
 	for (int i = 0; i < count; i++)
 	{
-		endPos = nodes.get(i)->getPos();
+		endPos = nodes.get(i)->pos;
 		if (endPos != startPos && sources.get(endPos.x, endPos.y, false) != Vector2i(-1, -1) && dist[i] != 0)
 			endSources.insertHead(endPos);
 	}
 
 	assert(endSources.count() > 0);
+	//Estrazione casuale della destinazione dalla lista di destinazioni.
 	endPos = endSources.get(rand() % endSources.count(), false);
 
-	assert(endPos != startPos);
-	assert(endPos.x != startPos.x || endPos.y != startPos.y);
-
 	D1(PRINT("\n\nTrovo percorso fra " << startPos.x << ", " << startPos.y << " e " << endPos.x << ", " << endPos.y));
-	std::cerr << "Destinazione " << endPos.x << ", " << endPos.y << " \n";
 
 	buildPath(path, parent, count, endPos);
 
@@ -101,8 +110,8 @@ void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &p
 
 void Graph::addLink(GraphNode & currentNode, GraphNode & nextNode, Mappa &map, int numRect)
 {
-	Vector2i currentPos = currentNode.getPos(),
-			 nextPos	= nextNode.getPos(),
+	Vector2i currentPos = currentNode.pos,
+			 nextPos	= nextNode.pos,
 			 mapSize	= map.getMapSize();
 
 
@@ -128,13 +137,9 @@ void Graph::addLink(GraphNode & currentNode, GraphNode & nextNode, Mappa &map, i
 				adjDir = Direzione::SX;
 		}
 
-	//Si trova il peso
-	if (numRect < 0)
-		numRect *= -1;
-
-	int weight = getWeight(map.getBlocco(currentPos.y, currentPos.x)->getTipo()) + getWeight(map.getBlocco(nextPos.y, nextPos.x)->getTipo()) + numRect - 1;
+	int weight = getWeight(map.getBlocco(currentPos.y, currentPos.x)->getTipo()) + getWeight(map.getBlocco(nextPos.y, nextPos.x)->getTipo()) + numRect;
 	
-	//Si mettono le adiacenze
+	//Si impostano le adiacenze
 	currentNode.setAdiacenza(adjDir, &nextNode, weight);
 	nextNode.setAdiacenza(getDirOpposta(adjDir), &currentNode, weight);
 }
@@ -156,15 +161,15 @@ void Graph::checkLinkSx(GraphNode * currentPtr, TipoBlocco tipo, Mappa & map)
 		int counter = -1;
 		GraphNode * nextPtr;
 		TipoBlocco nextTipo;
-		while (currentPtr->getPos().x + counter >= 0)
+		while (currentPtr->pos.x + counter >= 0)
 		{
-			nextPtr = nodes.get(currentPtr->getPos().x + counter, currentPtr->getPos().y);
+			nextPtr = nodes.get(currentPtr->pos.x + counter, currentPtr->pos.y);
 			if (nextPtr != NULL)
 			{
-				nextTipo = map.getBlocco(nextPtr->getPos().y, nextPtr->getPos().x)->getTipo();
-				if (checkLinkable(nextTipo, TipoBlocco::DX_TO_DOWN, TipoBlocco::DX_TO_UP, TipoBlocco::CROSS3_SX) || nextPtr->getPos().x == 0)
+				nextTipo = map.getBlocco(nextPtr->pos.y, nextPtr->pos.x)->getTipo();
+				if (checkLinkable(nextTipo, TipoBlocco::DX_TO_DOWN, TipoBlocco::DX_TO_UP, TipoBlocco::CROSS3_SX) || nextPtr->pos.x == 0)
 				{
-					addLink(*currentPtr, *nextPtr, map, counter);
+					addLink(*currentPtr, *nextPtr, map, std::abs(counter) - 1);
 					return;
 				}
 			}
@@ -181,15 +186,15 @@ void Graph::checkLinkDx(GraphNode * currentPtr, TipoBlocco tipo, Mappa & map)
 		int counter = 1;
 		GraphNode * nextPtr;
 		TipoBlocco nextTipo;
-		while (currentPtr->getPos().x + counter < mapSize.x)
+		while (currentPtr->pos.x + counter < mapSize.x)
 		{
-			nextPtr = nodes.get(currentPtr->getPos().x + counter, currentPtr->getPos().y);
+			nextPtr = nodes.get(currentPtr->pos.x + counter, currentPtr->pos.y);
 			if (nextPtr != NULL)
 			{
-				nextTipo = map.getBlocco(nextPtr->getPos().y, nextPtr->getPos().x)->getTipo();
-				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_UP, TipoBlocco::SX_TO_DOWN, TipoBlocco::CROSS3_DX) || nextPtr->getPos().x == mapSize.x - 1)
+				nextTipo = map.getBlocco(nextPtr->pos.y, nextPtr->pos.x)->getTipo();
+				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_UP, TipoBlocco::SX_TO_DOWN, TipoBlocco::CROSS3_DX) || nextPtr->pos.x == mapSize.x - 1)
 				{
-					addLink(*currentPtr, *nextPtr, map, counter);
+					addLink(*currentPtr, *nextPtr, map, counter - 1);
 					return;
 				}
 			}
@@ -206,15 +211,15 @@ void Graph::checkLinkUp(GraphNode * currentPtr, TipoBlocco tipo, Mappa & map)
 		int counter = -1;
 		GraphNode * nextPtr;
 		TipoBlocco nextTipo;
-		while (currentPtr->getPos().y + counter >= 0)
+		while (currentPtr->pos.y + counter >= 0)
 		{
-			nextPtr = nodes.get(currentPtr->getPos().x, currentPtr->getPos().y + counter);
+			nextPtr = nodes.get(currentPtr->pos.x, currentPtr->pos.y + counter);
 			if (nextPtr != NULL)
 			{
-				nextTipo = map.getBlocco(nextPtr->getPos().y, nextPtr->getPos().x)->getTipo();
-				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_DOWN, TipoBlocco::DX_TO_DOWN, TipoBlocco::CROSS3_UP) || nextPtr->getPos().y == 0)
+				nextTipo = map.getBlocco(nextPtr->pos.y, nextPtr->pos.x)->getTipo();
+				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_DOWN, TipoBlocco::DX_TO_DOWN, TipoBlocco::CROSS3_UP) || nextPtr->pos.y == 0)
 				{
-					addLink(*currentPtr, *nextPtr, map, counter);
+					addLink(*currentPtr, *nextPtr, map, std::abs(counter) - 1);
 					return;
 				}
 			}
@@ -231,15 +236,15 @@ void Graph::checkLinkDown(GraphNode * currentPtr, TipoBlocco tipo, Mappa & map)
 		int counter = 1;
 		GraphNode * nextPtr;
 		TipoBlocco nextTipo;
-		while (currentPtr->getPos().y + counter < mapSize.y)
+		while (currentPtr->pos.y + counter < mapSize.y)
 		{
-			nextPtr = nodes.get(currentPtr->getPos().x, currentPtr->getPos().y + counter);
+			nextPtr = nodes.get(currentPtr->pos.x, currentPtr->pos.y + counter);
 			if (nextPtr != NULL)
 			{
-				nextTipo = map.getBlocco(nextPtr->getPos().y, nextPtr->getPos().x)->getTipo();
-				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_UP, TipoBlocco::DX_TO_UP, TipoBlocco::CROSS3_DOWN) || nextPtr->getPos().y == mapSize.y - 1)
+				nextTipo = map.getBlocco(nextPtr->pos.y, nextPtr->pos.x)->getTipo();
+				if (checkLinkable(nextTipo, TipoBlocco::SX_TO_UP, TipoBlocco::DX_TO_UP, TipoBlocco::CROSS3_DOWN) || nextPtr->pos.y == mapSize.y - 1)
 				{
-					addLink(*currentPtr, *nextPtr, map, counter);
+					addLink(*currentPtr, *nextPtr, map, counter - 1);
 					return;
 				}
 			}
@@ -275,6 +280,9 @@ void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2
 	Vector2i temp = endPos;
 	int index = nodes.getIndex(temp);
 	assert(index != -1 && index < count);
+
+	//Si percorre all'indietro l'array dei parent partendo dalla posizione finale 
+	//fino alla posizione iniziale, riconosciuta se ha parent uguale a se stessa.
 	while (parent[index] != temp)
 	{
 		D1(PRINT(temp.x <<" " <<temp.y <<" index " <<index));
@@ -284,6 +292,7 @@ void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2
 		assert(index != -1 && index < count);
 	}
 
+	//Se si ha trovato un percorso, aggiungo la posizione iniziale alla lista.
 	if (path.count() != 0)
 	{
 		assert(index != -1 && index < count);
@@ -307,7 +316,7 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 		currentIndex = nodes.getIndex(currentPos);
 		currentNode = nodes.get(currentIndex);
 
-		D3(PRINT("\nNodo attaule " << currentPos.x << ", " << currentPos.y << " di indice " << currentIndex << " tempNode " << currentNode->getPos().x << ", " << currentNode->getPos().y));
+		D3(PRINT("\nNodo attaule " << currentPos.x << ", " << currentPos.y << " di indice " << currentIndex << " tempNode " << currentNode->pos.x << ", " << currentNode->pos.y));
 
 		//Array di supporto per la visita delle adiacenze
 		Vector2i adj[4];	//Posizione dei nodi adiacenti
@@ -323,7 +332,7 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 			GraphNode * adjPtr = currentNode->getAdiacenza(i, adjWeight);
 			if (adjPtr != NULL)
 			{
-				Vector2i adjPos = adjPtr->getPos();
+				Vector2i adjPos = adjPtr->pos;
 				int adjIndex = nodes.getIndex(adjPos);
 				
 				assert(adjIndex >= 0 && adjIndex < count);
@@ -361,7 +370,10 @@ void Graph::insertStack(Vector2i_List & stack, Vector2i adj[], int weight[])
 	{
 		int j = findMaxAdj(weight);
 		if (j != -1)
+		{
+			weight[j] = -1;
 			stack.insertHead(adj[j]);
+		}
 	}
 }
 
@@ -379,6 +391,5 @@ int Graph::findMaxAdj(int weight[])
 	if (weight[imax] == -1)
 		return -1;
 
-	weight[imax] = -1;
 	return imax;
 }

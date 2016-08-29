@@ -18,17 +18,20 @@ GraphNode_List::GraphNode_List(GraphNode r)
 	root = new GraphNode_Node;
 	root->node.copy(r);
 	root->next = NULL;
+
 	num_nodi = 1;
 }
 
-void GraphNode_List::insert(GraphNode r)
+void GraphNode_List::insert(const GraphNode &node)
 {
 	GraphNode_Node *i = new GraphNode_Node;
-	i->node.copy(r);
+	i->node.copy(node);
 	i->next = NULL;
+
 	if (root == NULL)
 		root = i;
-	else {
+	else
+	{
 		GraphNode_Node *n = root;
 		while (n->next != NULL)
 			n = n->next;
@@ -39,19 +42,25 @@ void GraphNode_List::insert(GraphNode r)
 
 GraphNode GraphNode_List::get(int index, bool del)
 {
-	if (index >= num_nodi) return GraphNode();
+	if (index >= num_nodi)
+		return GraphNode();
+
 	GraphNode_Node *t = root;
 	GraphNode_Node *previous = NULL;
-	for (int i = 0; i < index; i++) {
+	for (int i = 0; i < index; i++)
+	{
 		previous = t;
 		t = t->next;
 	}
+
 	GraphNode temp = t->node;
-	if (del) {
+	if (del)
+	{
 		if (t == root)
 			root = t->next;
 		else
 			previous->next = t->next;
+
 		delete t;
 		num_nodi--;
 		
@@ -62,7 +71,9 @@ GraphNode GraphNode_List::get(int index, bool del)
 
 GraphNode * GraphNode_List::get(int index)
 {
-	if (index >= num_nodi) return NULL;
+	if (index >= num_nodi)
+		return NULL;
+
 	GraphNode_Node *t = root;
 	for (int i = 0; i < index; i++)
 		t = t->next;
@@ -75,9 +86,7 @@ GraphNode GraphNode_List::get(int x, int y, bool del)
 	GraphNode_Node *t = root;
 	GraphNode_Node *previous = NULL;
 
-	if (t == NULL) return GraphNode();
-
-	while (t != NULL && (t->node.getPos().x != x || t->node.getPos().y != y))
+	while (t != NULL && (t->node.pos.x != x || t->node.pos.y != y))
 	{
 		previous = t;
 		t = t->next;
@@ -106,9 +115,7 @@ GraphNode * GraphNode_List::get(int x, int y)
 {
 	GraphNode_Node *t = root;
 
-	if (t == NULL) return NULL;
-
-	while (t != NULL && (t->node.getPos().x != x || t->node.getPos().y != y))
+	while (t != NULL && (t->node.pos.x != x || t->node.pos.y != y))
 		t = t->next;
 
 	if (t != NULL)
@@ -123,9 +130,7 @@ int GraphNode_List::getIndex(Vector2i pos)
 
 	int i = 0;
 
-	if (t == NULL) return -1;
-
-	while (t != NULL && (t->node.getPos().x != pos.x || t->node.getPos().y != pos.y))
+	while (t != NULL && (t->node.pos.x != pos.x || t->node.pos.y != pos.y))
 	{
 		t = t->next;
 		i++;
