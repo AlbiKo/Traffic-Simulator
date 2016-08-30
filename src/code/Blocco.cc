@@ -119,14 +119,14 @@ void Blocco::checkCollision()
 				{
 					if (checkSameDirCollision(*car, *m) ||	checkCurveCollison(*car, *m) ||	checkCrossCollision(*car, *m) )
 					{
-						std::cerr << toString(car->currentDir) << "   " << car->getPosition().x << ", " << car->getPosition().y <<"  ptr " <<car <<"  ptrBy  " <<m  <<"  " << m->getPosition().x << ", " << m->getPosition().y <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) <<"   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) <<"\n";
+						D3(std::cerr << toString(car->currentDir) << "   " << car->getPosition().x << ", " << car->getPosition().y <<"  ptr " <<car <<"  ptrBy  " <<m  <<"  " << m->getPosition().x << ", " << m->getPosition().y <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) <<"   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) <<"\n");
 						car->carBy = m;
 						car->stop();
 						break;
 					}
 				}
 				else
-					if (car->carBy == m && !car->collider.intersects(m->collider))
+					if (car->carBy == m  && !car->collider.intersects(m->collider))
 						car->changeDirection(car->currentDir);
 			}
 	}

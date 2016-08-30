@@ -7,7 +7,7 @@
 #define BLOCCO_INCLUDE
 using namespace sf;
 
-/**La classe blocco rappresenta il blocco generico che deve essere posizionato sulla map.
+/**La classe blocco rappresenta il blocco generico che deve essere posizionato sulla mappa.
 */
 class Blocco
 {
@@ -29,10 +29,7 @@ public:
 	MacchinaPtr_List cars;
 	IntRect collider;
 	void checkCollision();
-
-
-
-
+		
 	Blocco();
 	virtual ~Blocco();
 	Blocco(int rowIndex, int columnIndex, TipoBlocco tipo);
@@ -52,6 +49,11 @@ public:
 	inline Vector2i coordBlocco()
 	{
 		return Vector2i(sprite.getPosition().x / size,sprite.getPosition().y / size);
+	}
+
+	inline Vector2i getPos()
+	{
+		return Vector2i(sprite.getPosition().x, sprite.getPosition().y);
 	}
 
 	/**Cambia il verso del blocco con quello indicato*/

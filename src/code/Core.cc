@@ -12,9 +12,11 @@ Vector2i mapSize;
 
 Clock clocks;
 
-int NUM_MACCHINE = 50;
+int NUM_MACCHINE = 25;
 int spawned = 0;
 Time timeLastSpawned;
+Time updateSemaphores;
+
 extern int RESX, RESY;
 
 int pause = false;
@@ -40,11 +42,29 @@ void update(RenderWindow &widget)
 {
 	map.draw(widget);
 
-	timeLastSpawned += clocks.restart();
+	Time elapsedTime = clocks.restart();
+	timeLastSpawned += elapsedTime;
+	updateSemaphores += elapsedTime;
 	if (!pause && spawned < NUM_MACCHINE && timeLastSpawned.asSeconds() >= 0.75)
 	{
 		createCar();
 		timeLastSpawned = Time::Zero;
+	}
+
+	if (!pause && updateSemaphores.asSeconds() >= 10)
+	{
+		for (int i = 1; i < mapSize.y - 1; i++)
+			for (int j = 1; j < mapSize.x - 1; j++)
+			{
+				Blocco * b = map.getBlocco(i, j);
+				if (b != NULL && isCrossBlock(b->getTipo()))
+				{
+					Incroci * cross = dynamic_cast<Incroci *>(b);
+					cross->changeSemaphoreStatus();
+				}
+			}
+
+		updateSemaphores = Time::Zero;
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::R))
@@ -94,8 +114,6 @@ Direzione findDir(Vector2f carPos, Vector2i nextBlock)
 
 	Vector2i pos(static_cast<int>(carPos.x) / Blocco::size, static_cast<int>(carPos.y) / Blocco::size);
 
-//	std::cerr << "nextB " << nextBlock.x << ", " << nextBlock.y 
-	//			<<"curB " << pos.x << ", " << pos.y <<"\n";
 	if (pos.y == nextBlock.y)
 	{
 		if (pos.x < nextBlock.x)
@@ -177,12 +195,22 @@ void updateCar(Macchina &car)
 		if (blocco != NULL)
 			//Aggiungo la macchina al blocco successivo
 			blocco->cars.insert(&car);
+		
+		Incroci * i = dynamic_cast<Incroci *>(blocco);
+		if (i != NULL)
+		{
+			IntRect sem = i->getSemaphore(car.currentDir);
+			if (car.collider.intersects(sem))
+				car.stop();
+			else
+				car.changeDirection(car.currentDir);
+		}
 
 		Curva * c = dynamic_cast<Curva *>(b);
 		if (c != NULL)
 			car.changeDirection(c->getChangeDir(car.getShape().getPosition())); //delego alla il cambio direzione della macchina
 		
-		Incroci * i = dynamic_cast<Incroci *>(b);
+		i = dynamic_cast<Incroci *>(b);
 		if (i != NULL)
 			car.changeDirection(i->getChangeDir(car.getShape().getPosition(), car.nextDir)); //delego all'incrocio instradare correttamente la macchina
 		

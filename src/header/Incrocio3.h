@@ -6,6 +6,9 @@ using namespace sf;
 class Incrocio3: public Incroci
 {
 
+private:
+	void setWrongDir();
+
 public:
 	Incrocio3() ;
 	Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo);
