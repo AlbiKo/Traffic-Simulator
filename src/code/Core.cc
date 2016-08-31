@@ -12,12 +12,15 @@ Vector2i mapSize;
 
 Clock clocks;
 
-int NUM_MACCHINE = 25;
+int NUM_MACCHINE = 20;
 int spawned = 0;
 Time timeLastSpawned;
 Time updateSemaphores;
 
 extern int RESX, RESY;
+#ifdef DEBUG_MODE
+extern unsigned int MASK;
+#endif // DEBUG_MODE
 
 int pause = false;
 
@@ -45,6 +48,7 @@ void update(RenderWindow &widget)
 	Time elapsedTime = clocks.restart();
 	timeLastSpawned += elapsedTime;
 	updateSemaphores += elapsedTime;
+
 	if (!pause && spawned < NUM_MACCHINE && timeLastSpawned.asSeconds() >= 0.75)
 	{
 		createCar();
@@ -90,6 +94,15 @@ void update(RenderWindow &widget)
 
 	if (Keyboard::isKeyPressed(Keyboard::U))
 		NUM_MACCHINE++;
+
+#ifdef DEBUG_MODE
+	if (Keyboard::isKeyPressed(Keyboard::Num1))
+		MASK++;
+
+	if (Keyboard::isKeyPressed(Keyboard::Num2))
+		MASK--;
+#endif // DEBUG_MODE
+	
 
 	if (pause && Mouse::isButtonPressed(Mouse::Left))
 		std::cerr << "Mouse: " << Mouse::getPosition().x << ", " << Mouse::getPosition().y << "\n";
@@ -153,7 +166,7 @@ void updateCar(Macchina &car)
 				std::cerr << car.getPosition().x << ", " << car.getPosition().y << "\n";
 				*/
 				//Aggiungo la macchina al blocco appena lasciato
-				blocco->cars.insert(&car);
+				//blocco->cars.insert(&car);
 			}
 
 			car.currentBlock = car.nextBlock;
@@ -272,7 +285,7 @@ void refreshMap()
 	map.getSorgenti(sources);
 	graph.buildGraph(map);
 
-	for (int i = 0; i < NUM_MACCHINE; i++)
+	for (int i = 0; i < spawned; i++)
 		replaceCar(*carList.get(i));
 }
 

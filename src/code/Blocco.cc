@@ -32,10 +32,10 @@ bool Blocco::checkBlockCollision(Macchina & currentCar)
 	if (currentCar.collider.intersects(collider))
 		return true;
 
-	if ((currentCar.getDirection() == Direzione::SX && currentCar.colliderSx.intersects(collider)) ||
-		(currentCar.getDirection() == Direzione::DX && currentCar.colliderDx.intersects(collider)) ||
-		(currentCar.getDirection() == Direzione::SU && currentCar.colliderUp.intersects(collider)) ||
-		(currentCar.getDirection() == Direzione::GIU && currentCar.colliderDown.intersects(collider)))
+	if ((/*currentCar.getDirection() == Direzione::SX && */currentCar.colliderSx.intersects(collider)) ||
+		(/*currentCar.getDirection() == Direzione::DX && */currentCar.colliderDx.intersects(collider)) ||
+		(/*currentCar.getDirection() == Direzione::SU && */currentCar.colliderUp.intersects(collider)) ||
+		(/*currentCar.getDirection() == Direzione::GIU && */currentCar.colliderDown.intersects(collider)))
 			return true;
 
 	return false;
@@ -117,17 +117,20 @@ void Blocco::checkCollision()
 
 				if (car->isMoving() && car->collider.intersects(m->collider))
 				{
-					if (checkSameDirCollision(*car, *m) ||	checkCurveCollison(*car, *m) ||	checkCrossCollision(*car, *m) )
+					if (checkSameDirCollision(*car, *m) || checkCurveCollison(*car, *m) || checkCrossCollision(*car, *m))
 					{
-						D3(std::cerr << toString(car->currentDir) << "   " << car->getPosition().x << ", " << car->getPosition().y <<"  ptr " <<car <<"  ptrBy  " <<m  <<"  " << m->getPosition().x << ", " << m->getPosition().y <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) <<"  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) <<"   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) <<"\n");
+						D3(std::cerr << toString(car->currentDir) << "   " << coordBlocco().x << ", " << coordBlocco().y << "  ptr " << car << "   " << car->getPosition().x << ", " << car->getPosition().y << "  ptrBy  " << m << "  " << m->getPosition().x << ", " << m->getPosition().y << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) << "   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) << "\n");
 						car->carBy = m;
 						car->stop();
 						break;
 					}
 				}
 				else
-					if (car->carBy == m  && !car->collider.intersects(m->collider))
+					if (car->carBy == m && !car->collider.intersects(m->collider))
+					{
 						car->changeDirection(car->currentDir);
+						
+					}
 			}
 	}
 }
