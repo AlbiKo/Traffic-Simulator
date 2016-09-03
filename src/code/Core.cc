@@ -13,7 +13,7 @@ Vector2i mapSize;
 
 Clock clocks;
 
-int NUM_MACCHINE = 20;
+int NUM_MACCHINE = 100;
 int spawned = 0;
 Time timeLastSpawned;
 Time timeLastSemUpdate;
@@ -242,6 +242,7 @@ void replaceCar(Macchina & car)
 	pendingCarList.insert(&car);
 	car.drawable = false;
 	car.stop();
+	car.stoppedBy = NULL;
 	car.update();
 	Blocco * b = map.getBlocco(car.getPosition());
 	if (b != NULL)
@@ -352,8 +353,17 @@ void inputHandling(RenderWindow &widget)
 				Macchina * ptr = b->cars.get(i);
 				if (ptr->collider.contains(mousePos))
 				{
-					replaceCar(*ptr);
-					ptr->update();
+					if (Keyboard::isKeyPressed(Keyboard::LAlt))
+					{
+						replaceCar(*ptr);
+						ptr->update();
+					}
+
+					std::cerr << ptr->getPosition().x << ", " << ptr->getPosition().y << " " << toString(ptr->getDirection()) << " " << toString(ptr->currentDir) << " ";
+					if (ptr->stoppedBy != NULL)
+						std::cerr << ptr->stoppedBy->getPosition().x << ", " << ptr->stoppedBy->getPosition().y << " " << toString(ptr->stoppedBy->getDirection()) << " " << toString(ptr->stoppedBy->currentDir) << " ";
+
+					std::cerr << "\n";
 					break;
 				}
 			}

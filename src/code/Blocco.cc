@@ -36,10 +36,10 @@ bool Blocco::checkBlockCollision(Macchina & currentCar)
 
 bool Blocco::checkSameDirCollision(Macchina & currentCar, Macchina & collidingCar)
 {
-	if ((currentCar.currentDir == Direzione::DX && currentCar.collider.left < collidingCar.collider.left && currentCar.collider.top == collidingCar.collider.top) ||
-		(currentCar.currentDir == Direzione::SX && currentCar.collider.left > collidingCar.collider.left && currentCar.collider.top == collidingCar.collider.top) ||
-		(currentCar.currentDir == Direzione::SU && currentCar.collider.top > collidingCar.collider.top && currentCar.collider.left == collidingCar.collider.left) ||
-		(currentCar.currentDir == Direzione::GIU && currentCar.collider.top < collidingCar.collider.top && currentCar.collider.left == collidingCar.collider.left) )
+	if ((currentCar.currentDir == Direzione::DX && currentCar.currentDir == Direzione::DX && currentCar.collider.left < collidingCar.collider.left && currentCar.collider.top == collidingCar.collider.top) ||
+		(currentCar.currentDir == Direzione::SX && currentCar.currentDir == Direzione::SX && currentCar.collider.left > collidingCar.collider.left && currentCar.collider.top == collidingCar.collider.top) ||
+		(currentCar.currentDir == Direzione::SU && currentCar.currentDir == Direzione::SU && currentCar.collider.top > collidingCar.collider.top && currentCar.collider.left == collidingCar.collider.left) ||
+		(currentCar.currentDir == Direzione::GIU && currentCar.currentDir == Direzione::GIU && currentCar.collider.top < collidingCar.collider.top && currentCar.collider.left == collidingCar.collider.left) )
 		return true;
 
 	return false;
@@ -123,7 +123,10 @@ void Blocco::checkCollision()
 				}
 				else
 					if (car->stoppedBy == m && !car->collider.intersects(m->collider))
+					{
 						car->changeDirection(car->currentDir);
+						car->stoppedBy = NULL;
+					}
 			}
 	}
 }

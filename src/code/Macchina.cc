@@ -107,7 +107,9 @@ void Macchina::update()
 		baseY = 0;
 		break;
 	default:
-		return;
+		baseX = 0;
+		baseY = 0;
+		break;
 	}
 
 	shape.move(baseX * SPEED, baseY * SPEED);
