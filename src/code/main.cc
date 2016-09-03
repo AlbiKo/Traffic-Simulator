@@ -33,7 +33,7 @@ SFMLWidget * SFML;
 int RESX = 1280,
 /**Altezza della finestra
 */
-	RESY = 700;
+	RESY = 740;
 
 /**Disegnamento dell'interfaccia
 */

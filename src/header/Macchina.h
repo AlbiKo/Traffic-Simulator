@@ -14,7 +14,7 @@ class Macchina
 {
 public:
 	/** Dimensione della macchina. */
-	const int SIZE = 15;
+	static const int SIZE = 15;
 
 	/** Percorso che la macchina deve seguire. */
 	Vector2i_List percorso;
@@ -34,7 +34,9 @@ public:
 
 	RectangleShape globo, sx, dx, up, down;
 
-	Macchina * carBy = NULL;
+	bool drawable = false;
+
+	Macchina * stoppedBy = NULL;
 	/** Costruttore che inizializza una macchina senza specificare la posizione. */
 	Macchina();
 	

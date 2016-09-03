@@ -37,18 +37,22 @@ public:
 		return num_nodi;
 	}
 
-	/**Aggiunta di una macchina alla lista
-	*  @param pos Posizione iniziale della macchina
-	*  @param dir Direzione iniziale della macchina
+	/** Aggiunta di una macchina in testa alla lista
+	*
+	*	@param pos Posizione iniziale della macchina
+	*	@param dir Direzione iniziale della macchina
+	*	@return Puntatore della macchina inserita
 	*/
-	void add(Vector2i pos, Direzione dir);
+	Macchina * add(Vector2i pos, Direzione dir);
 
-	/**Aggiunta di una macchina alla lista
-	*  @param pos Posizione iniziale della macchina
-	*  @param dir Direzione iniziale della macchina
-	*  @param color Colore della macchina
+	/**	Aggiunta di una macchina in testa alla lista
+	*
+	*	@param pos Posizione iniziale della macchina
+	*	@param dir Direzione iniziale della macchina
+	*	@param color Colore della macchina
+	*	@return Puntatore della macchina inserita
 	*/
-	void add(Vector2i pos, Direzione dir, Color color);
+	Macchina * add(Vector2i pos, Direzione dir, Color color);
 
 	/** Inserimento di una macchina esistente nella lista 
 	*

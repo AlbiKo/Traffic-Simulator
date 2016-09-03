@@ -4,6 +4,9 @@
 #include "Macchina.h"
 #include "Graph.h"
 #include "Macchina_List.h"
+#include "MacchinaPtr_List.h"
+
+using namespace sf;
 
 void CoreInit();
 void update(sf::RenderWindow &widget);
@@ -14,5 +17,6 @@ void updateCar(Macchina &car);
 void placeCar(Vector2i &source, Direzione &d);
 void replaceCar(Macchina &car);
 void refreshMap();
-void addCar(Vector2i source);
 void createCar();
+void updateSemaphores();
+void inputHandling(RenderWindow &widget);

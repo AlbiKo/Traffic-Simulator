@@ -13,7 +13,7 @@ Macchina_List::~Macchina_List()
 	this->clean();
 }
 
-void Macchina_List::add(Vector2i pos, Direzione dir)
+Macchina * Macchina_List::add(Vector2i pos, Direzione dir)
 {
 	Macchina_Node *t = new Macchina_Node;
 	t->node.setPosition(pos);
@@ -25,12 +25,15 @@ void Macchina_List::add(Vector2i pos, Direzione dir)
 		t->next = root;
 	root = t;
 	num_nodi++;
+
+	return &t->node;
 }
 
-void Macchina_List::add(Vector2i pos, Direzione dir, Color color)
+Macchina * Macchina_List::add(Vector2i pos, Direzione dir, Color color)
 {
 	add(pos, dir);
 	root->node.setColor(color);
+	return &root->node;
 }
 
 void Macchina_List::insert(Macchina i)

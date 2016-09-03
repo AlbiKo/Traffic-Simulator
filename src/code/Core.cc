@@ -7,6 +7,7 @@ static Graph graph;
 
 static Macchina_List carList;
 static Vector2i_List sources;
+static MacchinaPtr_List pendingCarList;
 
 Vector2i mapSize;
 
@@ -15,7 +16,7 @@ Clock clocks;
 int NUM_MACCHINE = 20;
 int spawned = 0;
 Time timeLastSpawned;
-Time updateSemaphores;
+Time timeLastSemUpdate;
 
 extern int RESX, RESY;
 #ifdef DEBUG_MODE
@@ -31,14 +32,6 @@ void CoreInit()
 	graph.buildGraph(map);
 	
 	map.getSorgenti(sources);
-	/*for (int i = 0; i < NUM_MACCHINE; i++)
-	{
-		Vector2i start = sources.get(rand() % sources.count(), false);
-		addCar(start);
-		graph.findPath(start, sources, carList.get(0)->percorso);
-		carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
-		carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
-	}*/
 }
 
 void update(RenderWindow &widget)
@@ -47,76 +40,53 @@ void update(RenderWindow &widget)
 
 	Time elapsedTime = clocks.restart();
 	timeLastSpawned += elapsedTime;
-	updateSemaphores += elapsedTime;
+	timeLastSemUpdate += elapsedTime;
 
-	if (!pause && spawned < NUM_MACCHINE && timeLastSpawned.asSeconds() >= 0.75)
+	if (!pause && timeLastSpawned.asSeconds() >= 0.25)
 	{
-		createCar();
+		if (spawned < NUM_MACCHINE)
+			createCar();
+
+		
 		timeLastSpawned = Time::Zero;
 	}
 
-	if (!pause && updateSemaphores.asSeconds() >= 10)
+	if (!pause && timeLastSemUpdate.asSeconds() >= 10)
 	{
-		for (int i = 1; i < mapSize.y - 1; i++)
-			for (int j = 1; j < mapSize.x - 1; j++)
-			{
-				Blocco * b = map.getBlocco(i, j);
-				if (b != NULL && isCrossBlock(b->getTipo()))
-				{
-					Incroci * cross = dynamic_cast<Incroci *>(b);
-					cross->changeSemaphoreStatus();
-				}
-			}
-
-		updateSemaphores = Time::Zero;
+		updateSemaphores();
+		timeLastSemUpdate = Time::Zero;
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::R))
-		refreshMap();
-
-	if (Keyboard::isKeyPressed(Keyboard::A))
-		replaceCar(*carList.get(rand() % carList.count()));
-
-	if (Keyboard::isKeyPressed(Keyboard::D))
-		carList.get(0)->changeDirection(carList.get(0)->currentDir);
-
-	if (Keyboard::isKeyPressed(Keyboard::S))
-		carList.get(1)->stop();
-
-	if (Keyboard::isKeyPressed(Keyboard::X))
-		carList.get(0)->stop();
-
-	if (Keyboard::isKeyPressed(Keyboard::P))
-		pause = true;
-
-	if (Keyboard::isKeyPressed(Keyboard::L))
-		pause = false;
-
-	if (Keyboard::isKeyPressed(Keyboard::U))
-		NUM_MACCHINE++;
-
-#ifdef DEBUG_MODE
-	if (Keyboard::isKeyPressed(Keyboard::Num1))
-		MASK++;
-
-	if (Keyboard::isKeyPressed(Keyboard::Num2))
-		MASK--;
-#endif // DEBUG_MODE
+	inputHandling(widget);
 	
+	for (int i = 0; i < spawned; i++)
+	{
+		Macchina * car = carList.get(i);
 
-	if (pause && Mouse::isButtonPressed(Mouse::Left))
-		std::cerr << "Mouse: " << Mouse::getPosition().x << ", " << Mouse::getPosition().y << "\n";
-	
-		for (int i = 0; i < spawned; i++)
+		if (car->drawable)
 		{
-			Macchina * car = carList.get(i);
-
 			car->draw(widget);
 			if (!pause)
 				updateCar(*car);
+		}	
+	}
+
+	for (int i = 0; i < pendingCarList.count(); i++)
+	{
+		Macchina * ptr = pendingCarList.get(i);
+		Blocco * b = map.getBlocco(ptr->getPosition());
+		if (b != NULL && b->canBeSpawned(*ptr))
+		{
+			ptr->drawable = true;
+			ptr->changeDirection(ptr->currentDir);
+			pendingCarList.remove(ptr);
+			b->cars.insert(ptr);
+			i--;
 		}
-		if (!pause)
-			map.checkCarCollision();
+	}
+
+	if (!pause)
+		map.checkCarCollision();
 
 }
 
@@ -149,6 +119,7 @@ Direzione findDir(Vector2f carPos, Vector2i nextBlock)
 void updateCar(Macchina &car)
 {
 	car.update();
+
 	Vector2f f = car.getShape().getPosition();
 	Blocco * b = map.getBlocco(Vector2i(f.x, f.y)); //prendo il blocco su cui si trova la macchina
 
@@ -156,22 +127,9 @@ void updateCar(Macchina &car)
 	{
 		if (static_cast<int>(f.x) / Blocco::size == car.nextBlock.x && static_cast<int>(f.y)  / Blocco::size== car.nextBlock.y)
 		{
-			
-			Blocco * blocco = map.getBlocco(car.currentBlock.y, car.currentBlock.x);
-			if (car.collider.intersects(blocco->collider))
-			{
-			/*	std::cerr << "cur " << car.currentBlock.x << ", " << car.currentBlock.y << "\n";
-				std::cerr << "next " <<car.nextBlock.x <<", " <<car.nextBlock.y  <<"\n";
-				std::cerr << blocco->collider.left << ", " << blocco->collider.top << "  " << blocco->getSprite().getPosition().x << ", " << blocco->getSprite().getPosition().y << "\n";
-				std::cerr << car.getPosition().x << ", " << car.getPosition().y << "\n";
-				*/
-				//Aggiungo la macchina al blocco appena lasciato
-				//blocco->cars.insert(&car);
-			}
-
 			car.currentBlock = car.nextBlock;
 
-			blocco = map.getBlocco(car.currentBlock.y, car.currentBlock.x);
+			Blocco * blocco = map.getBlocco(car.currentBlock.y, car.currentBlock.x);
 			if (car.collider.intersects(blocco->collider))
 				//Aggiungo la macchina al blocco corrente
 				blocco->cars.insert(&car);
@@ -236,28 +194,37 @@ void updateCar(Macchina &car)
 
 void placeCar(Vector2i &source, Direzione &d)
 {
-	int x1, y1;
+	int x1 = 0, y1 = 0;
 	d = Direzione::ND;
-	if (source.x == 0 && source.y != 0) {
+
+	if (source.x == 0 && source.y != 0)
+	{
 		d = Direzione::DX;
 		x1 = 0;
 		y1 = 48;
 	}
-	if (source.x == map.getMapSize().x - 1 && source.y != 0) {
+
+	if (source.y != 0 && source.x == map.getMapSize().x - 1)
+	{
 		d = Direzione::SX;
 		x1 = 66;
 		y1 = 19;
 	}
-	if (source.x != 0 && source.y == 0) {
+
+	if (source.x != 0 && source.y == 0)
+	{
 		d = Direzione::GIU;
 		x1 = 19;
 		y1 = 0;
 	}
-	if (source.x != 0 && source.y == map.getMapSize().y - 1) {
+
+	if (source.x != 0 && source.y == map.getMapSize().y - 1)
+	{
 		d = Direzione::SU;
 		x1 = 48;
 		y1 = 66;
 	}
+
 	source.x = source.x * Blocco::size + x1;
 	source.y = source.y * Blocco::size + y1;
 }
@@ -272,9 +239,18 @@ void replaceCar(Macchina & car)
 	car.setPosition(screenPos);
 	car.changeDirection(startDir);
 
+	pendingCarList.insert(&car);
+	car.drawable = false;
+	car.stop();
+	car.update();
+	Blocco * b = map.getBlocco(car.getPosition());
+	if (b != NULL)
+		b->cars.insert(&car);
+
+
 	graph.findPath(startSource, sources, car.percorso);
 	car.nextBlock = car.percorso.get(0, false);
-	car.currentBlock = car.percorso.get(0, false);
+	car.currentBlock = car.nextBlock;
 }
 
 void refreshMap()
@@ -284,26 +260,108 @@ void refreshMap()
 	sources.clean();
 	map.getSorgenti(sources);
 	graph.buildGraph(map);
+	pendingCarList.clean();
 
 	for (int i = 0; i < spawned; i++)
 		replaceCar(*carList.get(i));
-}
-
-void addCar(Vector2i source)
-{
-	Direzione d;
-	placeCar(source, d);
-	carList.add(source, d);
 }
 
 void createCar()
 {
 	std::cerr << "Creo\n";
 	Vector2i start = sources.get(rand() % sources.count(), false);
-	addCar(start);
-	graph.findPath(start, sources, carList.get(0)->percorso);
-	carList.get(0)->nextBlock = carList.get(0)->percorso.get(0, false);
-	carList.get(0)->currentBlock = carList.get(0)->percorso.get(0, false);
+	Vector2i screenPos = start;
+	Direzione d;
+	placeCar(screenPos, d);
+	Macchina * ptr = carList.add(screenPos, d);
+
+	pendingCarList.insert(ptr);
+	ptr->stop();
+	ptr->update();
+	Blocco * b = map.getBlocco(ptr->getPosition());
+	if (b != NULL)
+		b->cars.insert(ptr);
+
+	graph.findPath(start, sources, ptr->percorso);
+	ptr->nextBlock = ptr->percorso.get(0, false);
+	ptr->currentBlock = ptr->nextBlock;
 	spawned++;
 }
 
+void updateSemaphores()
+{
+	for (int i = 1; i < mapSize.y - 1; i++)
+		for (int j = 1; j < mapSize.x - 1; j++)
+		{
+			Blocco * b = map.getBlocco(i, j);
+			if (b != NULL && isCrossBlock(b->getTipo()))
+			{
+				Incroci * cross = dynamic_cast<Incroci *>(b);
+				cross->changeSemaphoreStatus();
+			}
+		}
+}
+
+void inputHandling(RenderWindow &widget)
+{
+	if (Keyboard::isKeyPressed(Keyboard::R))
+		refreshMap();
+
+	if (Keyboard::isKeyPressed(Keyboard::A))
+		replaceCar(*carList.get(rand() % carList.count()));
+
+	if (Keyboard::isKeyPressed(Keyboard::D))
+		carList.get(0)->changeDirection(carList.get(0)->currentDir);
+
+	if (Keyboard::isKeyPressed(Keyboard::S))
+		carList.get(1)->stop();
+
+	if (Keyboard::isKeyPressed(Keyboard::X))
+		carList.get(0)->stop();
+
+	if (Keyboard::isKeyPressed(Keyboard::P))
+		pause = true;
+
+	if (Keyboard::isKeyPressed(Keyboard::L))
+		pause = false;
+
+	if (Keyboard::isKeyPressed(Keyboard::U))
+		NUM_MACCHINE++;
+
+#ifdef DEBUG_MODE
+	if (Keyboard::isKeyPressed(Keyboard::Num1))
+		MASK++;
+
+	if (Keyboard::isKeyPressed(Keyboard::Num2))
+		MASK--;
+#endif // DEBUG_MODE
+
+
+	static bool mousePressed = false;
+	if (pause && !mousePressed && Mouse::isButtonPressed(Mouse::Left))
+	{
+		mousePressed = true;
+		Vector2i mousePos = Mouse::getPosition(widget);
+		std::cerr << "Mouse: " << mousePos.x << ", " << mousePos.y << "\n";
+		Blocco * b = map.getBlocco(mousePos);
+
+		if (b != NULL)
+		{
+			for (int i = 0; i < b->cars.count(); i++)
+			{
+				Macchina * ptr = b->cars.get(i);
+				if (ptr->collider.contains(mousePos))
+				{
+					replaceCar(*ptr);
+					ptr->update();
+					break;
+				}
+			}
+		}
+
+	}
+	else
+		if (mousePressed && !Mouse::isButtonPressed(Mouse::Left))
+			mousePressed = false;
+
+}

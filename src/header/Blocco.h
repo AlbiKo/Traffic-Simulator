@@ -29,7 +29,8 @@ public:
 	MacchinaPtr_List cars;
 	IntRect collider;
 	void checkCollision();
-		
+	bool canBeSpawned(Macchina & car);
+
 	Blocco();
 	virtual ~Blocco();
 	Blocco(int rowIndex, int columnIndex, TipoBlocco tipo);

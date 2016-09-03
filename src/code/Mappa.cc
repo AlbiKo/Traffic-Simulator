@@ -55,6 +55,9 @@ Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
 
 Blocco * Mappa::getBlocco(Vector2i pos)
 {
+	if (pos.x < - Macchina::SIZE || pos.x > RESX + Macchina::SIZE || pos.y < - Macchina::SIZE || pos.y > RESY + Macchina::SIZE)
+		return NULL;
+
 	return getBlocco(pos.y / Blocco::size, pos.x / Blocco::size);
 }
 
