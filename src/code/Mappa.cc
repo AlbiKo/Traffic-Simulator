@@ -9,7 +9,7 @@ Texture * texture[11];
 Mappa::Mappa()
 {
 	loadTextures();
-	sorgenti = Vector2i_List();
+	sourceList = Vector2i_List();
 
 	blocchiX = RESX / Blocco::size;
 	if (RESX % Blocco::size != 0)
@@ -42,6 +42,11 @@ void Mappa::generate()
 	clean();
 	generateSources();
 	generateRoutes();
+
+	for (int i = 1; i < blocchiY - 1; i++)
+		for (int j = 1; j < blocchiX - 1; j++)
+			if (isCrossBlock(blocchi[i][j]->getTipo()))
+				crossList.insertHead(Vector2i(j, i));
 }
 
 Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
@@ -68,13 +73,13 @@ Vector2i Mappa::getMapSize()
 
 void Mappa::getSorgenti(Vector2i_List &dest)
 {
-	dest.copy(sorgenti);
+	dest.copy(sourceList);
 }
 
 Vector2i Mappa::getRandomSource()
 {
-	int i = rand() % sorgenti.count();
-	return sorgenti.get(i, false);
+	int i = rand() % sourceList.count();
+	return sourceList.get(i, false);
 }
 
 void Mappa::checkCarCollision()
@@ -84,11 +89,21 @@ void Mappa::checkCarCollision()
 			blocchi[i][j]->checkCollision();
 }
 
+void Mappa::updateSemaphores()
+{
+	for (int i = 0; i < crossList.count(); i++)
+	{
+		Vector2i pos = crossList.get(i, false);
+		Incroci * cross = dynamic_cast<Incroci *>(blocchi[pos.y][pos.x]);
+		cross->changeSemaphoreStatus();
+	}
+}
+
 void Mappa::generateSources()
 {
 	D1(PRINT("Generazione sorgenti.."));
 
-	sorgenti.clean();
+	sourceList.clean();
 
 	//Bordo sinistro
 	generateSource(0, 0, true);
@@ -127,7 +142,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
 
 					D2(PRINT("Sorgente in " <<x <<", " <<i));
-					sorgenti.insert(Vector2i(x, i));
+					sourceList.insert(Vector2i(x, i));
 					count++;
 					i+=2;
 				}
@@ -137,7 +152,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
 
 					D2(PRINT("Sorgente in " << i << ", " << y));
-					sorgenti.insert(Vector2i(i, y));
+					sourceList.insert(Vector2i(i, y));
 					count++;
 					i+=2;
 				}
@@ -152,7 +167,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 
 void Mappa::deleteSource(Vector2i source)
 {
-	Vector2i temp = sorgenti.get(source.x, source.y, true);
+	Vector2i temp = sourceList.get(source.x, source.y, true);
 
 	//Se c'era effetivamente sulla lista
 	if (temp.x == source.x && temp.y == source.y)
@@ -202,7 +217,7 @@ Vector2i Mappa::getNearestSource(Vector2i source)
 
 		for (int i = 1; i < blocchiX - 1; i++)
 		{
-			temp = sorgenti.get(i, fixedCoord, false); 
+			temp = sourceList.get(i, fixedCoord, false); 
 			if (temp != Vector2i(-1, -1))
 				return temp;
 		}
@@ -215,7 +230,7 @@ Vector2i Mappa::getNearestSource(Vector2i source)
 
 		for (int i = 1; i < blocchiY - 1; i++)
 		{
-			temp = sorgenti.get(fixedCoord, i, false); 
+			temp = sourceList.get(fixedCoord, i, false); 
 			if (temp != Vector2i(-1, -1))
 				return temp;
 		}
@@ -228,7 +243,7 @@ Vector2i Mappa::getNearestSource(Vector2i source)
 
 		for (int i = blocchiX - 2; i > 0; i--)
 		{
-			temp = sorgenti.get(i, fixedCoord, false); 
+			temp = sourceList.get(i, fixedCoord, false); 
 			if (temp != Vector2i(-1, -1))
 				return temp;
 		}
@@ -241,7 +256,7 @@ Vector2i Mappa::getNearestSource(Vector2i source)
 
 		for (int i = blocchiY - 2; i > 0; i--)
 		{
-			temp = sorgenti.get(fixedCoord, i, false); 
+			temp = sourceList.get(fixedCoord, i, false); 
 			if (temp != Vector2i(-1, -1))
 				return temp;
 		}
@@ -253,7 +268,7 @@ Vector2i Mappa::getNearestSource(Vector2i source)
 void Mappa::generateRoutes()
 {
 	D1(PRINT("Generazione strade.."));
-	assert(sorgenti.count() >= 4);
+	assert(sourceList.count() >= 4);
 
 	Vector2i_List	partenze		= Vector2i_List(),
 					destinazioni	= Vector2i_List();
@@ -261,9 +276,9 @@ void Mappa::generateRoutes()
 	//Le sorgenti vengono suddivise in due liste:
 	//partenze, quelle a lato
 	//destinazioni, quelle sopra e sotto
-	for (int i = 0; i < sorgenti.count(); i++)
+	for (int i = 0; i < sourceList.count(); i++)
 	{
-		Vector2i sources = sorgenti.get(i, false);
+		Vector2i sources = sourceList.get(i, false);
 
 		if (sources.x == 0 || sources.x == blocchiX - 1)
 			partenze.insert(sources);
@@ -675,21 +690,21 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
 		//Se ci si trova sulla prima riga e sopra c'è una sorgente
-		if (currentPos.y == 1 && sorgenti.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
+		if (currentPos.y == 1 && sourceList.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_UP;
 
 		//Se ci si trova sull'ultima riga e sotto c'è una sorgente
-		if (currentPos.y == blocchiY - 2 && sorgenti.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
+		if (currentPos.y == blocchiY - 2 && sourceList.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DOWN;
 		break;
 
 	case TipoBlocco::VERTICAL:
 		//Se ci si trova sulla prima colonna e a sinistra c'è una sorgente
-		if (currentPos.x == 1 && sorgenti.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
+		if (currentPos.x == 1 && sourceList.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_SX;
 
 		//Se ci si trova sull'ultima colonna e a destra c'è una sorgente
-		if (currentPos.x == blocchiX - 2 && sorgenti.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
+		if (currentPos.x == blocchiX - 2 && sourceList.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DX;
 		break;
 
@@ -725,24 +740,24 @@ TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i corne
 	if (currentPos.y == cornerPos.y && currentPos.x == cornerPos.x)
 	{
 		//Se a fianco si trova una sorgente
-		if (sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+		if (sourceList.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
 			//Se sopra/sotto si trova una sorgente
-			if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+			if (sourceList.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 				return TipoBlocco::CROSS4;
 			else
 				return typeX;
 
-		else if (sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+		else if (sourceList.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
 	}
 	else
 	{
 		//Se ci si trova nella stessa riga dell'angolo e se c'è una sorgente sopra/sotto
-		if (currentPos.y == cornerPos.y && sorgenti.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
+		if (currentPos.y == cornerPos.y && sourceList.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
 		else
 			//Se ci si trova nella stessa colonna dell'angolo e se c'è una sorgente a fianco
-			if (currentPos.x == cornerPos.x && sorgenti.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
+			if (currentPos.x == cornerPos.x && sourceList.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
 				return typeX;
 	}
 
@@ -757,41 +772,7 @@ void Mappa::draw(RenderWindow &widget)
 {
 	for (int i = 0; i < blocchiY; i++)
 		for (int j = 0; j < blocchiX; j++)
-			if (blocchi[i][j]->getTipo() != TipoBlocco::EMPTY)
-				widget.draw(blocchi[i][j]->getSprite());
-	//widget.draw(blocchi[]);
-	
-	for (int i=0; i<blocchiY; i++) 
-		for (int j=0; j<blocchiX; j++) {
-			Curva * c = dynamic_cast<Curva *>(blocchi[i][j]);
-			if (c != NULL) {
-				widget.draw(c->shape_1);
-				widget.draw(c->shape_2);
-				widget.draw(c->shape_3);
-				widget.draw(c->shape_4);
-			}
-	}
-	for (int i = 0; i<blocchiY; i++)
-		for (int j = 0; j<blocchiX; j++) {
-			Incrocio3 * c = dynamic_cast<Incrocio3 *>(blocchi[i][j]);
-			if (c != NULL) {
-				widget.draw(c->shape_1);
-				widget.draw(c->shape_2);
-				widget.draw(c->shape_3);
-				widget.draw(c->shape_4);
-			}
-		}
-	for (int i = 0; i<blocchiY; i++)
-		for (int j = 0; j<blocchiX; j++) {
-			Incrocio4 * c = dynamic_cast<Incrocio4 *>(blocchi[i][j]);
-			if (c != NULL) {
-				widget.draw(c->shape_1);
-				widget.draw(c->shape_2);
-				widget.draw(c->shape_3);
-				widget.draw(c->shape_4);
-			}
-		}
-			
+			blocchi[i][j]->draw(widget);
 }
 
 void Mappa::cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo)
@@ -834,57 +815,35 @@ void Mappa::loadTextures()
 	for (int i = 0; i < 11; i++)
 		texture[i] = new Texture();
 
-	assert(texture[toInt(TipoBlocco::HORIZONTAL)]->loadFromFile("media/img/orizzontale.jpg"));
-	if (!texture[toInt(TipoBlocco::HORIZONTAL)]->loadFromFile("media/img/orizzontale.jpg"))
-		exit(1);
+	loadTexture(TipoBlocco::HORIZONTAL, "orizzontale.jpg");
+	loadTexture(TipoBlocco::VERTICAL, "verticale.jpg");
 
-	assert(texture[toInt(TipoBlocco::VERTICAL)]->loadFromFile("media/img/verticale.jpg"));
-	if (!texture[toInt(TipoBlocco::VERTICAL)]->loadFromFile("media/img/verticale.jpg"))
-		exit(1);
+	loadTexture(TipoBlocco::SX_TO_UP, "curvaSxSu.jpg");
+	loadTexture(TipoBlocco::SX_TO_DOWN, "curvaSxGiu.jpg");
+	loadTexture(TipoBlocco::DX_TO_UP, "curvaDxSu.jpg");
+	loadTexture(TipoBlocco::DX_TO_DOWN, "curvaDxGiu.jpg");
 
-	assert(texture[toInt(TipoBlocco::SX_TO_UP)]->loadFromFile("media/img/curvaSxSu.jpg"));
-	if (!texture[toInt(TipoBlocco::SX_TO_UP)]->loadFromFile("media/img/curvaSxSu.jpg"))
-		exit(1);
+	loadTexture(TipoBlocco::CROSS3_UP, "incrocio3su.jpg");
+	loadTexture(TipoBlocco::CROSS3_DX, "incrocio3dx.jpg");
+	loadTexture(TipoBlocco::CROSS3_DOWN, "incrocio3giu.jpg");
+	loadTexture(TipoBlocco::CROSS3_SX, "incrocio3sx.jpg");
 
-	assert(texture[toInt(TipoBlocco::SX_TO_DOWN)]->loadFromFile("media/img/curvaSxGiu.jpg"));
-	if (!texture[toInt(TipoBlocco::SX_TO_DOWN)]->loadFromFile("media/img/curvaSxGiu.jpg"))
-		exit(1);
+	loadTexture(TipoBlocco::CROSS4, "incrocio4.jpg");
+}
 
-	assert(texture[toInt(TipoBlocco::DX_TO_UP)]->loadFromFile("media/img/curvaDxSu.jpg"));
-	if (!texture[toInt(TipoBlocco::DX_TO_UP)]->loadFromFile("media/img/curvaDxSu.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::DX_TO_DOWN)]->loadFromFile("media/img/curvaDxGiu.jpg"));
-	if (!texture[toInt(TipoBlocco::DX_TO_DOWN)]->loadFromFile("media/img/curvaDxGiu.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::CROSS3_UP)]->loadFromFile("media/img/incrocio3su.jpg"));
-	if (!texture[toInt(TipoBlocco::CROSS3_UP)]->loadFromFile("media/img/incrocio3su.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::CROSS3_DOWN)]->loadFromFile("media/img/incrocio3giu.jpg"));
-	if (!texture[toInt(TipoBlocco::CROSS3_DOWN)]->loadFromFile("media/img/incrocio3giu.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::CROSS3_DX)]->loadFromFile("media/img/incrocio3dx.jpg"));
-	if (!texture[toInt(TipoBlocco::CROSS3_DX)]->loadFromFile("media/img/incrocio3dx.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::CROSS3_SX)]->loadFromFile("media/img/incrocio3sx.jpg"));
-	if (!texture[toInt(TipoBlocco::CROSS3_SX)]->loadFromFile("media/img/incrocio3sx.jpg"))
-		exit(1);
-
-	assert(texture[toInt(TipoBlocco::CROSS4)]->loadFromFile("media/img/incrocio4.jpg"));
-	if (!texture[toInt(TipoBlocco::CROSS4)]->loadFromFile("media/img/incrocio4.jpg"))
+void Mappa::loadTexture(TipoBlocco tipo, std::string nome)
+{
+	assert(texture[toInt(tipo)]->loadFromFile("media/img/" + nome));
+	if (!texture[toInt(tipo)]->loadFromFile("media/img/" + nome))
 		exit(1);
 }
 
 void Mappa::clean()
 {
-	sorgenti.clean();
+	sourceList.clean();
+	crossList.clean();
 
 	for (int i = 0; i < blocchiY; i++)
 		for (int j = 0; j < blocchiX; j++)
 			cambiaTipoBlocco(blocchi[i][j], TipoBlocco::EMPTY);
 }
-

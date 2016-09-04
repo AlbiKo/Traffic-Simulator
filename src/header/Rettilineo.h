@@ -5,12 +5,10 @@ using namespace sf;
 
 class Rettilineo: public Blocco
 {
-
-private:
-
 public:
 	Rettilineo();
 	Rettilineo(int rowIndex, int columnIndex, TipoBlocco tipo);
 
-	virtual void cambiaVerso(TipoBlocco verso);
+	void cambiaVerso(TipoBlocco verso);
+	void draw(RenderWindow &widget);
 };

@@ -45,10 +45,20 @@ private:
 	Blocco *** blocchi;
 
 	/** Lista con le posizioni delle sorgenti. */
-	Vector2i_List sorgenti;
+	Vector2i_List sourceList;
+
+	/** Lista con le posizioni degli incroci */
+	Vector2i_List crossList;
 
 	/** Carica le texture dei blocchi nell'apposita matrice */
 	void loadTextures();
+
+	/**	Carica la texture specificata dal tipo di blocco su cui applicarla e dal suo nome del file.
+	*
+	*	@param tipo Tipo di blocco.
+	*	@param nome Nome del file della texture.
+	*/
+	void loadTexture(TipoBlocco tipo, std::string nome);
 
 	/** Pulisce la matrice, azzerando tutti i percorsi e le sorgenti */
 	void clean();
@@ -297,7 +307,7 @@ public:
 	Vector2i getRandomSource();
 
 	void checkCarCollision();
-
+	void updateSemaphores();
 };
 #endif
 

@@ -38,28 +38,23 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 	pos4.x = 48 + (size*columnIndex);
 	pos4.y = 48 + (size*rowIndex);
 
-	//DEBUG
-	shape_1 = RectangleShape();
+#ifdef DEBUG_MODE
 	shape_1.setPosition(pos1.x, pos1.y);
 	shape_1.setSize(Vector2f(1, 1));
 	shape_1.setFillColor(Color::Green);
 
-	shape_2 = RectangleShape();
 	shape_2.setPosition(pos2.x, pos2.y);
 	shape_2.setSize(Vector2f(1, 1));
 	shape_2.setFillColor(Color::Green);
 
-	shape_3 = RectangleShape();
 	shape_3.setPosition(pos3.x, pos3.y);
 	shape_3.setSize(Vector2f(1, 1));
 	shape_3.setFillColor(Color::Green);
 
-	shape_4 = RectangleShape();
 	shape_4.setPosition(pos4.x, pos4.y);
 	shape_4.setSize(Vector2f(1, 1));
 	shape_4.setFillColor(Color::Green);
-	//DEBUG
-
+#endif // DEBUG_MODE
 }
 
 void Curva::cambiaVerso(TipoBlocco verso)
@@ -68,6 +63,18 @@ void Curva::cambiaVerso(TipoBlocco verso)
 		setTipo(verso);
 	else
 		setTipo(TipoBlocco::SX_TO_UP);
+}
+
+void Curva::draw(RenderWindow & widget)
+{
+	widget.draw(sprite);
+
+	D1(
+		widget.draw(shape_1);
+		widget.draw(shape_2);
+		widget.draw(shape_3);
+		widget.draw(shape_4);
+	);
 }
 
 Direzione Curva::getChangeDir(Vector2f pos)

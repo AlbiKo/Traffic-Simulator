@@ -24,3 +24,8 @@ void Rettilineo::cambiaVerso(TipoBlocco verso)
 	else
 		setTipo(TipoBlocco::HORIZONTAL);
 }
+
+void Rettilineo::draw(RenderWindow & widget)
+{
+	widget.draw(sprite);
+}

@@ -60,6 +60,7 @@ public:
 	/**Cambia il verso del blocco con quello indicato*/
 	virtual void cambiaVerso(TipoBlocco verso);
 
+	virtual void draw(RenderWindow &widget);
 };
 
 #endif

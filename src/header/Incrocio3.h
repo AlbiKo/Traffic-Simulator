@@ -7,12 +7,13 @@ class Incrocio3: public Incroci
 {
 
 private:
+
 	void setWrongDir();
 
 public:
-	Incrocio3() ;
+	Incrocio3();
 	Incrocio3(int rowIndex, int columnIndex, TipoBlocco tipo);
 
 	void cambiaVerso(TipoBlocco verso);
-	RectangleShape shape_1, shape_2, shape_3, shape_4; //DEBUG
+	void draw(RenderWindow &widget);
 };

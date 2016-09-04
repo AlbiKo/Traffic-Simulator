@@ -131,6 +131,7 @@ void Macchina::initMacchina()
 	shape.setPosition(-SIZE / 2, -SIZE / 2);
 	shape.setOrigin(SIZE / 2, SIZE / 2);
 	shape.setSize(Vector2f(SIZE, SIZE));
+	shape.setOutlineThickness(-1);
 
 	setColor(Color(rand() % 210 + 30, rand() % 210 + 30, rand() % 200 + 30, 255));
 

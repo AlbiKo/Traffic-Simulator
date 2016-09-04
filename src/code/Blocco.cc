@@ -86,7 +86,10 @@ void Blocco::setTipo(TipoBlocco tipo)
 
 void Blocco::cambiaVerso(TipoBlocco verso)
 {
-	//D1(PRINT("Blocco verso"));
+}
+
+void Blocco::draw(RenderWindow & widget)
+{
 }
 
 void Blocco::checkCollision()

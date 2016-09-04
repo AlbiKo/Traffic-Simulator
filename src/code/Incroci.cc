@@ -3,7 +3,6 @@
 
 Direzione Incroci::getChangeDir(Vector2f pos, Direzione dir)
 {
-	//Direzione dir = Direzione::DX;
 	Vector2i posizione = Vector2i(pos.x, pos.y);
 	switch (dir)
 	{
@@ -54,6 +53,41 @@ void Incroci::setChangeDirPos()
 	pos4.y = 48 + pos.y;
 }
 
+void Incroci::initSemShapes()
+{
+	initSemShape(semShape1, pos1);
+	initSemShape(semShape2, pos2);
+	initSemShape(semShape3, pos3);
+	initSemShape(semShape4, pos4);
+
+	setSemaphoresColor();
+}
+
+void Incroci::initSemShape(CircleShape &semShape, Vector2i pos)
+{
+	int SEM_RADIUS = 5;
+
+	semShape.setRadius(SEM_RADIUS);
+	semShape.setOrigin(SEM_RADIUS, SEM_RADIUS);
+	semShape.setPosition(pos.x, pos.y);
+}
+
+void Incroci::setSemaphoresColor()
+{
+	Color horizColor = Color::Red, vertColor = Color::Green;
+
+	if (!blockHoriz)
+	{
+		horizColor = Color::Green;
+		vertColor = Color::Red;
+	}
+
+	semShape1.setFillColor(vertColor);
+	semShape2.setFillColor(horizColor);
+	semShape3.setFillColor(horizColor);
+	semShape4.setFillColor(vertColor);
+}
+
 void Incroci::setSemaphorePos()
 {
 	Vector2i pos = getPos();
@@ -81,6 +115,7 @@ void Incroci::changeSemaphoreStatus()
 	blockHoriz = !blockHoriz;
 
 	setSemaphorePos();
+	setSemaphoresColor();
 }
 
 IntRect Incroci::getSemaphore(Direzione dir)

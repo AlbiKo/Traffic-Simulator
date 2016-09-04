@@ -14,7 +14,11 @@ public:
 	Curva(int rowIndex, int columnIndex, TipoBlocco tipo);
 
 	void cambiaVerso(TipoBlocco verso);
-	RectangleShape shape_1, shape_2, shape_3, shape_4; //DEBUG
+	void draw(RenderWindow &widget);
+#ifdef DEBUG_MODE
+	RectangleShape shape_1, shape_2, shape_3, shape_4;
+#endif // DEBUG_MODE
+	
 
 	/**Restituisce la direzione che deve prendere la macchina in prossimità di una curva.
 	*  @param pos Posizione attuale della macchina

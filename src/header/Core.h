@@ -18,5 +18,4 @@ void placeCar(Vector2i &source, Direzione &d);
 void replaceCar(Macchina &car);
 void refreshMap();
 void createCar();
-void updateSemaphores();
 void inputHandling(RenderWindow &widget);

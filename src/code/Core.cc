@@ -53,7 +53,7 @@ void update(RenderWindow &widget)
 
 	if (!pause && timeLastSemUpdate.asSeconds() >= 10)
 	{
-		updateSemaphores();
+		map.updateSemaphores();
 		timeLastSemUpdate = Time::Zero;
 	}
 
@@ -287,20 +287,6 @@ void createCar()
 	ptr->nextBlock = ptr->percorso.get(0, false);
 	ptr->currentBlock = ptr->nextBlock;
 	spawned++;
-}
-
-void updateSemaphores()
-{
-	for (int i = 1; i < mapSize.y - 1; i++)
-		for (int j = 1; j < mapSize.x - 1; j++)
-		{
-			Blocco * b = map.getBlocco(i, j);
-			if (b != NULL && isCrossBlock(b->getTipo()))
-			{
-				Incroci * cross = dynamic_cast<Incroci *>(b);
-				cross->changeSemaphoreStatus();
-			}
-		}
 }
 
 void inputHandling(RenderWindow &widget)
