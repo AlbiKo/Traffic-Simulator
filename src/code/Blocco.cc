@@ -125,7 +125,7 @@ void Blocco::checkCollision()
 					}
 				}
 				else
-					if (car->stoppedBy == m && !car->collider.intersects(m->collider))
+					if ((car->stoppedBy == m && !car->collider.intersects(m->collider)) || (car->stoppedBy != NULL && !car->collider.intersects(car->stoppedBy->collider)))
 					{
 						car->changeDirection(car->currentDir);
 						car->stoppedBy = NULL;

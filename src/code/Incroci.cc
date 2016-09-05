@@ -92,7 +92,7 @@ void Incroci::setSemaphorePos()
 {
 	Vector2i pos = getPos();
 
-	if (blockHoriz)
+	if (!blockHoriz)
 	{
 		semaphore1.left = pos1.x;
 		semaphore1.top = pos.y;
