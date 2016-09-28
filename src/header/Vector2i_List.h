@@ -16,9 +16,7 @@ struct Vector2i_Node {
 *	Gli elementi Vector2i sono vettori che contengono 2 numeri interi.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
-*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca
-*	@author Alberto Beccari
-*/
+*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca*/
 class Vector2i_List {
 
 private:
@@ -53,6 +51,10 @@ public:
 	*/
 	void insert(Vector2i r);
 
+	/**
+	*/
+	void insertHead(Vector2i r);
+
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro. 
 	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto. 
 	*
@@ -71,6 +73,9 @@ public:
 	*	@return Se l'elemento esiste nella lista, lo restituisce. Altrimenti restiuisce un vettore (-1, -1)
 	*/
 	Vector2i get(int x, int y, bool del);
+
+
+	void copy(Vector2i_List &source);
 
 	/** Svuota la lista, cancellando tutti gli elementi. */
 	void clean();

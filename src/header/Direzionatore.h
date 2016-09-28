@@ -44,12 +44,12 @@ public:
 	/** Elimina dalla lista le direzioni non ammissibili:
 	*	- Quella da cui sta arrivando
 	*	- Quella opposta a quella che porta alla destinazione
-	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla mappa
+	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla map
 	*
 	*	@param startPos Posizione di riferimento
 	*	@param endPos Posizione della destinazione
 	*	@param prevDir Direzione estratta precedentemente
-	*	@param numBlocchi Dimensioni in blocchi della mappa
+	*	@param numBlocchi Dimensioni in blocchi della map
 	*/
 	void escludiDirezioni(Vector2i startPos, Vector2i endPos, Direzione prevDir, Vector2i numBlocchi);
 	
@@ -69,7 +69,7 @@ private:
 	*	la posizione di riferimento e quella di destinazione (posizionata sul bordo superiore o inferiore):
 	*	- Quella da cui sta arrivando
 	*	- Quella opposta che porta alla destinazione
-	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla mappa
+	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla map
 	*
 	*	@param startPos Posizione di riferimento
 	*	@param endPos Posizione della destinazione

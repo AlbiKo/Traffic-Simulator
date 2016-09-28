@@ -1,7 +1,7 @@
 
 /** @mainpage Traffic-Simulator.
 		Questo programma gestisce il traffico stradale di un ambiente generato casualmente.\n
-		La "mappa" generata conterrà incroci che saranno gestiti da semafori.\n
+		La "map" generata conterrà incroci che saranno gestiti da semafori.\n
 		I veicoli procederanno da un luogo di partenza verso una destinazione autonomamente, rispettando gli incroci e le regolazioni semaforiche.\n
 		\n Benvenuti in SimCity 2000!\n\n
 		NOTA:
@@ -33,7 +33,7 @@ SFMLWidget * SFML;
 int RESX = 1280,
 /**Altezza della finestra
 */
-	RESY = 700;
+	RESY = 740;
 
 /**Disegnamento dell'interfaccia
 */

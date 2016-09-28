@@ -1,5 +1,6 @@
 #include "TipoBlocco.h"
 #include "enum_toInt.h"
+#include "MacchinaPtr_List.h"
 #include <SFML/Graphics.hpp>
 
 #ifndef BLOCCO_INCLUDE
@@ -11,13 +12,24 @@ using namespace sf;
 class Blocco
 {
 protected:
+
 	Sprite sprite;
 	TipoBlocco tipo;
 
-	/**Impsta il tipo di blocco con quello indicato*/
+	bool checkBlockCollision(Macchina &currentCar);
+	bool checkSameDirCollision(Macchina &currentCar, Macchina &collidingCar);
+	bool checkCurveCollison(Macchina &currentCar, Macchina &collidingCar);
+	bool checkCrossCollision(Macchina &currentCar, Macchina &collidingCar);
+
+	/**Imposta il tipo di blocco con quello indicato*/
 	void setTipo(TipoBlocco tipo);
 public:
 	static const int size = 68;
+
+	MacchinaPtr_List cars;
+	IntRect collider;
+	void checkCollision();
+	bool canBeSpawned(Macchina & car);
 
 	Blocco();
 	virtual ~Blocco();
@@ -40,9 +52,15 @@ public:
 		return Vector2i(sprite.getPosition().x / size,sprite.getPosition().y / size);
 	}
 
+	inline Vector2i getPos()
+	{
+		return Vector2i(sprite.getPosition().x, sprite.getPosition().y);
+	}
+
 	/**Cambia il verso del blocco con quello indicato*/
 	virtual void cambiaVerso(TipoBlocco verso);
 
+	virtual void draw(RenderWindow &widget);
 };
 
 #endif

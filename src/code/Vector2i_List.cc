@@ -39,6 +39,16 @@ void Vector2i_List::insert(sf::Vector2i r)
 	num_nodi++;
 }
 
+void Vector2i_List::insertHead(Vector2i r)
+{
+	Vector2i_Node *i = new Vector2i_Node;
+	i->node = r;
+	i->next = root;
+
+	root = i;
+	num_nodi++;
+}
+
 Vector2i Vector2i_List::get(int index, bool del)
 {
 	if (index >= num_nodi) return Vector2i(-1, -1);
@@ -92,6 +102,12 @@ Vector2i Vector2i_List::get(int x, int y, bool del)
 	}
 
 	return Vector2i(-1, -1);
+}
+
+void Vector2i_List::copy(Vector2i_List & source)
+{
+	for (int i = 0; i < source.count(); i++)
+		insert(source.get(i, false));
 }
 
 void Vector2i_List::clean()
