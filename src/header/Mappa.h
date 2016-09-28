@@ -1,3 +1,6 @@
+#ifndef MAPPA_INCLUDE
+#define MAPPA_INCLUDE
+
 #include <SFML/Graphics.hpp>
 #include "TipoBlocco.h"
 #include "enum_toInt.h"
@@ -14,7 +17,7 @@
 using namespace sf;
 
 /**	La classe Mappa descrive l'area di gioco rappresentata attraverso una matrice di blocchi.
-*	La mappa viene generata casualmente passando attraverso tre fasi:
+*	La map viene generata casualmente passando attraverso tre fasi:
 *
 *	1) Posizionamento delle sorgenti, ovvero i blocchi da cui le macchine possono entrare/uscire, sui bordi.
 *	2) Si collegano le sorgenti fra loro: ogni sorgente posizionata sul bordo sinistro o destro viene collegata
@@ -36,16 +39,26 @@ private:
 		blocchiY;
 
 	/** Matrice di puntatori a oggetti di tipo Blocco. 
-	*	Rappresenta la mappa e il blocco nella matrice all'indice 0,0 rappresenta
+	*	Rappresenta la map e il blocco nella matrice all'indice 0,0 rappresenta
 	*	il blocco nell'angolo in alto a sinistra.
 	*/
 	Blocco *** blocchi;
 
 	/** Lista con le posizioni delle sorgenti. */
-	Vector2i_List sorgenti;
+	Vector2i_List sourceList;
+
+	/** Lista con le posizioni degli incroci */
+	Vector2i_List crossList;
 
 	/** Carica le texture dei blocchi nell'apposita matrice */
 	void loadTextures();
+
+	/**	Carica la texture specificata dal tipo di blocco su cui applicarla e dal suo nome del file.
+	*
+	*	@param tipo Tipo di blocco.
+	*	@param nome Nome del file della texture.
+	*/
+	void loadTexture(TipoBlocco tipo, std::string nome);
 
 	/** Pulisce la matrice, azzerando tutti i percorsi e le sorgenti */
 	void clean();
@@ -165,7 +178,7 @@ private:
 	bool checkZigZag(TipoBlocco prevBlock, TipoBlocco currentBlock);
 
 	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
-	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla mappa, sorgenti comprese.
+	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla map, sorgenti comprese.
 	*
 	*	@param currentPos Posizione del blocco attuale nella matrice
 	*	@param prevDir Direzione estratta precedente
@@ -257,17 +270,17 @@ private:
 	*/
 	TipoBlocco checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i cornerPos, Vector2i offset, TipoBlocco base, TipoBlocco typeX, TipoBlocco typeY);
 public:
-	/** Crea e inizializza la matrice che rappresenta la mappa.
+	/** Crea e inizializza la matrice che rappresenta la map.
 	*	Inizialmente, tutti i blocchi presenti nella matrice saranno vuoti (::TipoBlocco::EMPTY)
 	*/
     Mappa();
 
-	/** Disegna la mappa rappresentata dalla matrice
-	*	@param widget Window SFML in cui andrà disegnata la mappa
+	/** Disegna la map rappresentata dalla matrice
+	*	@param widget Window SFML in cui andrà disegnata la map
 	*/
     void draw(RenderWindow &widget);
 
-	/** Genera la mappa	*/
+	/** Genera la map	*/
     void generate();
 
 	/**	Restituisce il blocco alle date coordinate nella matrice
@@ -285,6 +298,16 @@ public:
 	*/
 	Blocco * getBlocco(Vector2i pos);
 
-	/** Restituisce la dimensione della mappa */
+	/** Restituisce la dimensione della map */
 	Vector2i getMapSize();
+
+
+	void getSorgenti(Vector2i_List &dest);
+
+	Vector2i getRandomSource();
+
+	void checkCarCollision();
+	void updateSemaphores();
 };
+#endif
+
