@@ -3,13 +3,13 @@
 
 #include "Macchina.h"
 
-/** Struttura che rappresenta il singolo nodo della lista */
+/** Struttura che rappresenta il singolo nodo della lista. */
 struct Macchina_Node {
 	Macchina node;
 	Macchina_Node * next;
 };
 
-/** La classe Macchina_List rappresenta una lista di Macchine.
+/** La classe Macchina_List rappresenta una lista di elementi di tipo ::Macchina.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
 *	I metodi disponibili sono: aggiunta di una nuova macchina, aggiunta di macchina esistente, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.*/
@@ -37,7 +37,7 @@ public:
 		return num_nodi;
 	}
 
-	/** Aggiunta di una macchina in testa alla lista
+	/** Aggiunge una macchina in testa alla lista
 	*
 	*	@param pos Posizione iniziale della macchina
 	*	@param dir Direzione iniziale della macchina
@@ -45,7 +45,7 @@ public:
 	*/
 	Macchina * add(Vector2i pos, Direzione dir);
 
-	/**	Aggiunta di una macchina in testa alla lista
+	/**	Aggiunge una macchina in testa alla lista
 	*
 	*	@param pos Posizione iniziale della macchina
 	*	@param dir Direzione iniziale della macchina
@@ -54,7 +54,7 @@ public:
 	*/
 	Macchina * add(Vector2i pos, Direzione dir, Color color);
 
-	/** Inserimento di una macchina esistente nella lista 
+	/** Inserisce una macchina esistente, passata per parametro, nella lista 
 	*
 	*	@param i Macchina da inserire
 	*/
@@ -63,7 +63,7 @@ public:
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro. 
 	*
 	*	@param index Indice nella lista dell'elemento
-	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restiuisce un puntatore nullo
+	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restituisce un puntatore nullo
 	*/
 	Macchina * get(int index);
 
