@@ -23,7 +23,19 @@ extern int RESX, RESY;
 extern unsigned int MASK;
 #endif // DEBUG_MODE
 
-int pause = false;
+bool pause = false;
+
+
+void createCar();
+void placeCar(Vector2i &source, Direzione &d);
+void replaceCar(Macchina &car);
+void replaceCarOnClick(Macchina &car);
+/**Aggiorna la posizione della macchina\n
+*  Se la macchina si trova su una curva o su un incrocio, cambia la direzione della macchina*/
+void updateCar(Macchina &car);
+void refreshMap();
+
+void inputHandling(RenderWindow &widget);
 
 void CoreInit()
 {
@@ -254,6 +266,20 @@ void replaceCar(Macchina & car)
 	car.currentBlock = car.nextBlock;
 }
 
+void replaceCarOnClick(Macchina &car)
+{
+	replaceCar(car);
+	car.update();
+
+	D2(
+		std::cout << car.getPosition().x << ", " << car.getPosition().y << " " << toString(car.getDirection()) << " " << toString(car.currentDir) << " ";
+		if (car.stoppedBy != NULL)
+			std::cout << car.stoppedBy->getPosition().x << ", " << car.stoppedBy->getPosition().y << " " << toString(car.stoppedBy->getDirection()) << " " << toString(car.stoppedBy->currentDir) << " ";
+
+		std::cout << "\n"
+	);
+}
+
 void refreshMap()
 {
 	map.generate();
@@ -291,70 +317,97 @@ void createCar()
 
 void inputHandling(RenderWindow &widget)
 {
-	if (Keyboard::isKeyPressed(Keyboard::R))
+	static bool refreshPressed = false;
+	if (!refreshPressed && Keyboard::isKeyPressed(Keyboard::R))
+	{
 		refreshMap();
+		refreshPressed = true;
+	}
+	else
+		if (refreshPressed && !Keyboard::isKeyPressed(Keyboard::R))
+			refreshPressed = false;
 
+	static bool pausePressed = false;
+	if (!pausePressed && Keyboard::isKeyPressed(Keyboard::P))
+	{
+		pause = !pause;
+		pausePressed = true;
+	}
+	else
+		if (pausePressed && !Keyboard::isKeyPressed(Keyboard::P))
+			pausePressed = false;
+
+#ifdef DEBUG_MODE
 	if (Keyboard::isKeyPressed(Keyboard::A))
 		replaceCar(*carList.get(rand() % carList.count()));
 
-	if (Keyboard::isKeyPressed(Keyboard::D))
-		carList.get(0)->changeDirection(carList.get(0)->currentDir);
+	static bool num1Pressed = false;
+	if (!num1Pressed && Keyboard::isKeyPressed(Keyboard::Num1))
+	{
+		if (MASK & 1)
+			MASK--;
+		else
+			MASK++;
 
-	if (Keyboard::isKeyPressed(Keyboard::S))
-		carList.get(1)->stop();
+		num1Pressed = true;
+		PRINT("Maschera impostata a: " <<MASK);
+}
+	else
+		if (num1Pressed && !Keyboard::isKeyPressed(Keyboard::Num1))
+			num1Pressed = false;
 
-	if (Keyboard::isKeyPressed(Keyboard::X))
-		carList.get(0)->stop();
+	static bool num2Pressed = false;
+	if (!num2Pressed && Keyboard::isKeyPressed(Keyboard::Num2))
+	{
+		if (MASK & 2)
+			MASK -= 2;
+		else
+			MASK += 2;
 
-	if (Keyboard::isKeyPressed(Keyboard::P))
-		pause = true;
+		num2Pressed = true;
+		PRINT("Maschero impostata a: " << MASK);
+	}
+	else
+		if (num2Pressed && !Keyboard::isKeyPressed(Keyboard::Num2))
+			num2Pressed = false;
 
-	if (Keyboard::isKeyPressed(Keyboard::L))
-		pause = false;
+	static bool num3Pressed = false;
+	if (!num3Pressed && Keyboard::isKeyPressed(Keyboard::Num3))
+	{
+		if (MASK & 4)
+			MASK -= 4;
+		else
+			MASK += 4;
 
-	if (Keyboard::isKeyPressed(Keyboard::U))
-		NUM_MACCHINE++;
+		num3Pressed = true;
+		PRINT("Maschera impostata a: " << MASK);
+	}
+	else
+		if (num3Pressed && !Keyboard::isKeyPressed(Keyboard::Num3))
+			num3Pressed = false;
 
-#ifdef DEBUG_MODE
-	if (Keyboard::isKeyPressed(Keyboard::Num1))
-		MASK++;
-
-	if (Keyboard::isKeyPressed(Keyboard::Num2))
-		MASK--;
 #endif // DEBUG_MODE
 
 
 	static bool mousePressed = false;
-	if (pause && !mousePressed && Mouse::isButtonPressed(Mouse::Left))
+	if (!mousePressed && Mouse::isButtonPressed(Mouse::Left))
 	{
 		mousePressed = true;
 		Vector2i mousePos = Mouse::getPosition(widget);
-		std::cerr << "Mouse: " << mousePos.x << ", " << mousePos.y << "\n";
+
+		D1(PRINT("Mouse: " << mousePos.x << ", " << mousePos.y));
 		Blocco * b = map.getBlocco(mousePos);
 
 		if (b != NULL)
-		{
 			for (int i = 0; i < b->cars.count(); i++)
 			{
 				Macchina * ptr = b->cars.get(i);
 				if (ptr->collider.contains(mousePos))
 				{
-					if (Keyboard::isKeyPressed(Keyboard::LAlt))
-					{
-						replaceCar(*ptr);
-						ptr->update();
-					}
-
-					std::cerr << ptr->getPosition().x << ", " << ptr->getPosition().y << " " << toString(ptr->getDirection()) << " " << toString(ptr->currentDir) << " ";
-					if (ptr->stoppedBy != NULL)
-						std::cerr << ptr->stoppedBy->getPosition().x << ", " << ptr->stoppedBy->getPosition().y << " " << toString(ptr->stoppedBy->getDirection()) << " " << toString(ptr->stoppedBy->currentDir) << " ";
-
-					std::cerr << "\n";
+					replaceCarOnClick(*ptr);
 					break;
 				}
 			}
-		}
-
 	}
 	else
 		if (mousePressed && !Mouse::isButtonPressed(Mouse::Left))
