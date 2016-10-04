@@ -3,7 +3,7 @@
 
 #include "Direzione.h"
 
-/** Struttura che rappresenta il singolo nodo della lista */
+/** Struttura che rappresenta il singolo nodo della lista. */
 struct Direzione_Node {
 	Direzione node;
 	Direzione_Node * next;
@@ -42,7 +42,7 @@ public:
 		return num_nodi;
 	}
 
-	/** Inserimento di un elemento nella lista
+	/** Inserisce un elemento nella lista
 	*
 	*	@param r Elemento da inserire
 	*/

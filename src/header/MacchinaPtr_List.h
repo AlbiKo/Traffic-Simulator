@@ -3,17 +3,17 @@
 
 #include "Macchina.h"
 
-/** Struttura che rappresenta il singolo nodo della lista */
+/** Struttura che rappresenta il singolo nodo della lista. */
 struct MacchinaPtr_Node {
 	Macchina * node;
 	MacchinaPtr_Node * next;
 };
 
 
-/** La classe MacchinaPtr_List rappresenta una lista di Macchine.
+/** La classe MacchinaPtr_List rappresenta una lista di puntatori agli elementi di tipo ::Macchina.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
-*	I metodi disponibili sono: aggiunta di una nuova macchina, aggiunta di macchina esistente, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.*/
+*	I metodi disponibili sono: aggiunta di un puntatore alla lista, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.*/
 class MacchinaPtr_List {
 
 private:
@@ -38,7 +38,7 @@ public:
 	}
 
 
-	/** Inserimento di una macchina esistente nella lista 
+	/** Inserisce il puntatore di una macchina esistente nella lista 
 	*
 	*	@param i Macchina da inserire
 	*/

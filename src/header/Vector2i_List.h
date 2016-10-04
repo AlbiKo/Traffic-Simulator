@@ -36,7 +36,7 @@ public:
 	*/
 	Vector2i_List(Vector2i r);
 	
-	/** Distruttuore che elimina tutti i nodi presenti nella lista */
+	/** Distruttuore che elimina tutti i nodi presenti nella lista. */
 	~Vector2i_List();	
 	
 	/** Restituisce il numero di elementi nella lista */
@@ -45,7 +45,7 @@ public:
 		return num_nodi;
 	}
 
-	/** Inserimento di un elemento nella lista 
+	/** Inserisce un elemento nella lista 
 	*
 	*	@param r Elemento da inserire
 	*/
