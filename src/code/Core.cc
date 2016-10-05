@@ -24,7 +24,7 @@ extern unsigned int MASK;
 #endif // DEBUG_MODE
 
 bool pause = false;
-
+bool inputEnabled = true;;
 
 void createCar();
 void placeCar(Vector2i &source, Direzione &d);
@@ -46,6 +46,11 @@ void CoreInit()
 	map.getSorgenti(sources);
 }
 
+void enableInput(bool enable)
+{
+	inputEnabled = enable;
+}
+
 void update(RenderWindow &widget)
 {
 	map.draw(widget);
@@ -59,7 +64,6 @@ void update(RenderWindow &widget)
 		if (spawned < NUM_MACCHINE)
 			createCar();
 
-		
 		timeLastSpawned = Time::Zero;
 	}
 
@@ -69,7 +73,8 @@ void update(RenderWindow &widget)
 		timeLastSemUpdate = Time::Zero;
 	}
 
-	inputHandling(widget);
+	if (inputEnabled)
+		inputHandling(widget);
 	
 	for (int i = 0; i < spawned; i++)
 	{

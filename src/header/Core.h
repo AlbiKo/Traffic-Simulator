@@ -9,4 +9,5 @@
 using namespace sf;
 
 void CoreInit();
+void enableInput(bool enable);
 void update(sf::RenderWindow &widget);

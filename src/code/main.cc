@@ -40,12 +40,11 @@ unsigned int MASK = 3 ;
 */
 SFMLWidget * SFML;
 
-/**Larghezza della finestra
-*/
-int RESX = 1280,
-/**Altezza della finestra
-*/
-	RESY = 740;
+/** Box che contiene i menu e widget SFML */
+Gtk::Box * box = NULL;
+
+int RESX = 1280, /** Larghezza della finestra */
+	RESY = 740;/**Altezza della finestra */
 
 /**Disegnamento dell'interfaccia
 */
@@ -56,7 +55,8 @@ void disegno()
 
 	//Pulizia della SFML window
 	SFML->renderWindow.clear();
-
+	
+	enableInput(box->has_focus());
 	update(SFML->renderWindow);
 
 	//Si visualizza ciò che è stato disegnato
@@ -82,9 +82,9 @@ int main(int argc, char* argv[])
 	//Inizializzazione GTK
     Gtk::Main kit(argc, argv);
 
-	//La SFML GTK è quella principale
+	//Window principale
     Gtk::Window * window = NULL;
-    Gtk::Box * box;
+    
 
 	//Creazione della zona di disegno mediante SFMLWidget
 	//IMPORTANTE: vengono applicate solo le modifiche al widget
