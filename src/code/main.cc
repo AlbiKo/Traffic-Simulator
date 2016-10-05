@@ -1,3 +1,15 @@
+/*
+●Una descrizione generale di cosa fa il
+programma
+● Una prima descrizione generale di come lo fa,
+nonché la suddivisione in moduli del programma
+stesso
+● Un rimando alla funzione (probabilmente la
+funzione main) la cui documentazione
+continuerà a guidare il lettore
+nell'approfondimento della conoscenza del
+programma
+*/
 
 /** @mainpage Traffic-Simulator.
 		Questo programma gestisce il traffico stradale di un ambiente generato casualmente.\n
