@@ -16,118 +16,131 @@
 
 using namespace sf;
 
-/**	La classe Mappa descrive l'area di gioco rappresentata attraverso una matrice di blocchi.
-*	La map viene generata casualmente passando attraverso tre fasi:
+/**	La classe ::Mappa descrive l'area di gioco rappresentata attraverso una matrice
+*	di blocchi.
+*	La mappa viene generata casualmente passando attraverso tre fasi:
 *
-*	1) Posizionamento delle sorgenti, ovvero i blocchi da cui le macchine possono entrare/uscire, sui bordi.
-*	2) Si collegano le sorgenti fra loro: ogni sorgente posizionata sul bordo sinistro o destro viene collegata
-*		con una sorgente posizionata sul bordo in alto o in basso scelta casualmente.
-*	3) Se al termine della fase due risultano delle sorgenti che non sono collegate a qualcosa,  si cerca di 
-*		collegare tali sorgenti con la sorgente a loro più vicina. In caso di insuccesso la sorgente viene eliminata.
+*	1) Posizionamento delle sorgenti, ovvero i blocchi da cui le macchine possono 
+*		entrare/uscire, sui bordi.\n
+*	2) Si collegano le sorgenti fra loro: ogni sorgente posizionata sul bordo 
+*		sinistro o destro viene collegata con una sorgente posizionata sul bordo 
+*		in alto o in basso scelta casualmente.\n
+*	3) Se al termine della fase due risultano delle sorgenti che non sono 
+*		collegate a qualcosa, si cerca di collegare tali sorgenti con la sorgente 
+*		a loro piÃ¹ vicina. In caso di insuccesso la sorgente viene eliminata.\n
+*	\n
+*	Inoltre, la mappa fornisce l'interfaccia per aggiornare lo stato dei semafori e per il controllo delle collisioni
+*	fra macchine all'interno di un blocco.
 */
 
 class Mappa
 {
 private:
 
-	/** Numero massimo di tentativi per costruire una strada */
+	/** Numero massimo di tentativi per costruire una strada. */
 	const int MAX_TENTATIVI = 16;
 
-		/** Numero di blocchi sull'asse X */
+		/** Numero di blocchi sull'asse orizzontale. */
 	int blocchiX, 
-		/** Numero di blocchi sull'asse Y */
+		/** Numero di blocchi sull'asse verticale. */
 		blocchiY;
 
 	/** Matrice di puntatori a oggetti di tipo Blocco. 
-	*	Rappresenta la map e il blocco nella matrice all'indice 0,0 rappresenta
-	*	il blocco nell'angolo in alto a sinistra.
+	*	Rappresenta la mappa e il blocco nella matrice all'indice 0,0 indica
+	*	il blocco sull'angolo in alto a sinistra.
 	*/
 	Blocco *** blocchi;
 
 	/** Lista con le posizioni delle sorgenti. */
 	Vector2i_List sourceList;
 
-	/** Lista con le posizioni degli incroci */
+	/** Lista con le posizioni degli incroci. */
 	Vector2i_List crossList;
 
-	/** Carica le texture dei blocchi nell'apposita matrice */
+	/** Carica le texture dei blocchi nell'apposita matrice. */
 	void loadTextures();
 
-	/**	Carica la texture specificata dal tipo di blocco su cui applicarla e dal suo nome del file.
+	/**	Carica la texture specificata dal tipo di blocco su cui applicarla e 
+	*	dal nome del file corrispondente nella cartella media/img.
 	*
 	*	@param tipo Tipo di blocco.
 	*	@param nome Nome del file della texture.
 	*/
 	void loadTexture(TipoBlocco tipo, std::string nome);
 
-	/** Pulisce la matrice, azzerando tutti i percorsi e le sorgenti */
+	/** Pulisce la matrice, azzerando tutti i percorsi, le sorgenti e i semafori. */
 	void clean();
 	
-	/** Cambia il blocco passato come parametro deallocandolo e riallocandolo come oggetto nel tipo specificato.
-	*	Se il blocco è già del tipo specificato non avviene alcuna riallocazione.
+	/** Cambia il blocco passato come parametro deallocandolo e riallocandolo come 
+	*	oggetto nel tipo specificato. Se il blocco Ã¨ giÃ  del tipo specificato, 
+	*	non avviene alcuna riallocazione.
 	*
-	*	@param blocco Puntatore del blocco da modificare
-	*	@param tipo Nuovo tipo del blocco
+	*	@param blocco Puntatore del blocco da modificare.
+	*	@param tipo Nuovo tipo del blocco.
 	*/
 	void cambiaTipoBlocco(Blocco * &blocco, TipoBlocco tipo);
 
-	/** Estrae casualemente un valore booleano */
+	/** Estrae casualemente un valore booleano. */
 	bool randomBool();
 
-	/** Le sorgenti vengono posizonate sui bordi casualmente con il vincolo che 
-	*	due sorgenti devono avere almeno due blocchi che le separano.
+	/** Le sorgenti vengono posizonate sui quattro bordi casualmente con 
+	*	il vincolo che due sorgenti devono avere almeno due blocchi che le separano.
 	*/
 	void generateSources();
 
-	/** Si posizionano casualmente le sorgenti sul bordo basandosi sulle coordinate passate.
-	*	In base al tipo di bordo (orizzontale o verticale), si capisce quale delle due coordinate deve rimanere fissa.
+	/** Si posizionano casualmente le sorgenti sul bordo indicato dalle 
+	*	coordinate dell'angolo che lo tocca passate e dal tipo di bordo, che puÃ² 
+	*	essere verticale o orizzontale.
+	*	In base al tipo di bordo, si capisce quale delle due coordinate 
+	*	deve rimanere fissa.
 	*
-	*	@param x Coordinata x del bordo
-	*	@param y Coordinata y del bordo
-	*	@param vertical Tipo di bordo. Se true si intende un bordo verticale, quindi il bordo sul lato sinistro o destro
+	*	@param x Coordinata x dell'angolo relativo al bordo.
+	*	@param y Coordinata y dell'angolo relativo al bordo.
+	*	@param vertical Tipo di bordo. Se true si intende un bordo verticale.
 	*/
 	void generateSource(int x, int y, bool vertical);
 
-	/** Si elimina dalla lista e dalla matrice la sorgente selezionata 
+	/** Si elimina dalla lista e dalla matrice la sorgente selezionata.
 	*
-	*	@param source Coordinate della sorgente
+	*	@param source Coordinate della sorgente.
 	*/
 	void deleteSource(Vector2i source);
 
-	/** Si controlla se ci sono delle sorgenti, intese sia come partenze sia come destinazioni, che non sono collegate a nulla
+	/** Si controlla se ci sono delle sorgenti, intese sia come partenze sia come 
+	*	destinazioni, che non sono collegate a nulla.
 	*
 	*	@param starts Lista con le coordinate delle partenze
 	*	@param ends Lista con le coordinate delle destinazioni
 	*/
 	void checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends);
 
-	/** Individua e restituisce la sorgente più vicina a quella passata come parametro
+	/** Individua e restituisce la sorgente piï¿½ vicina a quella passata come parametro
 	*
 	*	@param source Sorgente riferimento
-	*	@return Sorgente più vicina a source
+	*	@return Sorgente piï¿½ vicina a source
 	*/
 	Vector2i getNearestSource(Vector2i source);
 
 	/** Collega le sorgenti fra loro distinguendole in due categorie: partenze, ai lati sinistro e destro, destinazioni, in alto e in basso.
 	*	Ogni partenza viene collegata ad una destinazione scelta casualmente. Se al termine risultano sorgenti non collegate si tenta di collegarle
-	*	alle loro sorgenti più vicine. In caso di insuccesso, vengono eliminate.
+	*	alle loro sorgenti piï¿½ vicine. In caso di insuccesso, vengono eliminate.
 	*/
 	void generateRoutes();
 
-	/** Genera casualmente la strada che inizia in startPos e si conclude in endPos, escludendo la possibilità che
+	/** Genera casualmente la strada che inizia in startPos e si conclude in endPos, escludendo la possibilitï¿½ che
 	*	ci siano due incroci vicini o che si verifichi un zig-zag (questo per evitare una eccessiva seghettatura del percorso)
 	*
 	*	@param startPos Coordinate della sorgente di partenza
 	*	@param endPos Coordinate della sorgente di partenza
-	*	@return True se è riuscito a collegare le due sorgenti entro il numero di tentativi prestabiliti. False altrimenti
+	*	@return True se ï¿½ riuscito a collegare le due sorgenti entro il numero di tentativi prestabiliti. False altrimenti
 	*/
 	bool generateRoute(Vector2i startPos, Vector2i endPos);
 
 	/** Inizializzazione della generazione della strada che comincia in startPos e conclude in endPos.
 	*	A seconda di dove si trova la partenza, si inizializza la posizione corrente,
-	*	che sarà immediatamente a fianco, e la direzione estratta, che sarà sinistra o destra.
+	*	che sarï¿½ immediatamente a fianco, e la direzione estratta, che sarï¿½ sinistra o destra.
 	*
-	*	@param startPos Posizione nella matrice della sorgente di partenza, cioè collocata a sinistra o a destra
+	*	@param startPos Posizione nella matrice della sorgente di partenza, cioï¿½ collocata a sinistra o a destra
 	*	@param currentPos Posizione nella matrice attuale corrente
 	*	@param prevDir Direzione estratta precedente
 	*	@param prevBlock
@@ -139,7 +152,7 @@ private:
 	*	Poi si aggiorna la posizione corrente secondo la direzione corrente.
 	*
 	*	@param bloccoList Percorso attualmente costruito
-	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovrà stabilirne il tipo
+	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovrï¿½ stabilirne il tipo
 	*	@param prevDir Direzione estratta precedentemente (Parametro di uscita)
 	*	@param currentDir Direzione estratta
 	*	@param tipo Tipo del blocco da inserire
@@ -152,33 +165,33 @@ private:
 	*/
 	void applyRouteBlocks(Blocco_List & bloccoList);
 
-	/** Controlla se intorno al blocco, se è un incrocio, si trovano altri incroci. Il controllo si basa sulla matrice.
+	/** Controlla se intorno al blocco, se ï¿½ un incrocio, si trovano altri incroci. Il controllo si basa sulla matrice.
 	*
 	*	@param currentPos Coordinate del blocco
 	*	@param tipo Tipo del blocco
-	*	@return True se il blocco è un incrocio e intorno a lui si trovano altri incroci. False altrimenti
+	*	@return True se il blocco ï¿½ un incrocio e intorno a lui si trovano altri incroci. False altrimenti
 	*/
 	bool checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo);
 
-	/** Controlla se intorno al blocco, se è un incrocio, si trovano altri incroci. Il controllo si basa sul percorso.
+	/** Controlla se intorno al blocco, se ï¿½ un incrocio, si trovano altri incroci. Il controllo si basa sul percorso.
 	*
 	*	@param bloccoList Percorso
 	*	@param currentPos Coordinate del blocco
 	*	@param tipo Tipo del blocco
-	*	@return True se il blocco è un incrocio e intorno a lui si trovano altri incroci. False altrimenti
+	*	@return True se il blocco ï¿½ un incrocio e intorno a lui si trovano altri incroci. False altrimenti
 	*/
 	bool checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, TipoBlocco tipo);
 
-	/**	Controlla se si è andato a formare un zig-zag
+	/**	Controlla se si ï¿½ andato a formare un zig-zag
 	*
 	*	@param prevBlock Blocco precedentemente piazzato
 	*	@param currentBlock	Blocco piazzato
-	*	@return True se si è formato un zig-zag. False altrimenti
+	*	@return True se si ï¿½ formato un zig-zag. False altrimenti
 	*/
 	bool checkZigZag(TipoBlocco prevBlock, TipoBlocco currentBlock);
 
 	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
-	*	Vengono verificati evenutali conflitti con blocchi già presenti sulla map, sorgenti comprese.
+	*	Vengono verificati evenutali conflitti con blocchi giï¿½ presenti sulla map, sorgenti comprese.
 	*
 	*	@param currentPos Posizione del blocco attuale nella matrice
 	*	@param prevDir Direzione estratta precedente
@@ -188,7 +201,7 @@ private:
 	TipoBlocco mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direzione currentDir);
 
 	/** Assumendo che il blocco attuale sia un rettilineo, si stabilisce il nuovo tipo di tale blocco
-	*	basandosi sul valore delle ultime due direzioni estratte e sulle direzioni derivanti dal tipo di blocco già presente.
+	*	basandosi sul valore delle ultime due direzioni estratte e sulle direzioni derivanti dal tipo di blocco giï¿½ presente.
 	*
 	*	@param tipo Tipo di blocco attuale
 	*	@param prevDir Direzione estratta precedente
@@ -254,7 +267,7 @@ private:
 
 	/**	Controlla se mettendo una curva di un certo tipo nella posizione specificata
 	*	si crea un conflitto con eventuali sorgenti basandosi sulla posizione
-	*	dell'angolo che può creare due conflitti.
+	*	dell'angolo che puï¿½ creare due conflitti.
 	*	
 	*	@param currentPos Coordinate del blocco nella matrice
 	*	@param cornerPos Coordinate dell'angolo nella matrice
@@ -276,7 +289,7 @@ public:
     Mappa();
 
 	/** Disegna la map rappresentata dalla matrice
-	*	@param widget Window SFML in cui andrà disegnata la map
+	*	@param widget Window SFML in cui andrï¿½ disegnata la map
 	*/
     void draw(RenderWindow &widget);
 
@@ -298,15 +311,24 @@ public:
 	*/
 	Blocco * getBlocco(Vector2i pos);
 
-	/** Restituisce la dimensione della map */
+	/** Restituisce la dimensione della mappa. */
 	Vector2i getMapSize();
 
-
+	/** Copia il contenuto della lista sorgenti nella lista destinataria.
+	*
+	*	@param dest Lista destinataria.
+	*/
 	void getSorgenti(Vector2i_List &dest);
 
+	/** Restituisce una sorgente scelta casualmente dalla lista. */
 	Vector2i getRandomSource();
 
+	/** Per ogni blocco della mappa si controllano le collisioni fra le 
+	*	macchine che sono in intersezione con quel blocco.
+	*/
 	void checkCarCollision();
+
+	/**Aggiorna tutti i semafori allo stato successivo. */
 	void updateSemaphores();
 };
 #endif
