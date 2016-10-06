@@ -33,7 +33,7 @@ void replaceCarOnClick(Macchina &car);
 /**Aggiorna la posizione della macchina\n
 *  Se la macchina si trova su una curva o su un incrocio, cambia la direzione della macchina*/
 void updateCar(Macchina &car);
-void refreshMap();
+
 
 void inputHandling(RenderWindow &widget);
 
@@ -300,7 +300,6 @@ void refreshMap()
 
 void createCar()
 {
-	std::cerr << "Creo\n";
 	Vector2i start = sources.get(rand() % sources.count(), false);
 	Vector2i screenPos = start;
 	Direzione d;
