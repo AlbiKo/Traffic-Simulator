@@ -8,7 +8,7 @@ class Incrocio3: public Incroci
 {
 
 private:
-	/** Imposta la direzione in cui non possono andare le macchine. */
+	/** Imposta la direzione non valida. */
 	void setWrongDir();
 
 public:
