@@ -36,19 +36,19 @@ public:
 
 	/**	Cambia il verso della curva.
 	*	
-	*	@param verso Direzione che dovr‡ avere la curva.
+	*	@param verso Direzione che dovr√† avere la curva.
 	*/
 	void cambiaVerso(TipoBlocco verso);
 	
 	/** Disegna il blocco. 
-	*	Se il debug Ë attivo disegna anche i punti di cambio direzione.
+	*	Se il debug √® attivo disegna anche i punti di cambio direzione.
 	*
 	*	@param widget Finestra su cui viene disegnato il blocco.
 	*/
 	void draw(RenderWindow &widget);
 	
 
-	/**	Restituisce la direzione che deve prendere la macchina in prossimit‡ di una curva.
+	/**	Restituisce la direzione che deve prendere la macchina in prossimit√† di una curva.
 	*
 	*	@param pos Posizione attuale della macchina.
 	*/
