@@ -8,7 +8,18 @@
 
 using namespace sf;
 
+/** Crea la prima mappa e il relativo grafo. */
 void CoreInit();
+
+/** Abilita/disabilita l'input. */
 void enableInput(bool enable);
+
+/** Avanza la logica del gioco, disegnando gli oggetti, spawnando/creando le macchine,
+*	controllando le collisioni fra macchine e gestendo l'input.
+*
+*	@param widget Finestra su cui disegnare gli oggetti.
+*/
 void update(sf::RenderWindow &widget);
+
+/** Rigenera la mappa. */
 void refreshMap();
