@@ -60,7 +60,8 @@ Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
 
 Blocco * Mappa::getBlocco(Vector2i pos)
 {
-	if (pos.x < - Macchina::SIZE || pos.x > RESX + Macchina::SIZE || pos.y < - Macchina::SIZE || pos.y > RESY + Macchina::SIZE)
+	if (pos.x < - Macchina::SIZE || pos.x > RESX + Macchina::SIZE || 
+		pos.y < - Macchina::SIZE || pos.y > RESY + Macchina::SIZE)
 		return NULL;
 
 	return getBlocco(pos.y / Blocco::size, pos.x / Blocco::size);
@@ -162,7 +163,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 		if (i > max)
 			i = min;
 
-	} while (i != start_pos && count<max_source); //Finché non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
+	} while (i != start_pos && count < max_source); //Finché non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
 }
 
 void Mappa::deleteSource(Vector2i source)
@@ -203,7 +204,6 @@ void Mappa::checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends)
 	}
 }
 
-//C'è del codice ripetuto, magari migliorare
 Vector2i Mappa::getNearestSource(Vector2i source)
 {
 	Vector2i temp = Vector2i(-1, -1);
@@ -288,7 +288,6 @@ void Mappa::generateRoutes()
 	}
 
 	//Si collegano le partenze con una destinazione scelta in modo casuale
-
 	for (int i = 0; i < partenze.count(); i++)
 		generateRoute(partenze.get(i, false), destinazioni.get(rand() % destinazioni.count(), false));
 

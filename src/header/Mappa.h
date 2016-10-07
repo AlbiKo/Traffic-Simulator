@@ -109,156 +109,161 @@ private:
 	/** Si controlla se ci sono delle sorgenti, intese sia come partenze sia come 
 	*	destinazioni, che non sono collegate a nulla.
 	*
-	*	@param starts Lista con le coordinate delle partenze
-	*	@param ends Lista con le coordinate delle destinazioni
+	*	@param starts Lista con le coordinate delle partenze.
+	*	@param ends Lista con le coordinate delle destinazioni.
 	*/
 	void checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends);
 
-	/** Individua e restituisce la sorgente pi� vicina a quella passata come parametro
+	/** Individua e restituisce la sorgente più vicina a quella passata come parametro
 	*
 	*	@param source Sorgente riferimento
-	*	@return Sorgente pi� vicina a source
+	*	@return Sorgente più vicina a source
 	*/
 	Vector2i getNearestSource(Vector2i source);
 
-	/** Collega le sorgenti fra loro distinguendole in due categorie: partenze, ai lati sinistro e destro, destinazioni, in alto e in basso.
-	*	Ogni partenza viene collegata ad una destinazione scelta casualmente. Se al termine risultano sorgenti non collegate si tenta di collegarle
-	*	alle loro sorgenti pi� vicine. In caso di insuccesso, vengono eliminate.
+	/** Collega le sorgenti fra loro distinguendole in due categorie: 
+	*	partenze, ai lati sinistro e destro, destinazioni, in alto e in basso.
+	*	Ogni partenza viene collegata ad una destinazione scelta casualmente. 
+	*	Se al termine risultano sorgenti non collegate si tenta di collegarle alle loro sorgenti 
+	*	più vicine. In caso di insuccesso, vengono eliminate.
 	*/
 	void generateRoutes();
 
-	/** Genera casualmente la strada che inizia in startPos e si conclude in endPos, escludendo la possibilit� che
-	*	ci siano due incroci vicini o che si verifichi un zig-zag (questo per evitare una eccessiva seghettatura del percorso)
+	/** Genera casualmente la strada che inizia in startPos e si conclude in endPos, 
+	*	escludendo la possibilità che ci siano due incroci vicini o che si verifichi 
+	*	un zig-zag (questo per evitare una eccessiva seghettatura del percorso).
 	*
-	*	@param startPos Coordinate della sorgente di partenza
-	*	@param endPos Coordinate della sorgente di partenza
-	*	@return True se � riuscito a collegare le due sorgenti entro il numero di tentativi prestabiliti. False altrimenti
+	*	@param startPos Coordinate della sorgente di partenza.
+	*	@param endPos Coordinate della sorgente di partenza.
+	*	@return True se è riuscito a collegare le due sorgenti entro il numero di tentativi prestabiliti. False altrimenti.
 	*/
 	bool generateRoute(Vector2i startPos, Vector2i endPos);
 
-	/** Inizializzazione della generazione della strada che comincia in startPos e conclude in endPos.
-	*	A seconda di dove si trova la partenza, si inizializza la posizione corrente,
-	*	che sar� immediatamente a fianco, e la direzione estratta, che sar� sinistra o destra.
+	/** Inizializzazione della generazione della strada che comincia in startPos e 
+	*	conclude in endPos. A seconda di dove si trova la partenza, si inizializza la posizione
+	*	corrente, che sarà immediatamente a fianco, e la direzione estratta, che sarà 
+	*	sinistra o destra.
 	*
-	*	@param startPos Posizione nella matrice della sorgente di partenza, cio� collocata a sinistra o a destra
-	*	@param currentPos Posizione nella matrice attuale corrente
-	*	@param prevDir Direzione estratta precedente
-	*	@param prevBlock
-	*	@return Restituisce la nuova posizione corrente e la direzione precedente
+	*	@param startPos Posizione nella matrice della sorgente di partenza, cioè collocata a sinistra o a destra.
+	*	@param currentPos Posizione nella matrice attuale corrente.
+	*	@param prevDir Direzione estratta precedente.
+	*	@param prevBlock.
+	*	@return Restituisce la nuova posizione corrente e la direzione precedente.
 	*/
 	void initGeneratingRoute(Vector2i startPos, Vector2i& currentPos, Direzione& prevDir, TipoBlocco& prevBlock);
 
 	/**	Si inserisce nella lista di blocchi un blocco del tipo e alle coordinate specificate.
 	*	Poi si aggiorna la posizione corrente secondo la direzione corrente.
 	*
-	*	@param bloccoList Percorso attualmente costruito
-	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovr� stabilirne il tipo
-	*	@param prevDir Direzione estratta precedentemente (Parametro di uscita)
-	*	@param currentDir Direzione estratta
-	*	@param tipo Tipo del blocco da inserire
+	*	@param bloccoList Percorso attualmente costruito.
+	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovr� stabilirne il tipo.
+	*	@param prevDir Direzione estratta precedentemente (Parametro di uscita).
+	*	@param currentDir Direzione estratta.
+	*	@param tipo Tipo del blocco da inserire.
 	*/
 	void nextStepRouteBlock(Blocco_List & bloccoList, Vector2i& currentPos, Direzione& prevDir, Direzione currentDir, TipoBlocco tipo);
 
-	/** Si applica il percorso individuato sulla matrice
+	/** Si applica il percorso individuato sulla matrice.
 	*
-	*	@param bloccoList Percorso
+	*	@param bloccoList Percorso da applicare.
 	*/
 	void applyRouteBlocks(Blocco_List & bloccoList);
 
-	/** Controlla se intorno al blocco, se � un incrocio, si trovano altri incroci. Il controllo si basa sulla matrice.
+	/** Controlla se intorno al blocco, se è un incrocio, si trovano altri incroci. 
+	*	Il controllo si basa sulla matrice.
 	*
-	*	@param currentPos Coordinate del blocco
-	*	@param tipo Tipo del blocco
-	*	@return True se il blocco � un incrocio e intorno a lui si trovano altri incroci. False altrimenti
+	*	@param currentPos Coordinate del blocco.
+	*	@param tipo Tipo del blocco.
+	*	@return True se il blocco è un incrocio e intorno a lui si trovano altri incroci. False altrimenti.
 	*/
 	bool checkAdjacentCross(Vector2i currentPos, TipoBlocco tipo);
 
-	/** Controlla se intorno al blocco, se � un incrocio, si trovano altri incroci. Il controllo si basa sul percorso.
+	/** Controlla se intorno al blocco, se è un incrocio, si trovano altri incroci. 
+	*	Il controllo si basa sul percorso.
 	*
-	*	@param bloccoList Percorso
-	*	@param currentPos Coordinate del blocco
-	*	@param tipo Tipo del blocco
-	*	@return True se il blocco � un incrocio e intorno a lui si trovano altri incroci. False altrimenti
+	*	@param bloccoList Percorso.
+	*	@param currentPos Coordinate del blocco.
+	*	@param tipo Tipo del blocco.
+	*	@return True se il blocco è un incrocio e intorno a lui si trovano altri incroci. False altrimenti.
 	*/
 	bool checkAdjacentCross(Blocco_List& bloccoList, Vector2i currentPos, TipoBlocco tipo);
 
-	/**	Controlla se si � andato a formare un zig-zag
+	/**	Controlla se si è andato a formare un zig-zag.
 	*
-	*	@param prevBlock Blocco precedentemente piazzato
-	*	@param currentBlock	Blocco piazzato
-	*	@return True se si � formato un zig-zag. False altrimenti
+	*	@param prevBlock Blocco precedentemente piazzato.
+	*	@param currentBlock	Blocco piazzato.
+	*	@return True se si è formato un zig-zag. False altrimenti.
 	*/
 	bool checkZigZag(TipoBlocco prevBlock, TipoBlocco currentBlock);
 
-	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime due direzioni estratte.
-	*	Vengono verificati evenutali conflitti con blocchi gi� presenti sulla map, sorgenti comprese.
+	/** Si stabilisce il nuovo tipo di tale blocco basandosi sul valore delle ultime
+	*	due direzioni estratte. Vengono verificati evenutali conflitti con blocchi 
+	*	già presenti sulla mappa, sorgenti comprese.
 	*
-	*	@param currentPos Posizione del blocco attuale nella matrice
-	*	@param prevDir Direzione estratta precedente
-	*	@param currentDir Direzione attualmente estratta
-	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni
+	*	@param currentPos Posizione del blocco attuale nella matrice.
+	*	@param prevDir Direzione estratta precedente.
+	*	@param currentDir Direzione attualmente estratta.
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni.
 	*/
 	TipoBlocco mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direzione currentDir);
 
-	/** Assumendo che il blocco attuale sia un rettilineo, si stabilisce il nuovo tipo di tale blocco
-	*	basandosi sul valore delle ultime due direzioni estratte e sulle direzioni derivanti dal tipo di blocco gi� presente.
+	/** Assumendo che il blocco attuale sia un rettilineo, si stabilisce il nuovo tipo 
+	*	di tale blocco basandosi sul valore delle ultime due direzioni estratte e 
+	*	sulle direzioni derivanti dal tipo di blocco già presente.
 	*
-	*	@param tipo Tipo di blocco attuale
-	*	@param prevDir Direzione estratta precedente
-	*	@param currentDir Direzione attualmente estratta
-	*	@param rectDir Direzione parallela al rettilineo
-	*	@param perpDir Direzione perpendicolare al rettilineo
-	*	@param perpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso perpDir
-	*	@param nonPerpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso la direzione opposta a perpDir
-	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
-	*		attualmente presente
+	*	@param tipo Tipo di blocco attuale.
+	*	@param prevDir Direzione estratta precedente.
+	*	@param currentDir Direzione attualmente estratta.
+	*	@param rectDir Direzione parallela al rettilineo.
+	*	@param perpDir Direzione perpendicolare al rettilineo.
+	*	@param perpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso perpDir.
+	*	@param nonPerpBlock Tipo di blocco da assegnare se si entra/esce dal rettilineo da/verso la direzione opposta a perpDir.
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco attualmente presente.
 	*/
 	TipoBlocco mergeRectRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione rectDir, Direzione perpDir, TipoBlocco perpBlock, TipoBlocco nonPerpBlock);
 
-	/** Assumendo che il blocco attuale sia una curva, si stabilisce il nuovo tipo di tale blocco
-	*	basandosi sul valore delle ultime due direzioni estratte e sulle due direzioni del blocco mancanti
-	*	per essere un incrocio a 4.
+	/** Assumendo che il blocco attuale sia una curva, si stabilisce il nuovo tipo di tale 
+	*	blocco basandosi sul valore delle ultime due direzioni estratte e sulle due direzioni 
+	*	del blocco mancanti per essere un incrocio a 4.
 	*
-	*	@param tipo Tipo di blocco attuale
-	*	@param prevDir Direzione estratta precedente
-	*	@param currentDir Direzione attualmente estratta
-	*	@param missingDirX Direzione mancante al bloccco dell'asse X per essere un incrocio a 4
-	*	@param missingDirY Direzione mancante al bloccco dell'asse Y per essere un incrocio a 4
-	*	@param typeX Tipo di blocco con lato piatto sull'asse X da assegnare se si verificano i casi appositi
-	*	@param typeY Tipo di blocco con lato piatto sull'asse Y da assegnare se si verificano i casi appositi
-	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
-	*		attualmente presente
+	*	@param tipo Tipo di blocco attuale.
+	*	@param prevDir Direzione estratta precedente.
+	*	@param currentDir Direzione attualmente estratta.
+	*	@param missingDirX Direzione mancante al bloccco dell'asse X per essere un incrocio a 4.
+	*	@param missingDirY Direzione mancante al bloccco dell'asse Y per essere un incrocio a 4.
+	*	@param typeX Tipo di blocco con lato piatto sull'asse X da assegnare se si verificano i casi appositi.
+	*	@param typeY Tipo di blocco con lato piatto sull'asse Y da assegnare se si verificano i casi appositi.
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco attualmente presente.
 	*/
 	TipoBlocco mergeCurveRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDirX, Direzione missingDirY, TipoBlocco typeX, TipoBlocco typeY);
 
 
-	/** Assumendo che il blocco attuale sia un incrocio a 3, si stabilisce il nuovo tipo di tale blocco
-	*	basandosi sul valore delle ultime due direzioni estratte e sulla direzione del blocco mancante
-	*	per essere un incrocio a 4.
+	/** Assumendo che il blocco attuale sia un incrocio a 3, si stabilisce il nuovo tipo 
+	*	di tale blocco basandosi sul valore delle ultime due direzioni estratte e sulla 
+	*	direzione del blocco mancante per essere un incrocio a 4.
 	*
-	*	@param tipo Tipo di blocco attuale
-	*	@param prevDir Direzione estratta precedente
-	*	@param currentDir Direzione attualmente estratta
-	*	@param missingDir Direzione mancante al bloccco per essere un incrocio a 4
-	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco
-	*		attualmente presente
+	*	@param tipo Tipo di blocco attuale.
+	*	@param prevDir Direzione estratta precedente.
+	*	@param currentDir Direzione attualmente estratta.
+	*	@param missingDir Direzione mancante al bloccco per essere un incrocio a 4.
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni e dal tipo di blocco attualmente presente.
 	*/
 	TipoBlocco mergeCross3RouteBlock(TipoBlocco tipo, Direzione prevDir, Direzione currentDir, Direzione missingDir);
 	
 	/** Assumendo che il blocco attuale sia vuoto, si stabilisce il nuovo tipo di tale blocco
-	*	basandosi sul valore delle ultime due direzioni estratte
+	*	basandosi sul valore delle ultime due direzioni estratte.
 	*
-	*	@param prevDir Direzione estratta precedente
-	*	@param currentDir Direzione attualmente estratta
-	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni
+	*	@param prevDir Direzione estratta precedente.
+	*	@param currentDir Direzione attualmente estratta.
+	*	@return Tipo del blocco risultante dalla combinazione delle due direzioni.
 	*/
 	TipoBlocco mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir);
 
 	/**	Controlla se mettendo un blocco di un certo tipo nella posizione
 	*	specificata si crea un conflitto con eventuali sorgenti.
 	*
-	*	@param currentPos Coordinate del blocco nella matrice
-	*	@param tipo Tipo di blocco che si vuole posizionare in currentPos
+	*	@param currentPos Coordinate del blocco nella matrice.
+	*	@param tipo Tipo di blocco che si vuole posizionare in currentPos.
 	*	@return Restituisce il tipo di blocco che risolve il conflitto con
 	*	le eventuali sorgenti. Se non ci sono conflitti, restituisce il parametro
 	*	tipo.
@@ -267,15 +272,15 @@ private:
 
 	/**	Controlla se mettendo una curva di un certo tipo nella posizione specificata
 	*	si crea un conflitto con eventuali sorgenti basandosi sulla posizione
-	*	dell'angolo che pu� creare due conflitti.
+	*	dell'angolo che può creare due conflitti.
 	*	
-	*	@param currentPos Coordinate del blocco nella matrice
-	*	@param cornerPos Coordinate dell'angolo nella matrice
+	*	@param currentPos Coordinate del blocco nella matrice.
+	*	@param cornerPos Coordinate dell'angolo nella matrice.
 	*	@param offset Indica quanto ci si deve spostare rispetto al blocco corrente
-	*		per controllare la presenza`di una sorgente
-	*	@param base Tipo del blocco di partenza
-	*	@param typeX Tipo del blocco da assegnare se si individua un conflitto sull'asse X
-	*	@param typeY Tipo del blocco da assegnare se si individua un conflitto sull'asse Y
+	*		per controllare la presenza`di una sorgente.
+	*	@param base Tipo del blocco di partenza.
+	*	@param typeX Tipo del blocco da assegnare se si individua un conflitto sull'asse X.
+	*	@param typeY Tipo del blocco da assegnare se si individua un conflitto sull'asse Y.
 	*
 	*	@return Restituisce il tipo di blocco che risolve il conflitto con
 	*	le eventuali sorgenti. Se non ci sono conflitti, restituisce il parametro
@@ -283,31 +288,31 @@ private:
 	*/
 	TipoBlocco checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i cornerPos, Vector2i offset, TipoBlocco base, TipoBlocco typeX, TipoBlocco typeY);
 public:
-	/** Crea e inizializza la matrice che rappresenta la map.
-	*	Inizialmente, tutti i blocchi presenti nella matrice saranno vuoti (::TipoBlocco::EMPTY)
+	/** Crea e inizializza la matrice che rappresenta la mappa.
+	*	Inizialmente, tutti i blocchi presenti nella matrice saranno vuoti (::TipoBlocco::EMPTY).
 	*/
     Mappa();
 
-	/** Disegna la map rappresentata dalla matrice
-	*	@param widget Window SFML in cui andr� disegnata la map
+	/** Disegna la map rappresentata dalla matrice.
+	*	@param widget Window SFML in cui andrà disegnata la mappa
 	*/
     void draw(RenderWindow &widget);
 
-	/** Genera la map	*/
+	/** Genera la mappa.	*/
     void generate();
 
-	/**	Restituisce il blocco alle date coordinate nella matrice
+	/**	Restituisce il blocco alle date coordinate nella matrice.
 	*
-	*	@param rowIndex Indice di riga
-	*	@param columnIndex Indice di colonna
-	*	@return Puntatore del blocco
+	*	@param rowIndex Indice di riga.
+	*	@param columnIndex Indice di colonna.
+	*	@return Puntatore del blocco.
 	*/
 	Blocco * getBlocco(int rowIndex, int columnIndex);
 
-	/** Restituisce il blocco alle date coordinate del punto sulla finestra
+	/** Restituisce il blocco alle date coordinate del punto sulla finestra.
 	*
-	*	@param pos Coordinate del punto
-	*	@return Puntatore del blocco
+	*	@param pos Coordinate del punto.
+	*	@return Puntatore del blocco.
 	*/
 	Blocco * getBlocco(Vector2i pos);
 
