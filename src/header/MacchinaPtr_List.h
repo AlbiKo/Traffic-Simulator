@@ -10,44 +10,45 @@ struct MacchinaPtr_Node {
 };
 
 
-/** La classe MacchinaPtr_List rappresenta una lista di puntatori agli elementi di tipo ::Macchina.
+/** La classe ::MacchinaPtr_List rappresenta una lista di puntatori agli elementi di tipo ::Macchina.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
-*	I metodi disponibili sono: aggiunta di un puntatore alla lista, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.*/
+*	I metodi disponibili sono: aggiunta di un puntatore alla lista, svuotamento lista, restituzione di un elemento (senza rimuoverlo), rimozione di un singolo elemento.
+*/
 class MacchinaPtr_List {
 
 private:
-	/** Puntatore alla radice della lista */
+	/** Puntatore alla radice della lista. */
 	MacchinaPtr_Node *root;
 
-	/** Numero di nodi della lista */
+	/** Numero di nodi della lista. */
 	int num_nodi;
 
 public:
 
-	/** Costruttore che inizializza una lista vuota */
+	/** Costruttore che inizializza una lista vuota. */
 	MacchinaPtr_List();
 	
-	/** Distruttuore che elimina tutti i nodi presenti nella lista */
+	/** Distruttuore che elimina tutti i nodi presenti nella lista. */
 	~MacchinaPtr_List();	
 	
-	/** Restituisce il numero di elementi nella lista */
+	/** Restituisce il numero di elementi nella lista. */
 	inline int count()
 	{
 		return num_nodi;
 	}
 
 
-	/** Inserisce il puntatore di una macchina esistente nella lista 
+	/** Inserisce il puntatore di una macchina esistente nella lista.
 	*
-	*	@param i Macchina da inserire
+	*	@param i Macchina da inserire.
 	*/
 	void insert(Macchina * i);
 
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro. 
 	*
-	*	@param index Indice nella lista dell'elemento
-	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restiuisce un puntatore nullo
+	*	@param index Indice nella lista dell'elemento.
+	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restiuisce un puntatore nullo.
 	*/
 	Macchina * get(int index);
 
@@ -55,12 +56,18 @@ public:
 	/** Svuota la lista, cancellando tutti gli elementi. */
 	void clean();
 
-	/** Cancella l'elemento di indice i dalla lista
-	*  @param i Posizione dell'elemento da cancellare
-	*  @return true se la rimozione è avvenuta, false altrimenti.
+	/** Cancella l'elemento di indice i dalla lista.
+	*
+	*  	@param i Posizione dell'elemento da cancellare.
+	* 	@return true se la rimozione è avvenuta, false altrimenti.
 	*/
 	bool remove(int index);
 
+	/** Cancella l'elemento corrispondente al puntatore passato per parametro dalla lista.
+	*
+	*  	@param m Puntatore da rimuovere dalla lista.
+	* 	@return true se la rimozione è avvenuta, false altrimenti.
+	*/
 	bool remove(Macchina * m);
 };
 

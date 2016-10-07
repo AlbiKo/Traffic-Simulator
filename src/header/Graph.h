@@ -7,7 +7,7 @@
 
 /** La classe ::Graph rappresenta il grafo costruito basandosi sulla mappa e usato per
 *	calcolare il percorso da far seguire alle macchine.
-*	Il grafo Ë composta da nodi di tipo ::GraphNode e, riferendosi alla mappa, un nodo puÚ essere
+*	Il grafo √® composto da nodi di tipo ::GraphNode e, riferendosi alla mappa, un nodo pu√≤ essere
 *	soltanto una sorgente, una curva o un incrocio. Quindi i rettilinei non vengono considerati nodi,
 *	ma vengono sottointesi.
 */
@@ -124,14 +124,14 @@ private:
 	/** Inserisce nello stack gli elementi che hanno peso diverso da -1 in ordine decrescente.
 	*
 	*	@param stack Stack sul quale si sta lavorando.
-	*	@param adj Array per le posizioni dei nodi adiacenti; di valore (-1, -1) se non esiste l'adiacenza o il nodo Ë gi‡ stato visitato. L'array Ë di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
-	*	@param weight Array per i pesi del collegamento con i adiacenti; di valore -1 se non esiste l'adiacenza o il nodo Ë gi‡ stato visitato. L'array Ë di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
+	*	@param adj Array per le posizioni dei nodi adiacenti; di valore (-1, -1) se non esiste l'adiacenza o il nodo √® gi√† stato visitato. L'array √® di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
+	*	@param weight Array per i pesi del collegamento con i adiacenti; di valore -1 se non esiste l'adiacenza o il nodo √® gi√† stato visitato. L'array √® di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
 	*/
 	void insertStack(Vector2i_List &stack, Vector2i adj[], int weight[]);
 
 	/** Trova l'elemento con il valore massimo diverso da 0 nell'array e ne restituisce l'indice. 
 	*
-	*	@param weight Array per i pesi del collegamento con i adiacenti; di valore -1 se non esiste l'adiacenza o il nodo Ë gi‡ stato visitato. L'array Ë di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
+	*	@param weight Array per i pesi del collegamento con i adiacenti; di valore -1 se non esiste l'adiacenza o il nodo √® gi√† stato visitato. L'array √® di dimensione 4 per via delle quattro possibili direzioni di adiacenza.
 	*	@return L'indice del valore massimo se diverso da 0. Altrimenti -1.
 	*/
 	int findMaxAdj(int weight[]);

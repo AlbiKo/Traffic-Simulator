@@ -49,7 +49,7 @@ public:
 	void insert(Direzione r);
 
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro.
-	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto.
+	*	Ãˆ necessario indicare se l'elemento deve essere rimosso o mantenuto.
 	*
 	*	@param index Indice nella lista dell'elemento
 	*	@param del True se l'elemento deve essere cancellato. False altrimenti
@@ -58,7 +58,7 @@ public:
 	Direzione get(int index, bool del);
 
 	/** Restituisce il primo elemento corrispondente ai valori passati come parametro.
-	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto.
+	*	Ãˆ necessario indicare se l'elemento deve essere rimosso o mantenuto.
 	*
 	*	@param d Direzione da cercare
 	*	@param del True se l'elemento deve essere cancellato. False altrimenti

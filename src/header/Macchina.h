@@ -7,7 +7,7 @@
 
 using namespace sf;
 
-/** La classe Macchina rappresenta il veicolo che viene posizionato sulla map.
+/** La classe ::Macchina rappresenta il veicolo che viene posizionato sulla map.
 *   Ogni macchina ha una sua posizione, un colore e la direzione in cui deve viaggiare.
 */
 class Macchina
@@ -74,13 +74,13 @@ public:
 	*/
 	void copy(Macchina m);
 
-	/** Indica se la macchina è ferma oppure no.
-	@return true se la macchina ha una direzione in cui muoversi (si sta muovendo), false se è ferma. */
+	/** Indica se la macchina Ã¨ ferma oppure no.
+	@return true se la macchina ha una direzione in cui muoversi (si sta muovendo), false se Ã¨ ferma. */
 	bool isMoving();
 
 	/** Cambia la direzione in cui la macchina deve muoversi. Non permette di fermare la macchina.
 	*   @param dir Nuova direzione della macchina
-	*	@return true se la direzione è stata cambiata, false se la direzione non era valida.
+	*	@return true se la direzione Ã¨ stata cambiata, false se la direzione non era valida.
 	*/
 	bool changeDirection(Direzione dir);
 
