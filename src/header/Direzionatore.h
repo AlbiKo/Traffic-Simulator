@@ -13,8 +13,8 @@ using namespace sf;
 	Costituisce una sorta di interfaccia alla lista di Direzioni, 
 	regolando in modo leggermente diverso le operazioni della lista.
 
-	La lista non avr‡ mai pi˘ di quattro elementi (le quattro direzioni), i quali sono tutti distinti.
-	Si aggiunge la possibilit‡ di estrarre casualmente un elemento della lista.
+	La lista non avr√† mai pi√π di quattro elementi (le quattro direzioni), i quali sono tutti distinti.
+	Si aggiunge la possibilit√† di estrarre casualmente un elemento della lista.
 */
 class Direzionatore
 {
@@ -28,7 +28,7 @@ public:
 	/** Si estra casualmente un elemento dalla lista e lo si restituisce. Se vuota restituisce la direzione nulla. */
 	Direzione estraiDirezione();
 
-	/** Inserisce la direzione passata come parametro solo se non Ë gi‡ presente nella lista e se non Ë la direzione nulla.
+	/** Inserisce la direzione passata come parametro solo se non √® gi√† presente nella lista e se non √® la direzione nulla.
 	*
 	*	@param d Direzione da inserire
 	*/
