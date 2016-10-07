@@ -23,6 +23,7 @@ protected:
 
 	bool blockHoriz = false;
 
+	/** Direzione non valida. Indica la direzione in cui un veicolo non può andare */
 	Direzione wrongDir = Direzione::ND;
 
 	/**Imposta le coordinate in cui i veicoli possono svoltare.\nViene richiamata nel costruttore dell'incrocio.*/
@@ -30,13 +31,14 @@ protected:
 public:
 
 #ifdef DEBUG_MODE
+	/** Indicatori visivi di debug delle posizioni di cambio direzione della macchina. */
 	RectangleShape shape_1, shape_2, shape_3, shape_4;
 #endif // DEBUG_MODE
 
-	/**Restituisce la direzione che deve prendere la macchina per essere instradata correttamente.
-	*  @param pos Posizione attuale della macchina
-	*  @param dir Direzione del nodo successivo all'incrocio
-	*  @return Direzione che la macchina deve prendere per fare correttamente l'incrocio.*/
+	/** Restituisce la direzione che deve prendere la macchina per essere instradata correttamente.
+	*  	@param pos Posizione attuale della macchina
+	* 	@param dir Direzione del nodo successivo all'incrocio
+	* 	@return Direzione che la macchina deve prendere per fare correttamente l'incrocio. */
 	Direzione getChangeDir(Vector2f pos, Direzione dir);
 	
 	void initSemShapes();
