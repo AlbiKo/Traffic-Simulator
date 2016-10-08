@@ -15,6 +15,9 @@ protected:
 	Sprite sprite;
 	TipoBlocco tipo;
 
+	/** Offset per il cambio direzione del veicolo */
+	static const int offsetChangeDirPos = 19;
+
 	bool checkBlockCollision(Macchina &currentCar);
 	bool checkSameDirCollision(Macchina &currentCar, Macchina &collidingCar);
 	bool checkCurveCollison(Macchina &currentCar, Macchina &collidingCar);
@@ -25,9 +28,9 @@ protected:
 	*	@param tipo Tipo di blocco da impostare.
 	*/
 	void setTipo(TipoBlocco tipo);
+
 public:
 	static const int size = 68;
-
 	MacchinaPtr_List cars;
 	IntRect collider;
 	void checkCollision();

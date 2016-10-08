@@ -5,17 +5,18 @@ Curva::Curva()
 {
 	sprite.setPosition(0,0);
 	setTipo(TipoBlocco::SX_TO_UP);
-	pos1.x = 19;
-	pos1.y = 19;
+	int secondaryOffset = size - offsetChangeDirPos - 1;
+	pos1.x = offsetChangeDirPos;
+	pos1.y = offsetChangeDirPos;
 
-	pos2.x = 48;
-	pos2.y = 19;
+	pos2.x = secondaryOffset;
+	pos2.y = offsetChangeDirPos;
 
-	pos3.x = 19;
-	pos3.y = 48;
+	pos3.x = offsetChangeDirPos;
+	pos3.y = secondaryOffset;
 
-	pos4.x = 48;
-	pos4.y = 48;
+	pos4.x = secondaryOffset;
+	pos4.y = secondaryOffset;
 }
 
 Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
@@ -24,19 +25,21 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
 	cambiaVerso(tipo);
 	
-	pos1.x = 19+(size*columnIndex);
-	pos1.y = 19+(size*rowIndex);
+	int secondaryOffset = size - offsetChangeDirPos - 1;
+
+	pos1.x = offsetChangeDirPos+(size*columnIndex);
+	pos1.y = offsetChangeDirPos+(size*rowIndex);
 	D1(PRINT("pos1=" << pos1.x << "," << pos1.y));
 
-	pos2.x = 48 + (size*columnIndex);
-	pos2.y = 19 + (size*rowIndex);
+	pos2.x = secondaryOffset + (size*columnIndex);
+	pos2.y = offsetChangeDirPos + (size*rowIndex);
 	D1(PRINT("pos2=" << pos2.x << "," << pos2.y));
 
-	pos3.x = 19 + (size*columnIndex);
-	pos3.y = 48 + (size*rowIndex);
+	pos3.x = offsetChangeDirPos + (size*columnIndex);
+	pos3.y = secondaryOffset + (size*rowIndex);
 
-	pos4.x = 48 + (size*columnIndex);
-	pos4.y = 48 + (size*rowIndex);
+	pos4.x = secondaryOffset + (size*columnIndex);
+	pos4.y = secondaryOffset + (size*rowIndex);
 
 #ifdef DEBUG_MODE
 	shape_1.setPosition(pos1.x, pos1.y);

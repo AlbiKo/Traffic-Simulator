@@ -39,18 +39,19 @@ Direzione Incroci::getChangeDir(Vector2f pos, Direzione dir)
 void Incroci::setChangeDirPos()
 {
 	Vector2i pos = getPos();
+	int secondaryOffset = size - offsetChangeDirPos - 1;
+	
+	pos1.x = offsetChangeDirPos + pos.x;
+	pos1.y = offsetChangeDirPos + pos.y;
 
-	pos1.x = 19 + pos.x;
-	pos1.y = 19 + pos.y;
+	pos2.x = secondaryOffset + pos.x;
+	pos2.y = offsetChangeDirPos + pos.y;
 
-	pos2.x = 48 + pos.x;
-	pos2.y = 19 + pos.y;
+	pos3.x = offsetChangeDirPos + pos.x;
+	pos3.y = secondaryOffset + pos.y;
 
-	pos3.x = 19 + pos.x;
-	pos3.y = 48 + pos.y;
-
-	pos4.x = 48 + pos.x;
-	pos4.y = 48 + pos.y;
+	pos4.x = secondaryOffset + pos.x;
+	pos4.y = secondaryOffset + pos.y;
 }
 
 void Incroci::initSemShapes()
