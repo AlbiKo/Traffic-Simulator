@@ -10,21 +10,20 @@ Mappa::Mappa()
 {
 	loadTextures();
 	sourceList = Vector2i_List();
+	blocchi = NULL;
 
-	blocchiX = RESX / Blocco::size;
-	if (RESX % Blocco::size != 0)
-		blocchiX++;
-	D1(PRINT("Totale blocchi su X " <<blocchiX));
+}
 
-	blocchiY = RESY / Blocco::size;
-	if (RESY % Blocco::size != 0)
-		blocchiY++;
-	D1(PRINT("Totale blocchi su Y " <<blocchiY));
+void Mappa::initMap()
+{
+	blocchiX = getNumBlocchi().x;
+	blocchiY = getNumBlocchi().y;
 
+	D1(PRINT("Totale blocchi su X " << blocchiX <<"\nTotale blocchi su Y " << blocchiY));
 	blocchi = new Blocco**[blocchiY];
 
 	for (int i = 0; i < blocchiY; i++)
-	{	
+	{
 		blocchi[i] = new Blocco*[blocchiX];
 		for (int j = 0; j < blocchiX; j++)
 		{
@@ -35,9 +34,26 @@ Mappa::Mappa()
 	}
 }
 
+Vector2i Mappa::getNumBlocchi()
+{
+	int x = RESX / Blocco::size;
+	if (RESX % Blocco::size != 0)
+		x++;
+	
+	int y = RESY / Blocco::size;
+	if (RESY % Blocco::size != 0)
+		y++;
+	
+	return Vector2i(x, y);
+}
+
 void Mappa::generate()
 {
 	D1(PRINT("\n\n\n\n\n\nGenerazione mappa.."));
+
+	if (blocchi == NULL)
+		initMap();
+
 	srand(time(NULL));
 	clean();
 	generateSources();

@@ -321,7 +321,7 @@ void placeCar(Vector2i &source, Direzione &d)
 	if (source.y != 0 && source.x == map.getMapSize().x - 1)
 	{
 		d = Direzione::SX;
-		x1 = 66;
+		x1 = RESX % Blocco::size;
 		y1 = 19;
 	}
 
@@ -336,7 +336,7 @@ void placeCar(Vector2i &source, Direzione &d)
 	{
 		d = Direzione::SU;
 		x1 = 48;
-		y1 = 66;
+		y1 = RESY % Blocco::size;
 	}
 
 	source.x = source.x * Blocco::size + x1;

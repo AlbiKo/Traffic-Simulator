@@ -68,6 +68,10 @@ private:
 	*/
 	void loadTexture(TipoBlocco tipo, std::string nome);
 
+	void initMap();
+
+	Vector2i getNumBlocchi();
+
 	/** Pulisce la matrice, azzerando tutti i percorsi, le sorgenti e i semafori. */
 	void clean();
 	

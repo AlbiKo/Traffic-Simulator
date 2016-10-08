@@ -36,15 +36,17 @@ programma
 unsigned int MASK = 3 ;
 #endif // DEBUG_MODE
 
-/**Widget SFML che verrà applicato al box GTK
-*/
+/** Widget SFML che verrà applicato al box GTK. */
 SFMLWidget * SFML;
 
 /** Box che contiene i menu e widget SFML */
 Gtk::Box * box = NULL;
 
+/** Window principale. */
+Gtk::Window * window = NULL;
+
 int RESX = 1280, /** Larghezza della finestra */
-	RESY = 740;/**Altezza della finestra */
+	RESY = 743;/**Altezza della finestra */
 
 /** Disegna il prossimo frame, avanza la logica del gioco e dice di ignorare l'input se
 *	la finestra non è più la finestra attiva.
@@ -69,46 +71,63 @@ void exitHandler();
 */
 void linkSignals(Glib::RefPtr<Gtk::Builder> &builder);
 
+void windowInit(Glib::RefPtr<Gtk::Builder> &builder)
+{
+	//Creazione della zona di disegno mediante SFMLWidget
+	//IMPORTANTE: vengono applicate solo le modifiche al widget
+	// fatte dopo il window show all
+	SFML = new SFMLWidget(VideoMode(RESX, RESY));
+	CoreInit();
+
+	//Link del segnale draw del widget
+	SFML->signal_draw().connect(sigc::bind_return(sigc::hide(
+		sigc::ptr_fun(&updateCore)),
+		true
+	));
+	SFML->signal_size_allocate().connect(sigc::hide(sigc::ptr_fun(&resize_view)));
+	SFML->show();
+
+	builder->get_widget("window1", window);
+	builder->get_widget("box1", box);
+
+	linkSignals(builder);
+
+	box->pack_start(*SFML);
+	//Si mostrano tutti i widget contenuti nella SFML principale
+	window->show_all();
+
+	SFML->renderWindow.setFramerateLimit(60);
+}
+
+void checkFields(Glib::RefPtr<Gtk::Builder> &builder, Gtk::Dialog * & dialog)
+{
+	Gtk::Entry * entry = NULL;
+	builder->get_widget("entry1", entry);
+	PRINT(entry->get_text());
+
+	Gtk::ComboBox * congo = NULL;
+	builder->get_widget("combobox1", congo);
+	PRINT(congo->get_active_id());
+}
+
 int main(int argc, char* argv[])
 {
 	//Inizializzazione GTK
     Gtk::Main kit(argc, argv);
 
-	//Window principale
-    Gtk::Window * window = NULL;
-    
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("gui.glade");
 
-	//Creazione della zona di disegno mediante SFMLWidget
-	//IMPORTANTE: vengono applicate solo le modifiche al widget
-	// fatte dopo il window show all
-	SFML = new SFMLWidget(sf::VideoMode(RESX, RESY));
+	Gtk::Dialog * confDialog = NULL;
+	builder->get_widget("confdialog", confDialog);
 
-    CoreInit();
+    Gtk::Button * button = NULL;
+	builder->get_widget("annullabutton", button);
+	button->signal_clicked().connect(sigc::ptr_fun(&exitHandler));
+	
+	builder->get_widget("okbutton", button);
+	button->signal_clicked().connect(sigc::bind<Glib::RefPtr<Gtk::Builder>, Gtk::Dialog *>(&checkFields, builder, confDialog));
 
-
-	//Link del segnale draw del widget
-	SFML->signal_draw().connect(sigc::bind_return(sigc::hide(
-															sigc::ptr_fun(&updateCore)),
-															true
-												));
-	SFML->signal_size_allocate().connect(sigc::hide(sigc::ptr_fun(&resize_view)));
-	SFML->show();
-
-
-    Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("gui.glade");
-
-    builder->get_widget("window1", window);
-    builder->get_widget("box1", box);
-
-	linkSignals(builder);
-
-	box->pack_start(*SFML);
-    //Si mostrano tutti i widget contenuti nella SFML principale
-    window->show_all();
-
-    SFML->renderWindow.setFramerateLimit(60);
-
-    Gtk::Main::run(*window); //Draw the window
+    Gtk::Main::run(*confDialog);
     return 0;
 }
 
@@ -129,10 +148,10 @@ void updateCore()
 
 void resize_view()
 {
-	sf::Vector2f lower_right(SFML->renderWindow.getSize().x,
-		SFML->renderWindow.getSize().y);
+	Vector2f size(SFML->renderWindow.getSize().x, SFML->renderWindow.getSize().y);
+	Vector2f center(size.x / 2, size.y / 2);
 
-	sf::View view(lower_right * 0.5f, lower_right);
+	View view(center, size);
 	SFML->renderWindow.setView(view);
 }
 
@@ -155,7 +174,7 @@ void linkSignals(Glib::RefPtr<Gtk::Builder> &builder)
 	builder->get_widget("aboutbutton", aboutButton);
 
 	Gtk::AboutDialog * aboutDialog = NULL;
-	builder->get_widget("aboutdialog1", aboutDialog);
+	builder->get_widget("infodialog", aboutDialog);
 	aboutButton->signal_activate().connect(sigc::bind<Gtk::AboutDialog *>(&aboutDialogHandler, aboutDialog));
 
 	Gtk::ImageMenuItem * exitButton = NULL;
@@ -165,4 +184,5 @@ void linkSignals(Glib::RefPtr<Gtk::Builder> &builder)
 	Gtk::ImageMenuItem * refreshButton = NULL;
 	builder->get_widget("refreshbutton", refreshButton);
 	refreshButton->signal_activate().connect(sigc::ptr_fun(&refreshMap));
+
 }
