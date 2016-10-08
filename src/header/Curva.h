@@ -13,14 +13,14 @@ class Curva: public Blocco
 
 private:
 	/** Posizioni in cui i veicoli devono cambiare direzione. */
-	Vector2i pos1,	// Posizionato nel quadrante in alto a sinistra.
-		pos2,		// Posizionato nel quadrante in alto a destra.
-		pos3,		// Posizionato nel quadrante in basso a sinistra.
-		pos4;		// Posizionato nel quadrante in basso a destra.
+	Vector2i posChangeDirTopLeft,	// Posizionato nel quadrante in alto a sinistra.
+		posChangeDirTopRight,		// Posizionato nel quadrante in alto a destra.
+		posChangeDirBottomLeft,		// Posizionato nel quadrante in basso a sinistra.
+		posChangeDirBottomRight;		// Posizionato nel quadrante in basso a destra.
 
 	#ifdef DEBUG_MODE
 		/** Indicatori visivi di debug delle posizioni di cambio direzione della macchina. */
-		RectangleShape shape_1, shape_2, shape_3, shape_4;
+		RectangleShape shapeTopLeft, shapeTopRight, shapeBottomLeft, shapeBottomRight;
 	#endif // DEBUG_MODE
 public:
 	/**	Costruttore che inizializza una curva generica da sinistra verso l'alto, al blocco (0,0). */

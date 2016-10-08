@@ -20,21 +20,21 @@ Incrocio4::Incrocio4(int rowIndex, int columnIndex)
 	initSemShapes();
 
 #ifdef DEBUG_MODE
-	shape_1.setPosition(pos1.x, pos1.y);
-	shape_1.setSize(Vector2f(1, 1));
-	shape_1.setFillColor(Color::White);
+	shapeTopLeft.setPosition(posChangeDirTopLeft.x, posChangeDirTopLeft.y);
+	shapeTopLeft.setSize(Vector2f(1, 1));
+	shapeTopLeft.setFillColor(Color::White);
 
-	shape_2.setPosition(pos2.x, pos2.y);
-	shape_2.setSize(Vector2f(1, 1));
-	shape_2.setFillColor(Color::White);
+	shapeTopRight.setPosition(posChangeDirTopRight.x, posChangeDirTopRight.y);
+	shapeTopRight.setSize(Vector2f(1, 1));
+	shapeTopRight.setFillColor(Color::White);
 
-	shape_3.setPosition(pos3.x, pos3.y);
-	shape_3.setSize(Vector2f(1, 1));
-	shape_3.setFillColor(Color::White);
+	shapeBottomLeft.setPosition(posChangeDirBottomLeft.x, posChangeDirBottomLeft.y);
+	shapeBottomLeft.setSize(Vector2f(1, 1));
+	shapeBottomLeft.setFillColor(Color::White);
 
-	shape_4.setPosition(pos4.x, pos4.y);
-	shape_4.setSize(Vector2f(1, 1));
-	shape_4.setFillColor(Color::White);
+	shapeBottomRight.setPosition(posChangeDirBottomRight.x, posChangeDirBottomRight.y);
+	shapeBottomRight.setSize(Vector2f(1, 1));
+	shapeBottomRight.setFillColor(Color::White);
 #endif // DEBUG_MODE
 }
 
@@ -48,9 +48,9 @@ void Incrocio4::draw(RenderWindow & widget)
 	widget.draw(semShape4);
 
 	D1(
-		widget.draw(shape_1);
-		widget.draw(shape_2);
-		widget.draw(shape_3);
-		widget.draw(shape_4);
+		widget.draw(shapeTopLeft);
+		widget.draw(shapeTopRight);
+		widget.draw(shapeBottomLeft);
+		widget.draw(shapeBottomRight);
 	);
 }

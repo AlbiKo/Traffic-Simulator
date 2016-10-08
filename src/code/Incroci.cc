@@ -7,27 +7,27 @@ Direzione Incroci::getChangeDir(Vector2f pos, Direzione dir)
 	switch (dir)
 	{
 		case Direzione::SU:
-			if (posizione.x == pos1.x && posizione.y == pos1.y)
+			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
 				return Direzione::DX;
-			if ((posizione.x == pos2.x && posizione.y == pos2.y) || (posizione.x == pos4.x && posizione.y == pos4.y))
+			if ((posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y) || (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y))
 				return Direzione::SU;
 			break;
 		case Direzione::GIU:
-			if (posizione.x == pos4.x && posizione.y == pos4.y)
+			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
 				return Direzione::SX;
-			if ((posizione.x == pos1.x && posizione.y == pos1.y) || (posizione.x == pos3.x && posizione.y == pos3.y))
+			if ((posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y) || (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y))
 				return Direzione::GIU;
 			break;
 		case Direzione::DX:
-			if (posizione.x == pos2.x && posizione.y == pos2.y)
+			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
 				return Direzione::GIU;
-			if ((posizione.x == pos4.x && posizione.y == pos4.y) || (posizione.x == pos3.x && posizione.y == pos3.y))
+			if ((posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y) || (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y))
 				return Direzione::DX;
 			break;
 		case Direzione::SX:
-			if (posizione.x == pos3.x && posizione.y == pos3.y)
+			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
 				return Direzione::SU;
-			if ((posizione.x == pos1.x && posizione.y == pos1.y) || (posizione.x == pos2.x && posizione.y == pos2.y))
+			if ((posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y) || (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y))
 				return Direzione::SX;
 			break;
 		default:
@@ -41,25 +41,25 @@ void Incroci::setChangeDirPos()
 	Vector2i pos = getPos();
 	int secondaryOffset = size - offsetChangeDirPos - 1;
 	
-	pos1.x = offsetChangeDirPos + pos.x;
-	pos1.y = offsetChangeDirPos + pos.y;
+	posChangeDirTopLeft.x = offsetChangeDirPos + pos.x;
+	posChangeDirTopLeft.y = offsetChangeDirPos + pos.y;
 
-	pos2.x = secondaryOffset + pos.x;
-	pos2.y = offsetChangeDirPos + pos.y;
+	posChangeDirTopRight.x = secondaryOffset + pos.x;
+	posChangeDirTopRight.y = offsetChangeDirPos + pos.y;
 
-	pos3.x = offsetChangeDirPos + pos.x;
-	pos3.y = secondaryOffset + pos.y;
+	posChangeDirBottomLeft.x = offsetChangeDirPos + pos.x;
+	posChangeDirBottomLeft.y = secondaryOffset + pos.y;
 
-	pos4.x = secondaryOffset + pos.x;
-	pos4.y = secondaryOffset + pos.y;
+	posChangeDirBottomRight.x = secondaryOffset + pos.x;
+	posChangeDirBottomRight.y = secondaryOffset + pos.y;
 }
 
 void Incroci::initSemShapes()
 {
-	initSemShape(semShape1, pos1);
-	initSemShape(semShape2, pos2);
-	initSemShape(semShape3, pos3);
-	initSemShape(semShape4, pos4);
+	initSemShape(semShape1, posChangeDirTopLeft);
+	initSemShape(semShape2, posChangeDirTopRight);
+	initSemShape(semShape3, posChangeDirBottomLeft);
+	initSemShape(semShape4, posChangeDirBottomRight);
 
 	setSemaphoresColor();
 }
@@ -95,19 +95,19 @@ void Incroci::setSemaphorePos()
 
 	if (!blockHoriz)
 	{
-		semaphore1.left = pos1.x;
+		semaphore1.left = posChangeDirTopLeft.x;
 		semaphore1.top = pos.y;
 
-		semaphore2.left = pos4.x;
+		semaphore2.left = posChangeDirBottomRight.x;
 		semaphore2.top = pos.y + Blocco::size;
 	}
 	else
 	{
 		semaphore1.left = pos.x;
-		semaphore1.top = pos3.y;
+		semaphore1.top = posChangeDirBottomLeft.y;
 
 		semaphore2.left = pos.x + Blocco::size;
-		semaphore2.top = pos2.y;
+		semaphore2.top = posChangeDirTopRight.y;
 	}
 }
 
