@@ -14,7 +14,10 @@ class Incroci: public Blocco
 
 protected:
 	/**Coordinate del punto in cui i veicoli possono cambiare direzione nell'incrocio.*/
-	Vector2i pos1, pos2, pos3, pos4;
+	Vector2i posChangeDirTopLeft,	// Posizionato nel quadrante in alto a sinistra.
+		posChangeDirTopRight,		// Posizionato nel quadrante in alto a destra.
+		posChangeDirBottomLeft,		// Posizionato nel quadrante in basso a sinistra.
+		posChangeDirBottomRight;		// Posizionato nel quadrante in basso a destra.
 
 	IntRect semaphore1 = IntRect(getPos(), Vector2i(2,2)), 
 			semaphore2 = IntRect(getPos(), Vector2i(2, 2));
@@ -32,7 +35,7 @@ public:
 
 #ifdef DEBUG_MODE
 	/** Indicatori visivi di debug delle posizioni di cambio direzione della macchina. */
-	RectangleShape shape_1, shape_2, shape_3, shape_4;
+	RectangleShape shapeTopLeft, shapeTopRight, shapeBottomLeft, shapeBottomRight;
 #endif // DEBUG_MODE
 
 	/** Restituisce la direzione che deve prendere la macchina per essere instradata correttamente.
