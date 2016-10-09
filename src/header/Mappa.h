@@ -297,7 +297,7 @@ public:
 	*/
     Mappa();
 
-	/** Disegna la map rappresentata dalla matrice.
+	/** Disegna la mappa rappresentata dalla matrice.
 	*	@param widget Window SFML in cui andrà disegnata la mappa
 	*/
     void draw(RenderWindow &widget);

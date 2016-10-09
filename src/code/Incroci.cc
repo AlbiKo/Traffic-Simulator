@@ -7,27 +7,27 @@ Direzione Incroci::getChangeDir(Vector2f pos, Direzione dir)
 	switch (dir)
 	{
 		case Direzione::SU:
-			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
+			if (posizione == posChangeDirTopLeft)
 				return Direzione::DX;
-			if ((posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y) || (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y))
+			if ((posizione == posChangeDirTopRight) || (posizione == posChangeDirBottomRight))
 				return Direzione::SU;
 			break;
 		case Direzione::GIU:
-			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
+			if (posizione == posChangeDirBottomRight)
 				return Direzione::SX;
-			if ((posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y) || (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y))
+			if ((posizione == posChangeDirTopLeft) || (posizione == posChangeDirBottomLeft))
 				return Direzione::GIU;
 			break;
 		case Direzione::DX:
-			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
+			if (posizione == posChangeDirTopRight)
 				return Direzione::GIU;
-			if ((posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y) || (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y))
+			if ((posizione == posChangeDirBottomRight) || (posizione == posChangeDirBottomLeft))
 				return Direzione::DX;
 			break;
 		case Direzione::SX:
-			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
+			if (posizione == posChangeDirBottomLeft)
 				return Direzione::SU;
-			if ((posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y) || (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y))
+			if ((posizione == posChangeDirTopLeft) || (posizione == posChangeDirTopRight))
 				return Direzione::SX;
 			break;
 		default:

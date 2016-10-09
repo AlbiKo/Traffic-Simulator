@@ -78,13 +78,13 @@ void carOnEnterBlock(Macchina &car);
 
 /** Gestione degli input. Tasti:
 *
-*	R: Rigenera la mappa
-*	P: Pausa/Riprendi
-*	Mouse Sx: Riposiziona macchina
-*	A: Riposiziona macchina casuale
-*	1: Attiva/disattiva livello 1 di debug
-*	2: Attiva/disattiva livello 2 di debug
-*	3: Attiva/disattiva livello 3 di debug
+*	R: Rigenera la mappa.
+*	P: Pausa/Riprendi.
+*	Mouse Sx: Riposiziona macchina.
+*	A: Riposiziona macchina casuale.
+*	1: Attiva/disattiva livello 1 di debug.
+*	2: Attiva/disattiva livello 2 di debug.
+*	3: Attiva/disattiva livello 3 di debug.
 */
 void inputHandling(RenderWindow &widget);
 

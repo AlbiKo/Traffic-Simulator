@@ -29,11 +29,9 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 
 	posChangeDirTopLeft.x = offsetChangeDirPos+(size*columnIndex);
 	posChangeDirTopLeft.y = offsetChangeDirPos+(size*rowIndex);
-	D1(PRINT("posChangeDirTopLeft=" << posChangeDirTopLeft.x << "," << posChangeDirTopLeft.y));
 
 	posChangeDirTopRight.x = secondaryOffset + (size*columnIndex);
 	posChangeDirTopRight.y = offsetChangeDirPos + (size*rowIndex);
-	D1(PRINT("posChangeDirTopRight=" << posChangeDirTopRight.x << "," << posChangeDirTopRight.y));
 
 	posChangeDirBottomLeft.x = offsetChangeDirPos + (size*columnIndex);
 	posChangeDirBottomLeft.y = secondaryOffset + (size*rowIndex);
@@ -86,27 +84,27 @@ Direzione Curva::getChangeDir(Vector2f pos)
 	switch (tipo)
 	{
 		case TipoBlocco::SX_TO_UP:
-			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
+			if (posizione == posChangeDirBottomRight)
 				return Direzione::SU;
-			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
+			if (posizione == posChangeDirTopLeft)
 				return Direzione::SX;
 			break;
 		case TipoBlocco::SX_TO_DOWN:
-			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
+			if (posizione == posChangeDirBottomLeft)
 				return Direzione::GIU;
-			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
+			if (posizione == posChangeDirTopRight)
 				return Direzione::SX;
 			break;
 		case TipoBlocco::DX_TO_UP:
-			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
+			if (posizione == posChangeDirTopRight)
 				return Direzione::SU;
-			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
+			if (posizione == posChangeDirBottomLeft)
 				return Direzione::DX;
 			break;
 		case TipoBlocco::DX_TO_DOWN:
-			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
+			if (posizione == posChangeDirTopLeft)
 				return Direzione::GIU;
-			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
+			if (posizione == posChangeDirBottomRight)
 				return Direzione::DX;
 			break;
 		default:;
