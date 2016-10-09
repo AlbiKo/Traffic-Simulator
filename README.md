@@ -1,26 +1,18 @@
 # Traffic-Simulator
-Prerequisiti:
+Questo programma gestisce il traffico stradale di un ambiente generato casualmente.
+Per ulteriori informazioni visitare https://albiko.github.io/Traffic-Simulator-doc/
 
-1) Installare g++ 4.9:
+# Prerequisiti per la compilazione
+- g++ 4.9
+- gtkmm
+- SFML
 
-    sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-    sudo apt-get update
-    sudo apt-get install g++-4.9
-
-2) Installare gtkmm:
-
-    sudo apt-get install libgtkmm-3.0-dev 
-
-3) Installare glade
-
-    sudo apt-get install glade
-    
-4) Installare SFML
-
-    sudo apt-get install libsfml-dev
+È possibile utilizzare lo script "setup-dev.sh" per installare i prerequisiti per la compilazione.
 
 
-È possibile utilizzare lo script "setup-ide.sh" per installare i prerequisiti.
+# Prerequisiti per l'esecuzione
+Per l'esecuzione è necessario installare
+- gtkmm
+- SFML
 
-# Documentazione SFML
-http://www.sfml-dev.org/learn.php
+È possibile utilizzare lo script "setup.sh" per installare i prerequisiti per l'esecuzione.

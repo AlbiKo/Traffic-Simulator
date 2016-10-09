@@ -5,6 +5,7 @@ echo " - GTKmm 3.0"
 echo " - Glade"
 echo " - SFML"
 echo " - Git"
+echo " - Doxygen"
 echo " "
 read -p "Vuoi continuare? (Y/N): " yn
 	case $yn in
