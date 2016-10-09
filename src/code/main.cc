@@ -1,6 +1,5 @@
 
 /** @mainpage Traffic-Simulator.
-	@version 1.0
 		Questo programma gestisce il traffico stradale di un ambiente generato casualmente, nella seguente modalità:\n
 		<ul>
 			<li>Posizionamento delle sorgenti</li>
@@ -17,6 +16,7 @@
 
     @author Daniele Corradini
     @author Alberto Beccari
+    @version 1.0
 */
 
 #include <gtkmm.h>
