@@ -66,50 +66,6 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="viewItem">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">_Visualizza</property>
-                <property name="use_underline">True</property>
-                <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkRadioMenuItem" id="lowres">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">800x600</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_as_radio">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkRadioMenuItem" id="mediumres">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">1280x768</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_as_radio">True</property>
-                        <property name="group">lowres</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkRadioMenuItem" id="highres">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">1920x1080</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_as_radio">True</property>
-                        <property name="group">lowres</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
               <object class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -259,22 +215,22 @@ Corradini Daniele</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Configurazione Traffic-Simulator</property>
+                <property name="label" translatable="yes">Configurazione</property>
                 <property name="justify">center</property>
                 <property name="ellipsize">start</property>
                 <attributes>
-                  <attribute name="font-desc" value="&lt;Inserire il valore&gt; 12"/>
+                  <attribute name="font-desc" value="&lt;Inserire il valore&gt; 14"/>
                   <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
+                <property name="padding">15</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -320,7 +276,7 @@ Corradini Daniele</property>
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -336,7 +292,7 @@ Corradini Daniele</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">1</property>
                     <property name="label" translatable="yes">Numero macchine:</property>
-                    <property name="ellipsize">start</property>
+                    <property name="ellipsize">middle</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -345,11 +301,16 @@ Corradini Daniele</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry1">
+                  <object class="GtkEntry" id="entrycars">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Un numero troppo alto potrebbe causare un calo delle prestazioni.
+Consigliato: 100</property>
+                    <property name="max_length">3</property>
+                    <property name="width_chars">3</property>
                     <property name="text" translatable="yes">100</property>
                     <property name="placeholder_text" translatable="yes">100</property>
+                    <property name="input_purpose">digits</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -384,11 +345,14 @@ Corradini Daniele</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry2">
+                  <object class="GtkEntry" id="entryspawn">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="max_length">3</property>
+                    <property name="width_chars">3</property>
                     <property name="text" translatable="yes">250</property>
                     <property name="placeholder_text" translatable="yes">250</property>
+                    <property name="input_purpose">digits</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -423,11 +387,13 @@ Corradini Daniele</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="entry3">
+                  <object class="GtkEntry" id="entrysem">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="max_length">2</property>
                     <property name="text" translatable="yes">10</property>
                     <property name="placeholder_text" translatable="yes">10</property>
+                    <property name="input_purpose">digits</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

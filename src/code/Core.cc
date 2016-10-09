@@ -482,3 +482,22 @@ void mouseClicked(RenderWindow &widget)
 			}
 		}
 }
+
+
+void setNumCar(int num)
+{
+	if (num >= 0)
+		NUM_MACCHINE = num;
+}
+
+void setSpawnCarTime(int ms)
+{
+	if (ms > 0)
+		carSpawningTime = ms / 1000.0f;
+}
+
+void setSemChangeStatusTime(int s)
+{
+	if (s > 0)
+		semChangeStatusTime = s;
+}

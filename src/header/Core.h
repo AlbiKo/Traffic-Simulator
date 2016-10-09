@@ -23,3 +23,9 @@ void update(sf::RenderWindow &widget);
 
 /** Rigenera la mappa. */
 void refreshMap();
+
+void setNumCar(int num);
+
+void setSpawnCarTime(int ms);
+
+void setSemChangeStatusTime(int s);
