@@ -158,7 +158,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 				{					
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
 
-					D2(PRINT("Sorgente in " <<x <<", " <<i));
+					D1(PRINT("Sorgente in " <<x <<", " <<i));
 					sourceList.insert(Vector2i(x, i));
 					count++;
 					i+=2;
@@ -168,7 +168,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 				{
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
 
-					D2(PRINT("Sorgente in " << i << ", " << y));
+					D1(PRINT("Sorgente in " << i << ", " << y));
 					sourceList.insert(Vector2i(i, y));
 					count++;
 					i+=2;
@@ -335,9 +335,9 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	
 	initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 	
-	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
-	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
-	D1(PRINT("PrevDir " <<toString(prevDir)));
+	D2(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
+	D2(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
+	D2(PRINT("PrevDir " <<toString(prevDir)));
 	
 	do
 	{
@@ -348,7 +348,7 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		//Tipo del blocco da inserire
 		TipoBlocco tipo = TipoBlocco::EMPTY;
 
-		D1(PRINT("Controllo incroci"));
+		D3(PRINT("Controllo incroci"));
 		do
 		{
 			dir.escludiDirezione(currentDir);
@@ -366,7 +366,7 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		{
 			bloccoList.clean();
 			tentativi--;
-			D1(PRINT("Fallimento strada.. tentativi rimasti: " <<tentativi));
+			D3(PRINT("Fallimento strada.. tentativi rimasti: " <<tentativi));
 			initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 		} 
 		else
@@ -456,9 +456,9 @@ void Mappa::applyRouteBlocks(Blocco_List & bloccoList)
 	{
 		Blocco b = bloccoList.get(i, false);
 		Vector2i coord = b.coordBlocco();
-		D3(PRINT("\nPosizione " << coord.x << ", " << coord.y));
+		D1(PRINT("\nPosizione " << coord.x << ", " << coord.y));
 		assert(coord.x >= 0 && coord.y >= 0 && coord.x < blocchiX && coord.y < blocchiY);
-		D3(PRINT("Tipo " << toString(b.getTipo())));
+		D1(PRINT("Tipo " << toString(b.getTipo())));
 		cambiaTipoBlocco(blocchi[coord.y][coord.x], b.getTipo());
 	}
 }
@@ -587,7 +587,7 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 	//Controllo se il tipo del blocco attualmente stabilito va in conflitto con eventuali sorgenti
 	tipo = checkSourceRouteBlock(currentPos, tipo);
 
-	D1(PRINT("Posizionerei blocco di tipo ------> " <<toString(tipo)));
+	D2(PRINT("Posizionerei blocco di tipo ------> " <<toString(tipo)));
 	
 	return tipo;
 }

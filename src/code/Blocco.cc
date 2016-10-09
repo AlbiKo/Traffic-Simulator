@@ -118,7 +118,6 @@ void Blocco::checkCollision()
 				{
 					if (checkSameDirCollision(*car, *m) || checkCurveCollison(*car, *m) || checkCrossCollision(*car, *m))
 					{
-						D3(PRINT(toString(car->currentDir) << "   " << coordBlocco().x << ", " << coordBlocco().y << "  ptr " << car << "   " << car->getPosition().x << ", " << car->getPosition().y << "  ptrBy  " << m << "  " << m->getPosition().x << ", " << m->getPosition().y << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) << "   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) << "\n"));
 						car->stoppedBy = m;
 						car->stop();
 						break;

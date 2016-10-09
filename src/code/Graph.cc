@@ -26,7 +26,7 @@ void Graph::buildGraph(Mappa &map)
 	//Aggiungo alla lista dei nodi le sorgenti
 	while (sources.count() != 0)
 	{
-		D1(PRINT(count << " "));
+		D3(PRINT(count << " "));
 		nodes.insert(sources.get(0, true));
 		count++;
 	}
@@ -36,7 +36,7 @@ void Graph::buildGraph(Mappa &map)
 		for (int j = 1; j < mapSize.x-1; j++)
 			if (!isEmptyBlock(map.getBlocco(i, j)->getTipo()) && !isRectBlock(map.getBlocco(i, j)->getTipo()))
 			{
-				D1(PRINT(count << " "));
+				D3(PRINT(count << " "));
 				nodes.insert(Vector2i(j, i));
 				count++;
 			}
@@ -78,8 +78,8 @@ void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &p
 
 	buildParentArray(parent, dist, count, startPos);
 
-	D2(PRINT("\nStampo array"));
-	D2(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
+	D3(PRINT("\nStampo array dei parent"));
+	D3(for (int i = 0; i < count; i++) PRINT(i<<" p: " <<parent[i].x <<", " <<parent[i].y <<"  d: " <<dist[i]));
 
 	//Lista delle destinazioni raggiungibili
 	Vector2i_List endSources;
@@ -99,7 +99,7 @@ void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &p
 	//Estrazione casuale della destinazione dalla lista di destinazioni.
 	endPos = endSources.get(rand() % endSources.count(), false);
 
-	D1(PRINT("\n\nTrovo percorso fra " << startPos.x << ", " << startPos.y << " e " << endPos.x << ", " << endPos.y));
+	D2(PRINT("\n\nTrovo percorso fra " << startPos.x << ", " << startPos.y << " e " << endPos.x << ", " << endPos.y));
 
 	buildPath(path, parent, count, endPos);
 
@@ -273,8 +273,6 @@ int Graph::getWeight(TipoBlocco tipo)
 
 void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2i endPos)
 {
-	D1(PRINT("Costruzione percorso: " <<count));
-
 	path.clean();
 
 	Vector2i temp = endPos;
@@ -285,7 +283,6 @@ void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2
 	//fino alla posizione iniziale, riconosciuta se ha parent uguale a se stessa.
 	while (parent[index] != temp)
 	{
-		D1(PRINT(temp.x <<" " <<temp.y <<" index " <<index));
 		path.insertHead(temp);
 		temp = parent[index];
 		index = nodes.getIndex(temp);
@@ -296,7 +293,6 @@ void Graph::buildPath(Vector2i_List &path, Vector2i parent[], int count, Vector2
 	if (path.count() != 0)
 	{
 		assert(index != -1 && index < count);
-		D1(PRINT(temp.x << " " << temp.y<< " index " << index));
 		path.insertHead(temp);
 	}
 }
@@ -316,8 +312,6 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 		currentIndex = nodes.getIndex(currentPos);
 		currentNode = nodes.get(currentIndex);
 
-		D3(PRINT("\nNodo attaule " << currentPos.x << ", " << currentPos.y << " di indice " << currentIndex << " tempNode " << currentNode->pos.x << ", " << currentNode->pos.y));
-
 		//Array di supporto per la visita delle adiacenze
 		Vector2i adj[4];	//Posizione dei nodi adiacenti
 		int w[4];			//Peso del collegamento dei nodi adiacenti			
@@ -336,7 +330,6 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 				int adjIndex = nodes.getIndex(adjPos);
 				
 				assert(adjIndex >= 0 && adjIndex < count);
-				D3(PRINT("adjPos " << adjPos.x << ", " << adjPos.y << " di indice " << adjIndex << " e peso " << adjWeight << " pos " << parent[adjIndex].x << ", " << parent[adjIndex].y));
 
 				//Se il nodo non è ancora stato visitato, cioè il parent del nodo è uguale al nodo stesso, e se il nodo non è il nodo iniziale..
 				if ((parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y)) || 
@@ -346,7 +339,6 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 					//Se il nodo non è ancora stato visitato si aggiornano gli array
 					if (parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y))
 					{
-						D3(PRINT("Non visitato"));
 						w[i] = adjWeight;
 						adj[i] = parent[adjIndex];
 					}

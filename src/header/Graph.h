@@ -26,6 +26,14 @@ public:
 	*	@param map Mappa su cui basare la costruzione del grafo.
 	*/
 	void buildGraph(Mappa &map);
+
+	/** Trova il percorso fra la sorgente di partenza e una scelta casualmente dalla
+	*	lista di sorgenti raggiungibili.
+	*
+	*	@param startPos Posizione iniziale.
+	*	@param sources Lista delle sorgenti.
+	*	@param path Lista su cui verrà salvato il percorso.
+	*/
 	void findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &path);
 private:
 	/** Lista dei nodi del grafo. */
