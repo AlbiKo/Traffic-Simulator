@@ -9,6 +9,8 @@ using namespace sf;
 
 /** La classe ::Macchina rappresenta il veicolo che viene posizionato sulla mappa.
 *   Ogni macchina ha una sua posizione, un colore e la direzione in cui deve viaggiare.
+*	Lo spostamento si basa sulla direzione corrente che si interrompe se viene rilevata 
+*	una collisione con un altro veicolo mediante il collider che copre l'intera macchina e/o i collider a lato.
 */
 class Macchina
 {

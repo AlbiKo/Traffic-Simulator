@@ -1,17 +1,6 @@
-/*
-●Una descrizione generale di cosa fa il
-programma
-● Una prima descrizione generale di come lo fa,
-nonché la suddivisione in moduli del programma
-stesso
-● Un rimando alla funzione (probabilmente la
-funzione main) la cui documentazione
-continuerà a guidare il lettore
-nell'approfondimento della conoscenza del
-programma
-*/
 
 /** @mainpage Traffic-Simulator.
+	@version 1.0
 		Questo programma gestisce il traffico stradale di un ambiente generato casualmente, nella seguente modalità:\n
 		<ul>
 			<li>Posizionamento delle sorgenti</li>
@@ -20,8 +9,11 @@ programma
 			</li>
 		</ul>
 		Consultare ::Mappa per maggiori informazioni.\n\n
-		I veicoli procederanno da un luogo di partenza verso una destinazione autonomamente, rispettando le intersezioni regolate da semafori.\n
-		La logica dell'applicazione è gestita da <a href="Core_8cc.html">Core</a>.
+		I veicoli procederanno da un luogo di partenza verso una destinazione seguendo autonomamente un percorso 
+		creato a tempo di creazione, rispettando le intersezioni regolate da semafori.\n
+		La logica dell'applicazione è gestita da <a href="Core_8cc.html">Core</a> che comprende la gestione delle macchine
+		e delle loro collisioni (delegate a ::Blocco), la gestione degli stati dei semafori, gestione dell'input e del disegno su schermo.
+
 
     @author Daniele Corradini
     @author Alberto Beccari

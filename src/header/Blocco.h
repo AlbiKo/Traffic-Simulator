@@ -7,7 +7,10 @@
 #define BLOCCO_INCLUDE
 using namespace sf;
 
-/** La classe ::Blocco rappresenta il blocco generico che deve essere posizionato sulla mappa. */
+/** La classe ::Blocco rappresenta il blocco generico che deve essere posizionato sulla mappa. 
+*	Oltre a fornire un punto di partenza comune per i vari tipi di blocco, si occupa di gestire le collisioni
+*	delle macchine presenti nella propria lista e di comunicare se c'è spazio sufficiente per collocare una nuova macchina.
+*/
 class Blocco
 {
 protected:
