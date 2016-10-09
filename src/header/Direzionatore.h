@@ -10,11 +10,11 @@
 
 using namespace sf;
 /**
-	Costituisce una sorta di interfaccia alla lista di Direzioni, 
-	regolando in modo leggermente diverso le operazioni della lista.
-
-	La lista non avr‡ mai pi˘ di quattro elementi (le quattro direzioni), i quali sono tutti distinti.
-	Si aggiunge la possibilit‡ di estrarre casualmente un elemento della lista.
+*	Costituisce una sorta di interfaccia alla lista di Direzioni, 
+*	regolando in modo leggermente diverso le operazioni della lista.
+*
+*	La lista non avr√† mai pi√π di quattro elementi (le quattro direzioni), i quali sono tutti distinti.
+*	Si aggiunge la possibilit√† di estrarre casualmente un elemento della lista.
 */
 class Direzionatore
 {
@@ -22,34 +22,34 @@ public:
 	/** La lista viene inizializzata con tutte e quattro le direzioni. */
 	Direzionatore();
 
-	/** La lista viene cancellata */
+	/** La lista viene cancellata. */
 	~Direzionatore();
 
 	/** Si estra casualmente un elemento dalla lista e lo si restituisce. Se vuota restituisce la direzione nulla. */
 	Direzione estraiDirezione();
 
-	/** Inserisce la direzione passata come parametro solo se non Ë gi‡ presente nella lista e se non Ë la direzione nulla.
+	/** Inserisce la direzione passata come parametro solo se non √® gi√† presente nella lista e se non √® la direzione nulla.
 	*
-	*	@param d Direzione da inserire
+	*	@param d Direzione da inserire.
 	*/
 	void ammettiDirezione(Direzione d);
 
 	/** Elimina dalla lista la direzione passata come parametro.
 	*
-	*	@param d Direzione da eliminare
+	*	@param d Direzione da eliminare.
 	*/
 	void escludiDirezione(Direzione d);
 
 
 	/** Elimina dalla lista le direzioni non ammissibili:
-	*	- Quella da cui sta arrivando
-	*	- Quella opposta a quella che porta alla destinazione
-	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla map
+	*	- Quella da cui sta arrivando.
+	*	- Quella opposta a quella che porta alla destinazione.
+	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla mappa.
 	*
-	*	@param startPos Posizione di riferimento
-	*	@param endPos Posizione della destinazione
-	*	@param prevDir Direzione estratta precedentemente
-	*	@param numBlocchi Dimensioni in blocchi della map
+	*	@param startPos Posizione di riferimento.
+	*	@param endPos Posizione della destinazione.
+	*	@param prevDir Direzione estratta precedentemente.
+	*	@param numBlocchi Dimensioni in blocchi della mappa.
 	*/
 	void escludiDirezioni(Vector2i startPos, Vector2i endPos, Direzione prevDir, Vector2i numBlocchi);
 	
@@ -65,16 +65,16 @@ private:
 	/** Lista di ::Direzione su cui si lavora. */
 	Direzione_List dl;
 
-	/** Elimina dalla lista le direzioni non ammissibili in base a dove si trovano 
+	/** Elimina dalla lista le direzioni non ammissibili in base a dove si trovano
 	*	la posizione di riferimento e quella di destinazione (posizionata sul bordo superiore o inferiore):
-	*	- Quella da cui sta arrivando
-	*	- Quella opposta che porta alla destinazione
-	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla map
+	*	- Quella da cui sta arrivando.
+	*	- Quella opposta che porta alla destinazione.
+	*	- Se ci si trova a ridosso dei bordi, quelle che portano fuori dalla mappa.
 	*
-	*	@param startPos Posizione di riferimento
-	*	@param endPos Posizione della destinazione
-	*	@param border Coordinate che rappresentano il bordo su cui si trova la destinazione
-	*	@param oppositeDir Direzione opposta a quella che porta alla destinazione
+	*	@param startPos Posizione di riferimento.
+	*	@param endPos Posizione della destinazione.
+	*	@param border Coordinate che rappresentano il bordo su cui si trova la destinazione.
+	*	@param oppositeDir Direzione opposta a quella che porta alla destinazione.
 	*/
 	void escludiDirezioniX(Vector2i startPos, Vector2i endPos, Vector2i border, Direzione oppositeDir);
 };

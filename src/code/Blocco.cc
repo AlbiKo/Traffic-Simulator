@@ -118,7 +118,6 @@ void Blocco::checkCollision()
 				{
 					if (checkSameDirCollision(*car, *m) || checkCurveCollison(*car, *m) || checkCrossCollision(*car, *m))
 					{
-						D3(std::cerr << toString(car->currentDir) << "   " << coordBlocco().x << ", " << coordBlocco().y << "  ptr " << car << "   " << car->getPosition().x << ", " << car->getPosition().y << "  ptrBy  " << m << "  " << m->getPosition().x << ", " << m->getPosition().y << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::DX && car->colliderDx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SX && car->colliderSx.intersects(m->collider)) << "  " << (isCrossBlock(tipo) && car->currentDir == Direzione::SU && car->colliderUp.intersects(m->collider)) << "   " << (isCrossBlock(tipo) && car->currentDir == Direzione::GIU && car->colliderDown.intersects(m->collider)) << "\n");
 						car->stoppedBy = m;
 						car->stop();
 						break;
@@ -136,24 +135,22 @@ void Blocco::checkCollision()
 
 bool Blocco::canBeSpawned(Macchina & car)
 {
-	bool ret = true, draw = false;
+	bool occupied = true, draw = false;
 	assert(!car.drawable);
-	int x = -1, y = -1;
+	int deltaX = -1, deltaY = -1;
 
 	for (int i = 0; i < cars.count(); i++)
 	{
 		Macchina * ptr = cars.get(i);
 		
-		x = std::abs(car.getPosition().x - ptr->getPosition().x);
-		y = std::abs(car.getPosition().y - ptr->getPosition().y);
+		deltaX = std::abs(car.getPosition().x - ptr->getPosition().x);
+		deltaY = std::abs(car.getPosition().y - ptr->getPosition().y);
 
-		if (ptr == &car)
-			continue;
-
-		if (((car.currentDir == Direzione::SX || car.currentDir == Direzione::DX) && std::abs(car.getPosition().x - ptr->getPosition().x) < 20 && car.getPosition().y == ptr->getPosition().y) ||
-			((car.currentDir == Direzione::GIU || car.currentDir == Direzione::SU) && std::abs(car.getPosition().y - ptr->getPosition().y) < 20 && car.getPosition().x == ptr->getPosition().x))
+		if ((ptr != &car) &&
+			(((car.currentDir == Direzione::SX || car.currentDir == Direzione::DX) && deltaX < 20 && car.getPosition().y == ptr->getPosition().y) ||
+			((car.currentDir == Direzione::GIU || car.currentDir == Direzione::SU) && deltaY < 20 && car.getPosition().x == ptr->getPosition().x)))
 		{
-			ret = false;
+			occupied = false;
 			
 			if (ptr->drawable)
 			{
@@ -163,12 +160,8 @@ bool Blocco::canBeSpawned(Macchina & car)
 		}
 	}
 
-	/*std::cerr << ret << " " << draw << " " <<cars.count() << " ";
-	std::cerr << car.getPosition().x << " " << car.getPosition().y << " ";
-	std::cerr <<x << " " << y << "\n";*/
-	if (!ret && draw)
+	if (!occupied && draw)
 		return false;
 	
-	std::cerr << "messa\n";
 	return true;
 }

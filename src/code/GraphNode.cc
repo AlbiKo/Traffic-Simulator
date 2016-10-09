@@ -5,16 +5,12 @@
 GraphNode::GraphNode()
 {
 	initNodo();
-
-	D3(PRINT("Nodo base creato"));
 }
 
 GraphNode::GraphNode(Vector2i startPos)
 {
     initNodo();
 	pos = startPos;
-
-	D1(PRINT("Nodo creato: posizione " << pos.x << ", " << pos.y));
 }
 
 GraphNode::~GraphNode()
@@ -42,7 +38,6 @@ void GraphNode::copy(const GraphNode &node)
 
 bool GraphNode::setAdiacenza(Direzione dir, GraphNode * nodo, int peso)
 {
-	D1(PRINT("\nImposto adiacenza di " << pos.x << ", " << pos.y <<" direzione " <<toString(dir)));
 	switch (dir)
 	{
 	case Direzione::SU:
@@ -63,8 +58,6 @@ bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 	if (i < 0 || i > 3)
 		return NULL;
 	
-	D1( if (nodo != NULL) PRINT("Nodo: scrivo adiacenza in dir " <<i <<": " <<nodo->pos.x <<", " <<nodo->pos.y));
-
 	if (i >= 0 && i <= 3 && adiacenze[i].nodo == NULL)
 	{
 		adiacenze[i].nodo = nodo;
@@ -74,11 +67,8 @@ bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 		else
 			adiacenze[i].peso = peso;
 
-		D1(PRINT("Peso: " <<peso));
-
 		return true;
 	}
-	D1(PRINT("Adiacenza non inserita (già presente o fuori range)"));
 	return false;
 }
 
@@ -87,15 +77,12 @@ GraphNode * GraphNode::getAdiacenza(int i, int &peso)
 	if (i < 0 || i > 3)
 		return NULL;
 
-	D2(PRINT("Nodo: letta adiacenza " << adiacenze[i].nodo << " di peso " << adiacenze[i].peso));
-	
 	peso = adiacenze[i].peso;
 	return adiacenze[i].nodo;
 }
 
 GraphNode * GraphNode::getAdiacenza(Direzione dir, int &peso)
 {
-	D1(PRINT("Ottengo adiacenza di " << pos.x << ", " <<pos.y << " direzione " << toString(dir)));
 	switch (dir)
 	{
 	case Direzione::SU:

@@ -3,8 +3,6 @@
 
 Macchina::Macchina()
 {
-	
-	D1(PRINT("Costruzione macchina"));
 	initMacchina();
 }
 
@@ -18,21 +16,23 @@ Macchina::Macchina(Vector2i pos)
 
 void Macchina::draw(RenderWindow & widget)
 {
-//	widget.draw(globo);
-	
+	D2(
+		widget.draw(global);
+	);
+
 	widget.draw(shape);
 
-/*	widget.draw(sx);
-	widget.draw(dx);
-	widget.draw(up);
-	widget.draw(down);
-	*/
+	D3(
+		widget.draw(sx);
+		widget.draw(dx);
+		widget.draw(up);
+		widget.draw(down);
+	);
 	
 }
 
 Macchina::~Macchina()
 {
-	D1(PRINT("Distruzione macchina"));
 }
 
 void Macchina::setPosition(Vector2i pos)
@@ -142,21 +142,25 @@ void Macchina::initMacchina()
 	colliderDown = IntRect();
 
 	collider = IntRect(getPosition().x - SIZE / 2 - 3, getPosition().y - SIZE / 2 - 3, SIZE + 4, SIZE + 4);
-	globo = RectangleShape(Vector2f(SIZE + 4, SIZE + 4));
-	globo.setFillColor(Color::Red);
+	
+#ifdef DEBUG_MODE
+		global = RectangleShape(Vector2f(SIZE + 4, SIZE + 4));
+		global.setFillColor(Color::Red);
 
-	sx = RectangleShape(Vector2f(10, SIZE));
-	sx.setFillColor(Color::Green);
 
-	dx = RectangleShape(Vector2f(10, SIZE));
-	dx.setFillColor(Color::Green);
 
-	up = RectangleShape(Vector2f(SIZE, 10));
-	up.setFillColor(Color::Green);
+		sx = RectangleShape(Vector2f(10, SIZE));
+		sx.setFillColor(Color::Green);
 
-	down = RectangleShape(Vector2f(SIZE, 10));
-	down.setFillColor(Color::Green);
+		dx = RectangleShape(Vector2f(10, SIZE));
+		dx.setFillColor(Color::Green);
 
+		up = RectangleShape(Vector2f(SIZE, 10));
+		up.setFillColor(Color::Green);
+
+		down = RectangleShape(Vector2f(SIZE, 10));
+		down.setFillColor(Color::Green);
+#endif
 
 	colliderSx.width = 10;
 	colliderSx.height = SIZE;
@@ -176,13 +180,17 @@ void Macchina::initMacchina()
 void Macchina::updateColliders()
 {
 
-	globo.setPosition(getPosition().x - SIZE / 2 - 2, getPosition().y - SIZE / 2 - 2);
+	D2(
+		global.setPosition(getPosition().x - SIZE / 2 - 2, getPosition().y - SIZE / 2 - 2);
+	);
 
-	sx.setPosition(getPosition().x - SIZE / 2 - 10, getPosition().y - SIZE/2);
-	dx.setPosition(getPosition().x + SIZE / 2 + 1, getPosition().y - SIZE/2);
-	up.setPosition(getPosition().x - SIZE/2, getPosition().y - SIZE / 2 - 10);
-	down.setPosition(getPosition().x - SIZE/2, getPosition().y + SIZE / 2 + 1);
-
+	D3(
+		sx.setPosition(getPosition().x - SIZE / 2 - 10, getPosition().y - SIZE/2);
+		dx.setPosition(getPosition().x + SIZE / 2 + 1, getPosition().y - SIZE/2);
+		up.setPosition(getPosition().x - SIZE/2, getPosition().y - SIZE / 2 - 10);
+		down.setPosition(getPosition().x - SIZE/2, getPosition().y + SIZE / 2 + 1);
+	);
+	
 	colliderSx.left = getPosition().x - SIZE/2 - 10;
 	colliderSx.top = getPosition().y - SIZE/2;
 

@@ -16,38 +16,39 @@ struct Vector2i_Node {
 *	Gli elementi Vector2i sono vettori che contengono 2 numeri interi.
 *	La classe tiene traccia del numero di elementi presenti nella lista.
 *
-*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca*/
+*	I metodi disponibili sono quelli basici delle liste: inserimento, estrazione, ricerca. 
+*/
 class Vector2i_List {
 
 private:
-	/** Puntatore alla radice della lista */
+	/** Puntatore alla radice della lista. */
 	Vector2i_Node *root;
 
-	/** Numero di nodi della lista */
+	/** Numero di nodi della lista. */
 	int num_nodi;
 
 public:
-	/** Costruttore che inizializza una lista vuota */
+	/** Costruttore che inizializza una lista vuota. */
 	Vector2i_List();
 
-	/** Costruttore che inizializza una lista con un elemento passato per parametro
+	/** Costruttore che inizializza una lista con un elemento passato per parametro.
 	*
-	*	@param r Elemento iniziale
+	*	@param r Elemento iniziale.
 	*/
 	Vector2i_List(Vector2i r);
 	
-	/** Distruttuore che elimina tutti i nodi presenti nella lista */
+	/** Distruttuore che elimina tutti i nodi presenti nella lista. */
 	~Vector2i_List();	
 	
-	/** Restituisce il numero di elementi nella lista */
+	/** Restituisce il numero di elementi nella lista. */
 	inline int count()
 	{
 		return num_nodi;
 	}
 
-	/** Inserimento di un elemento nella lista 
+	/** Inserisce un elemento nella lista.
 	*
-	*	@param r Elemento da inserire
+	*	@param r Elemento da inserire.
 	*/
 	void insert(Vector2i r);
 
@@ -58,28 +59,30 @@ public:
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro. 
 	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto. 
 	*
-	*	@param index Indice nella lista dell'elemento
-	*	@param del True se l'elemento deve essere cancellato. False altrimenti
-	*	@return Se l'elemento esiste nella lista, lo restituisce. Altrimenti restiuisce un vettore (-1, -1)
+	*	@param index Indice nella lista dell'elemento.
+	*	@param del True se l'elemento deve essere cancellato. False altrimenti.
+	*	@return Se l'elemento esiste nella lista, lo restituisce. Altrimenti restiuisce un vettore (-1, -1).
 	*/
 	Vector2i get(int index, bool del);
 
 	/** Restituisce il primo elemento corrispondente ai valori passati come parametro. 
 	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto.
 	*
-	*	@param x Valore x del vettore da cercare
-	*	@param y Valore y del vettore da cercare
-	*	@param del True se l'elemento deve essere cancellato. False altrimenti
-	*	@return Se l'elemento esiste nella lista, lo restituisce. Altrimenti restiuisce un vettore (-1, -1)
+	*	@param x Valore x del vettore da cercare.
+	*	@param y Valore y del vettore da cercare.
+	*	@param del True se l'elemento deve essere cancellato. False altrimenti.
+	*	@return Se l'elemento esiste nella lista, lo restituisce. Altrimenti restiuisce un vettore (-1, -1).
 	*/
 	Vector2i get(int x, int y, bool del);
 
-
+	/** Copia gli elementi della lista passata come parametro sulla lista attuale. 
+	*
+	*	@param source Lista sorgente.
+	*/
 	void copy(Vector2i_List &source);
 
 	/** Svuota la lista, cancellando tutti gli elementi. */
 	void clean();
-
 };
 
 #endif

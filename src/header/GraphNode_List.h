@@ -42,14 +42,14 @@ public:
 		return num_nodi;
 	}
 
-	/** Inserimento di un elemento nella lista.
+	/** Inserisce un elemento nella lista.
 	*
 	*	@param node Elemento da inserire.
 	*/
 	void insert(const GraphNode &node);
 
 	/** Restituisce l'elemento corrispondente all'indice passato come parametro.
-	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto.
+	*	Ãˆ necessario indicare se l'elemento deve essere rimosso o mantenuto.
 	*
 	*	@param index Indice nella lista dell'elemento.
 	*	@param del True se l'elemento deve essere cancellato. False altrimenti.
@@ -65,7 +65,7 @@ public:
 	GraphNode * get(int index);
 
 	/** Restituisce il primo elemento corrispondente ai valori passati come parametro.
-	*	È necessario indicare se l'elemento deve essere rimosso o mantenuto.
+	*	Ãˆ necessario indicare se l'elemento deve essere rimosso o mantenuto.
 	*
 	*	@param x Coordinata x del nodo da cercare.
 	*	@param y Coordinata y del nodo da cercare.
@@ -74,11 +74,11 @@ public:
 	*/
 	GraphNode get(int x, int y, bool del);
 
-	/** Restituisce il puntaore al primo elemento corrispondente ai valori passati come parametro.
+	/** Restituisce il puntatore al primo elemento corrispondente ai valori passati come parametro.
 	*
 	*	@param x Coordinata x del nodo da cercare.
 	*	@param y Coordinata y del nodo da cercare.
-	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restiuisce NULL.
+	*	@return Se l'elemento esiste nella lista, restituisce il suo puntatore. Altrimenti restituisce NULL.
 	*/
 	GraphNode * get(int x, int y);
 

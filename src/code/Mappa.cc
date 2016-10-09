@@ -10,21 +10,20 @@ Mappa::Mappa()
 {
 	loadTextures();
 	sourceList = Vector2i_List();
+	blocchi = NULL;
 
-	blocchiX = RESX / Blocco::size;
-	if (RESX % Blocco::size != 0)
-		blocchiX++;
-	D1(PRINT("Totale blocchi su X " <<blocchiX));
+}
 
-	blocchiY = RESY / Blocco::size;
-	if (RESY % Blocco::size != 0)
-		blocchiY++;
-	D1(PRINT("Totale blocchi su Y " <<blocchiY));
+void Mappa::initMap()
+{
+	blocchiX = getNumBlocchi().x;
+	blocchiY = getNumBlocchi().y;
 
+	D1(PRINT("Totale blocchi su X " << blocchiX <<"\nTotale blocchi su Y " << blocchiY));
 	blocchi = new Blocco**[blocchiY];
 
 	for (int i = 0; i < blocchiY; i++)
-	{	
+	{
 		blocchi[i] = new Blocco*[blocchiX];
 		for (int j = 0; j < blocchiX; j++)
 		{
@@ -35,9 +34,26 @@ Mappa::Mappa()
 	}
 }
 
+Vector2i Mappa::getNumBlocchi()
+{
+	int x = RESX / Blocco::size;
+	if (RESX % Blocco::size != 0)
+		x++;
+	
+	int y = RESY / Blocco::size;
+	if (RESY % Blocco::size != 0)
+		y++;
+	
+	return Vector2i(x, y);
+}
+
 void Mappa::generate()
 {
 	D1(PRINT("\n\n\n\n\n\nGenerazione mappa.."));
+
+	if (blocchi == NULL)
+		initMap();
+
 	srand(time(NULL));
 	clean();
 	generateSources();
@@ -60,7 +76,8 @@ Blocco * Mappa::getBlocco(int rowIndex, int columnIndex)
 
 Blocco * Mappa::getBlocco(Vector2i pos)
 {
-	if (pos.x < - Macchina::SIZE || pos.x > RESX + Macchina::SIZE || pos.y < - Macchina::SIZE || pos.y > RESY + Macchina::SIZE)
+	if (pos.x < - Macchina::SIZE || pos.x > RESX + Macchina::SIZE || 
+		pos.y < - Macchina::SIZE || pos.y > RESY + Macchina::SIZE)
 		return NULL;
 
 	return getBlocco(pos.y / Blocco::size, pos.x / Blocco::size);
@@ -141,7 +158,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 				{					
 					cambiaTipoBlocco(blocchi[i][x], TipoBlocco::HORIZONTAL);
 
-					D2(PRINT("Sorgente in " <<x <<", " <<i));
+					D1(PRINT("Sorgente in " <<x <<", " <<i));
 					sourceList.insert(Vector2i(x, i));
 					count++;
 					i+=2;
@@ -151,7 +168,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 				{
 					cambiaTipoBlocco(blocchi[y][i], TipoBlocco::VERTICAL);
 
-					D2(PRINT("Sorgente in " << i << ", " << y));
+					D1(PRINT("Sorgente in " << i << ", " << y));
 					sourceList.insert(Vector2i(i, y));
 					count++;
 					i+=2;
@@ -162,7 +179,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 		if (i > max)
 			i = min;
 
-	} while (i != start_pos && count<max_source); //Finché non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
+	} while (i != start_pos && count < max_source); //FinchÃ© non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
 }
 
 void Mappa::deleteSource(Vector2i source)
@@ -203,7 +220,6 @@ void Mappa::checkUnlinkedSources(Vector2i_List& starts, Vector2i_List& ends)
 	}
 }
 
-//C'è del codice ripetuto, magari migliorare
 Vector2i Mappa::getNearestSource(Vector2i source)
 {
 	Vector2i temp = Vector2i(-1, -1);
@@ -288,7 +304,6 @@ void Mappa::generateRoutes()
 	}
 
 	//Si collegano le partenze con una destinazione scelta in modo casuale
-
 	for (int i = 0; i < partenze.count(); i++)
 		generateRoute(partenze.get(i, false), destinazioni.get(rand() % destinazioni.count(), false));
 
@@ -320,9 +335,9 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 	
 	initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 	
-	D1(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
-	D1(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
-	D1(PRINT("PrevDir " <<toString(prevDir)));
+	D2(PRINT("Posizione corrente " << currentPos.x << ", " << currentPos.y));
+	D2(PRINT("Posizione finale " << endPos.x << ", " << endPos.y));
+	D2(PRINT("PrevDir " <<toString(prevDir)));
 	
 	do
 	{
@@ -333,7 +348,7 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		//Tipo del blocco da inserire
 		TipoBlocco tipo = TipoBlocco::EMPTY;
 
-		D1(PRINT("Controllo incroci"));
+		D3(PRINT("Controllo incroci"));
 		do
 		{
 			dir.escludiDirezione(currentDir);
@@ -343,15 +358,15 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		} while ((checkAdjacentCross(currentPos, tipo)				||		//Si controllano conflitti con gli incroci sulla matrice
 				  checkAdjacentCross(bloccoList, currentPos, tipo)	||		//Si controllano conflitti con gli incroci sul percorso temporaneo
 				  checkZigZag(prevBlock, tipo)						) &&	
-				 dir.count() != 0);											//Se c'è ancora almeno una direzione percorribile
+				 dir.count() != 0);											//Se c'Ã¨ ancora almeno una direzione percorribile
 
-		//Se non ci sono più direzioni percorribi si azzera il percorso e 
+		//Se non ci sono piÃ¹ direzioni percorribi si azzera il percorso e 
 		//si diminuiscono il numero di tentativi rimasti
 		if (dir.count() == 0)
 		{
 			bloccoList.clean();
 			tentativi--;
-			D1(PRINT("Fallimento strada.. tentativi rimasti: " <<tentativi));
+			D3(PRINT("Fallimento strada.. tentativi rimasti: " <<tentativi));
 			initGeneratingRoute(startPos, currentPos, prevDir, prevBlock);
 		} 
 		else
@@ -378,20 +393,20 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzi
 	if (startPos.x == 0 && startPos.y > 0 && startPos.y < blocchiY - 1)
 	{
 		//Si sta partendo da una sorgente sul lato sinistro,
-		//quindi il blocco da posizionare è quello immediatamente a destra..
+		//quindi il blocco da posizionare Ã¨ quello immediatamente a destra..
 		currentPos = Vector2i(startPos.x + 1, startPos.y);
 
-		//.. e quindi ci si è spostati verso destra
+		//.. e quindi ci si Ã¨ spostati verso destra
 		prevDir = Direzione::DX;
 	}
 	else
 		if (startPos.x == blocchiX - 1 && startPos.y > 0 && startPos.y < blocchiY - 1)
 		{
 			//Si sta partendo da una sorgente sul lato destro,
-			//quindi il blocco da posizionare è quello immediatamente a sinistra..
+			//quindi il blocco da posizionare Ã¨ quello immediatamente a sinistra..
 			currentPos = Vector2i(startPos.x - 1, startPos.y);
 
-			//.. e quindi ci si è spostati verso sinistra
+			//.. e quindi ci si Ã¨ spostati verso sinistra
 			prevDir = Direzione::SX;
 		}
 }
@@ -441,9 +456,9 @@ void Mappa::applyRouteBlocks(Blocco_List & bloccoList)
 	{
 		Blocco b = bloccoList.get(i, false);
 		Vector2i coord = b.coordBlocco();
-		D3(PRINT("\nPosizione " << coord.x << ", " << coord.y));
+		D1(PRINT("\nPosizione " << coord.x << ", " << coord.y));
 		assert(coord.x >= 0 && coord.y >= 0 && coord.x < blocchiX && coord.y < blocchiY);
-		D3(PRINT("Tipo " << toString(b.getTipo())));
+		D1(PRINT("Tipo " << toString(b.getTipo())));
 		cambiaTipoBlocco(blocchi[coord.y][coord.x], b.getTipo());
 	}
 }
@@ -572,7 +587,7 @@ TipoBlocco Mappa::mergeRouteBlocks(Vector2i currentPos, Direzione prevDir, Direz
 	//Controllo se il tipo del blocco attualmente stabilito va in conflitto con eventuali sorgenti
 	tipo = checkSourceRouteBlock(currentPos, tipo);
 
-	D1(PRINT("Posizionerei blocco di tipo ------> " <<toString(tipo)));
+	D2(PRINT("Posizionerei blocco di tipo ------> " <<toString(tipo)));
 	
 	return tipo;
 }
@@ -592,7 +607,7 @@ TipoBlocco Mappa::mergeRectRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzi
 		if (prevDir == rectDir || prevDir == getDirOpposta(rectDir))
 			return tipo;
 		else
-			//Si è perpendicolari al rettilineo
+			//Si Ã¨ perpendicolari al rettilineo
 			return TipoBlocco::CROSS4;
 	else
 		//Se si sta entrando nel rettilineo e poi in che senso
@@ -681,7 +696,7 @@ TipoBlocco Mappa::mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir)
 
 TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 {
-	//Si controlla se è un blocco che può essere adiacente ad una sorgente
+	//Si controlla se Ã¨ un blocco che puÃ² essere adiacente ad una sorgente
 	if (currentPos.y != 1 && currentPos.y != blocchiY - 2 &&
 		currentPos.x != 1 && currentPos.x != blocchiX - 2)
 		return tipo;
@@ -689,21 +704,21 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 	switch (tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
-		//Se ci si trova sulla prima riga e sopra c'è una sorgente
+		//Se ci si trova sulla prima riga e sopra c'Ã¨ una sorgente
 		if (currentPos.y == 1 && sourceList.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_UP;
 
-		//Se ci si trova sull'ultima riga e sotto c'è una sorgente
+		//Se ci si trova sull'ultima riga e sotto c'Ã¨ una sorgente
 		if (currentPos.y == blocchiY - 2 && sourceList.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DOWN;
 		break;
 
 	case TipoBlocco::VERTICAL:
-		//Se ci si trova sulla prima colonna e a sinistra c'è una sorgente
+		//Se ci si trova sulla prima colonna e a sinistra c'Ã¨ una sorgente
 		if (currentPos.x == 1 && sourceList.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_SX;
 
-		//Se ci si trova sull'ultima colonna e a destra c'è una sorgente
+		//Se ci si trova sull'ultima colonna e a destra c'Ã¨ una sorgente
 		if (currentPos.x == blocchiX - 2 && sourceList.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DX;
 		break;
@@ -752,11 +767,11 @@ TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i corne
 	}
 	else
 	{
-		//Se ci si trova nella stessa riga dell'angolo e se c'è una sorgente sopra/sotto
+		//Se ci si trova nella stessa riga dell'angolo e se c'Ã¨ una sorgente sopra/sotto
 		if (currentPos.y == cornerPos.y && sourceList.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
 		else
-			//Se ci si trova nella stessa colonna dell'angolo e se c'è una sorgente a fianco
+			//Se ci si trova nella stessa colonna dell'angolo e se c'Ã¨ una sorgente a fianco
 			if (currentPos.x == cornerPos.x && sourceList.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
 				return typeX;
 	}

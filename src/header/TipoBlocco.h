@@ -2,7 +2,7 @@
 	#define TIPOBLOCCO_INCLUDE
 	#include <iostream>
 
-	/** Rappresenta i tipi che un blocco può assumere con eventuali orientamenti. */
+	/** Rappresenta i tipi che un blocco puÃ² assumere con eventuali orientamenti. */
 	enum class TipoBlocco
 	{
 		HORIZONTAL = 0, VERTICAL,						//Rettilinei
@@ -14,50 +14,50 @@
 
 	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria dei rettilinei.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isRectBlock(TipoBlocco tipo);
 
 	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria delle curve.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isCurveBlock(TipoBlocco tipo);
 
-	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci (a tre e a quattro compresi).
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci (a tre e a quattro intersezioni compresi).
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isCrossBlock(TipoBlocco tipo);
 
-	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci a tre.
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria degli incroci a tre intersezioni.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isCross3Block(TipoBlocco tipo);
 
-	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria dell'incrocio a 4.
+	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria dell'incrocio a quattro intersezioni.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isCross4Block(TipoBlocco tipo);
 
 	/** Stabilisce se il tipo di blocco passato come parametro appartiene alla categoria del blocco vuoto.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return True se appartiene alla categoria. False altrimenti
+	*	@param tipo Tipo del blocco.
+	*	@return True se appartiene alla categoria. False altrimenti.
 	*/
 	bool isEmptyBlock(TipoBlocco tipo);
 
-	/** Stringhizza il tipo del blocco.
+	/** Restituisce una stringa in italiano indicante il tipo di blocco passato come parametro.
 	*
-	*	@param tipo Tipo del blocco
-	*	@return La stringa che rappresenta il tipo di blocco
+	*	@param tipo Tipo del blocco.
+	*	@return La stringa che rappresenta il tipo di blocco.
 	*/
 	std::string toString(TipoBlocco tipo);
 #endif

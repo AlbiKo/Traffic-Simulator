@@ -4,24 +4,53 @@
 
 using namespace sf;
 
+/** La classe ::Curva rappresenta il blocco di tipo Curva, istruendo alle macchine il momento di svolta.
+*	
+*	In base al tipo di curva viene scelta la texture appropriata.
+*/
 class Curva: public Blocco
 {
 
 private:
-	Vector2i pos1, pos2, pos3, pos4;
+	/** Posizioni in cui i veicoli devono cambiare direzione. */
+	Vector2i posChangeDirTopLeft,	// Posizionato nel quadrante in alto a sinistra.
+		posChangeDirTopRight,		// Posizionato nel quadrante in alto a destra.
+		posChangeDirBottomLeft,		// Posizionato nel quadrante in basso a sinistra.
+		posChangeDirBottomRight;		// Posizionato nel quadrante in basso a destra.
+
+	#ifdef DEBUG_MODE
+		/** Indicatori visivi di debug delle posizioni di cambio direzione della macchina. */
+		RectangleShape shapeTopLeft, shapeTopRight, shapeBottomLeft, shapeBottomRight;
+	#endif // DEBUG_MODE
 public:
-	Curva() ;
+	/**	Costruttore che inizializza una curva generica da sinistra verso l'alto, al blocco (0,0). */
+	Curva();
+
+	/**	Costruttore che inizializza un blocco di tipo curva alle coordinate e con la direzione passate come parametro.
+	*
+	*	@param rowIndex Indice della riga in cui collocare il blocco di tipo Curva.
+	*	@param columnIndex Indice della colonna in cui collocare il blocco di tipo Curva.
+	*	@param tipo Tipo di blocco da piazzare (indica la direzione che deve avere la curva).
+	*/
 	Curva(int rowIndex, int columnIndex, TipoBlocco tipo);
 
+	/**	Cambia il verso della curva.
+	*	
+	*	@param verso Direzione che dovrà avere la curva.
+	*/
 	void cambiaVerso(TipoBlocco verso);
+	
+	/** Disegna il blocco. 
+	*	Se il debug è attivo disegna anche i punti di cambio direzione.
+	*
+	*	@param widget Finestra su cui viene disegnato il blocco.
+	*/
 	void draw(RenderWindow &widget);
-#ifdef DEBUG_MODE
-	RectangleShape shape_1, shape_2, shape_3, shape_4;
-#endif // DEBUG_MODE
 	
 
-	/**Restituisce la direzione che deve prendere la macchina in prossimit� di una curva.
-	*  @param pos Posizione attuale della macchina
+	/**	Restituisce la direzione che deve prendere la macchina in prossimità di una curva.
+	*
+	*	@param pos Posizione attuale della macchina.
 	*/
 	Direzione getChangeDir(Vector2f pos);
 };

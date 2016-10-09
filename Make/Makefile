@@ -3,7 +3,6 @@ MAPPA = Mappa.o $(BLOCCHI) Direzione.o Direzionatore.o
 LISTE = Blocco_List.o GraphNode_List.o Direzione_List.o Vector2i_List.o Macchina_List.o MacchinaPtr_List.o
 OBJ = main.o Core.o Macchina.o Graph.o  GraphNode.o $(MAPPA) $(LISTE) SFMLWidget.o
 CXXFLAGS=-Wall `pkg-config --cflags gtkmm-3.0` -std=c++11 -I ../src/header/
-LDFLAGS=-rdynamic
 LDLIBS=`pkg-config --libs gtkmm-3.0` -lsfml-graphics -lsfml-window -lsfml-system
 
 VPATH=../src/header:../src/code

@@ -53,7 +53,7 @@ public:
 
     /** Costruttore che imposta la posizione del nodo.
     *	
-    *	@param startPos Posizione iniziale
+    *	@param startPos Posizione iniziale.
     */
     GraphNode(Vector2i startPos);
 
@@ -68,7 +68,7 @@ public:
 
 	/** Imposta l'adiacenza basandosi sulla direzione passata come parametro.
 	*
-	*	@param dir Direzione di adiacenza
+	*	@param dir Direzione di adiacenza.
 	*	@param nodo Puntatore al nodo adiacente.
 	*	@param peso Peso del collegamento.
 	*	@return True se ha impostato l'adiacenza. False altrimenti.
@@ -77,17 +77,17 @@ public:
 
 	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
 	*
-	*	@param i Posizione nell'array della adiacenza
-	*	@param peso Parametro di uscita: peso del collegamento
-	*	@return Puntatore al nodo adiacente. NULL se non esiste il nodo adiacente
+	*	@param i Posizione nell'array della adiacenza.
+	*	@param peso Parametro di uscita: peso del collegamento.
+	*	@return Puntatore al nodo adiacente. NULL se non esiste il nodo adiacente.
 	*/
 	GraphNode * getAdiacenza(int i, int &peso);
 	
 	/** Restituisce, se esiste, il nodo adiacente e il peso del collegamento.
 	*
-	*	@param dir Direzione di adiacenza
-	*	@param peso Parametro di uscita: peso del collegamento
-	*	@return Puntatore al nodo adiacente. NULL se non esiste il nodo adiacente
+	*	@param dir Direzione di adiacenza.
+	*	@param peso Parametro di uscita: peso del collegamento.
+	*	@return Puntatore al nodo adiacente. NULL se non esiste il nodo adiacente.
 	*/
 	GraphNode * getAdiacenza(Direzione dir, int &peso);
 };
