@@ -5,17 +5,18 @@ Curva::Curva()
 {
 	sprite.setPosition(0,0);
 	setTipo(TipoBlocco::SX_TO_UP);
-	pos1.x = 19;
-	pos1.y = 19;
+	int secondaryOffset = size - offsetChangeDirPos - 1;
+	posChangeDirTopLeft.x = offsetChangeDirPos;
+	posChangeDirTopLeft.y = offsetChangeDirPos;
 
-	pos2.x = 48;
-	pos2.y = 19;
+	posChangeDirTopRight.x = secondaryOffset;
+	posChangeDirTopRight.y = offsetChangeDirPos;
 
-	pos3.x = 19;
-	pos3.y = 48;
+	posChangeDirBottomLeft.x = offsetChangeDirPos;
+	posChangeDirBottomLeft.y = secondaryOffset;
 
-	pos4.x = 48;
-	pos4.y = 48;
+	posChangeDirBottomRight.x = secondaryOffset;
+	posChangeDirBottomRight.y = secondaryOffset;
 }
 
 Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
@@ -24,36 +25,38 @@ Curva::Curva(int rowIndex, int columnIndex, TipoBlocco tipo)
 	collider = IntRect(columnIndex * size, rowIndex * size, size, size);
 	cambiaVerso(tipo);
 	
-	pos1.x = 19+(size*columnIndex);
-	pos1.y = 19+(size*rowIndex);
-	D1(PRINT("pos1=" << pos1.x << "," << pos1.y));
+	int secondaryOffset = size - offsetChangeDirPos - 1;
 
-	pos2.x = 48 + (size*columnIndex);
-	pos2.y = 19 + (size*rowIndex);
-	D1(PRINT("pos2=" << pos2.x << "," << pos2.y));
+	posChangeDirTopLeft.x = offsetChangeDirPos+(size*columnIndex);
+	posChangeDirTopLeft.y = offsetChangeDirPos+(size*rowIndex);
+	D1(PRINT("posChangeDirTopLeft=" << posChangeDirTopLeft.x << "," << posChangeDirTopLeft.y));
 
-	pos3.x = 19 + (size*columnIndex);
-	pos3.y = 48 + (size*rowIndex);
+	posChangeDirTopRight.x = secondaryOffset + (size*columnIndex);
+	posChangeDirTopRight.y = offsetChangeDirPos + (size*rowIndex);
+	D1(PRINT("posChangeDirTopRight=" << posChangeDirTopRight.x << "," << posChangeDirTopRight.y));
 
-	pos4.x = 48 + (size*columnIndex);
-	pos4.y = 48 + (size*rowIndex);
+	posChangeDirBottomLeft.x = offsetChangeDirPos + (size*columnIndex);
+	posChangeDirBottomLeft.y = secondaryOffset + (size*rowIndex);
+
+	posChangeDirBottomRight.x = secondaryOffset + (size*columnIndex);
+	posChangeDirBottomRight.y = secondaryOffset + (size*rowIndex);
 
 #ifdef DEBUG_MODE
-	shape_1.setPosition(pos1.x, pos1.y);
-	shape_1.setSize(Vector2f(1, 1));
-	shape_1.setFillColor(Color::Green);
+	shapeTopLeft.setPosition(posChangeDirTopLeft.x, posChangeDirTopLeft.y);
+	shapeTopLeft.setSize(Vector2f(1, 1));
+	shapeTopLeft.setFillColor(Color::Green);
 
-	shape_2.setPosition(pos2.x, pos2.y);
-	shape_2.setSize(Vector2f(1, 1));
-	shape_2.setFillColor(Color::Green);
+	shapeTopRight.setPosition(posChangeDirTopRight.x, posChangeDirTopRight.y);
+	shapeTopRight.setSize(Vector2f(1, 1));
+	shapeTopRight.setFillColor(Color::Green);
 
-	shape_3.setPosition(pos3.x, pos3.y);
-	shape_3.setSize(Vector2f(1, 1));
-	shape_3.setFillColor(Color::Green);
+	shapeBottomLeft.setPosition(posChangeDirBottomLeft.x, posChangeDirBottomLeft.y);
+	shapeBottomLeft.setSize(Vector2f(1, 1));
+	shapeBottomLeft.setFillColor(Color::Green);
 
-	shape_4.setPosition(pos4.x, pos4.y);
-	shape_4.setSize(Vector2f(1, 1));
-	shape_4.setFillColor(Color::Green);
+	shapeBottomRight.setPosition(posChangeDirBottomRight.x, posChangeDirBottomRight.y);
+	shapeBottomRight.setSize(Vector2f(1, 1));
+	shapeBottomRight.setFillColor(Color::Green);
 #endif // DEBUG_MODE
 }
 
@@ -70,10 +73,10 @@ void Curva::draw(RenderWindow & widget)
 	widget.draw(sprite);
 
 	D1(
-		widget.draw(shape_1);
-		widget.draw(shape_2);
-		widget.draw(shape_3);
-		widget.draw(shape_4);
+		widget.draw(shapeTopLeft);
+		widget.draw(shapeTopRight);
+		widget.draw(shapeBottomLeft);
+		widget.draw(shapeBottomRight);
 	);
 }
 
@@ -83,27 +86,27 @@ Direzione Curva::getChangeDir(Vector2f pos)
 	switch (tipo)
 	{
 		case TipoBlocco::SX_TO_UP:
-			if (posizione.x == pos4.x && posizione.y == pos4.y)
+			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
 				return Direzione::SU;
-			if (posizione.x == pos1.x && posizione.y == pos1.y)
+			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
 				return Direzione::SX;
 			break;
 		case TipoBlocco::SX_TO_DOWN:
-			if (posizione.x == pos3.x && posizione.y == pos3.y)
+			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
 				return Direzione::GIU;
-			if (posizione.x == pos2.x && posizione.y == pos2.y)
+			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
 				return Direzione::SX;
 			break;
 		case TipoBlocco::DX_TO_UP:
-			if (posizione.x == pos2.x && posizione.y == pos2.y)
+			if (posizione.x == posChangeDirTopRight.x && posizione.y == posChangeDirTopRight.y)
 				return Direzione::SU;
-			if (posizione.x == pos3.x && posizione.y == pos3.y)
+			if (posizione.x == posChangeDirBottomLeft.x && posizione.y == posChangeDirBottomLeft.y)
 				return Direzione::DX;
 			break;
 		case TipoBlocco::DX_TO_DOWN:
-			if (posizione.x == pos1.x && posizione.y == pos1.y)
+			if (posizione.x == posChangeDirTopLeft.x && posizione.y == posChangeDirTopLeft.y)
 				return Direzione::GIU;
-			if (posizione.x == pos4.x && posizione.y == pos4.y)
+			if (posizione.x == posChangeDirBottomRight.x && posizione.y == posChangeDirBottomRight.y)
 				return Direzione::DX;
 			break;
 		default:;
