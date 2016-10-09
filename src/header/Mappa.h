@@ -160,7 +160,7 @@ private:
 	*	Poi si aggiorna la posizione corrente secondo la direzione corrente.
 	*
 	*	@param bloccoList Percorso attualmente costruito.
-	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovr� stabilirne il tipo.
+	*	@param currentPos Posizione del blocco corrente. Prima dell'aggiornamento indica le coordinate del blocco da inserire mentre dopo indica la posizione del blocco di cui si dovrà stabilirne il tipo.
 	*	@param prevDir Direzione estratta precedentemente (Parametro di uscita).
 	*	@param currentDir Direzione estratta.
 	*	@param tipo Tipo del blocco da inserire.

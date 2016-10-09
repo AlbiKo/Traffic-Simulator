@@ -50,12 +50,12 @@ void placeCar(Vector2i &source, Direzione &d);
 */
 void replaceCar(Macchina &car);
 
-/** Aggiorna la posizione della macchina:\n
+/** Aggiorna la posizione della macchina:
 *	- Se la macchina si trova su una curva o su un incrocio, cambia la direzione della macchina.\n
-*	- Se si trova in prossimità di un semaforo si ferma.\n
+*	- Se si trova in prossimitÃ  di un semaforo si ferma.\n
 *
 *	Inoltre, si tiene traccia della porzione del percorso che manca da compiere (prossimo blocco e direzione) e
-*	si aggiunge la macchina alla lista delle macchine dei blocchi con cui è in intersezione.
+*	si aggiunge la macchina alla lista delle macchine dei blocchi con cui Ã¨ in intersezione.
 *
 *	@param car Macchina da aggiornare.
 */
@@ -231,7 +231,7 @@ void updateCar(Macchina &car)
 
 	if (b != NULL)
 	{
-		//Se si è entrati in un nuovo blocco.
+		//Se si Ã¨ entrati in un nuovo blocco.
 		if (carPos.x / Blocco::size == car.nextBlock.x && carPos.y / Blocco::size == car.nextBlock.y)
 			carOnEnterBlock(car);
 
@@ -240,7 +240,7 @@ void updateCar(Macchina &car)
 			//Si aggiunge la macchina alla lista macchine del blocco successivo.
 			blocco->cars.insert(&car);
 		
-		//Se il prossimo blocco è un incrocio, si controlla lo stato del semaforo e nel caso la macchina viene fermata.
+		//Se il prossimo blocco Ã¨ un incrocio, si controlla lo stato del semaforo e nel caso la macchina viene fermata.
 		Incroci * i = dynamic_cast<Incroci *>(blocco);
 		if (i != NULL)
 		{

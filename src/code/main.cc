@@ -12,14 +12,16 @@ programma
 */
 
 /** @mainpage Traffic-Simulator.
-		Questo programma gestisce il traffico stradale di un ambiente generato casualmente.\n
-		La "map" generata conterrà incroci che saranno gestiti da semafori.\n
-		I veicoli procederanno da un luogo di partenza verso una destinazione autonomamente, rispettando gli incroci e le regolazioni semaforiche.\n
-		\n Benvenuti in SimCity 2000!\n\n
-		NOTA:
-		Documentazione incompleta su ::Blocco
-
-
+		Questo programma gestisce il traffico stradale di un ambiente generato casualmente, nella seguente modalità:\n
+		<ul>
+			<li>Posizionamento delle sorgenti</li>
+			<li>Collegamento delle sorgenti fra di loro
+				<ul><li>Se rimangono sorgenti scollegate, queste vengono collegate con altre sorgenti</li></ul>
+			</li>
+		</ul>
+		Consultare ::Mappa per maggiori informazioni.\n\n
+		I veicoli procederanno da un luogo di partenza verso una destinazione autonomamente, rispettando le intersezioni regolate da semafori.\n
+		La logica dell'applicazione è gestita da <a href="Core_8cc.html">Core</a>.
 
     @author Daniele Corradini
     @author Alberto Beccari

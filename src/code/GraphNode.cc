@@ -78,7 +78,7 @@ bool GraphNode::setAdiacenza(int i, GraphNode * nodo, int peso)
 
 		return true;
 	}
-	D1(PRINT("Adiacenza non inserita (gi‡ presente o fuori range)"));
+	D1(PRINT("Adiacenza non inserita (gi√† presente o fuori range)"));
 	return false;
 }
 

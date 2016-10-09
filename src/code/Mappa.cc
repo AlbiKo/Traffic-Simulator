@@ -179,7 +179,7 @@ void Mappa::generateSource(int x, int y, bool vertical)
 		if (i > max)
 			i = min;
 
-	} while (i != start_pos && count < max_source); //Finché non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
+	} while (i != start_pos && count < max_source); //FinchÃ© non si torna alla posizione iniziale o si posizionano il numero di sorgenti stabilite
 }
 
 void Mappa::deleteSource(Vector2i source)
@@ -358,9 +358,9 @@ bool Mappa::generateRoute(Vector2i startPos, Vector2i endPos)
 		} while ((checkAdjacentCross(currentPos, tipo)				||		//Si controllano conflitti con gli incroci sulla matrice
 				  checkAdjacentCross(bloccoList, currentPos, tipo)	||		//Si controllano conflitti con gli incroci sul percorso temporaneo
 				  checkZigZag(prevBlock, tipo)						) &&	
-				 dir.count() != 0);											//Se c'è ancora almeno una direzione percorribile
+				 dir.count() != 0);											//Se c'Ã¨ ancora almeno una direzione percorribile
 
-		//Se non ci sono più direzioni percorribi si azzera il percorso e 
+		//Se non ci sono piÃ¹ direzioni percorribi si azzera il percorso e 
 		//si diminuiscono il numero di tentativi rimasti
 		if (dir.count() == 0)
 		{
@@ -393,20 +393,20 @@ void Mappa::initGeneratingRoute(Vector2i startPos, Vector2i & currentPos, Direzi
 	if (startPos.x == 0 && startPos.y > 0 && startPos.y < blocchiY - 1)
 	{
 		//Si sta partendo da una sorgente sul lato sinistro,
-		//quindi il blocco da posizionare è quello immediatamente a destra..
+		//quindi il blocco da posizionare Ã¨ quello immediatamente a destra..
 		currentPos = Vector2i(startPos.x + 1, startPos.y);
 
-		//.. e quindi ci si è spostati verso destra
+		//.. e quindi ci si Ã¨ spostati verso destra
 		prevDir = Direzione::DX;
 	}
 	else
 		if (startPos.x == blocchiX - 1 && startPos.y > 0 && startPos.y < blocchiY - 1)
 		{
 			//Si sta partendo da una sorgente sul lato destro,
-			//quindi il blocco da posizionare è quello immediatamente a sinistra..
+			//quindi il blocco da posizionare Ã¨ quello immediatamente a sinistra..
 			currentPos = Vector2i(startPos.x - 1, startPos.y);
 
-			//.. e quindi ci si è spostati verso sinistra
+			//.. e quindi ci si Ã¨ spostati verso sinistra
 			prevDir = Direzione::SX;
 		}
 }
@@ -607,7 +607,7 @@ TipoBlocco Mappa::mergeRectRouteBlock(TipoBlocco tipo, Direzione prevDir, Direzi
 		if (prevDir == rectDir || prevDir == getDirOpposta(rectDir))
 			return tipo;
 		else
-			//Si è perpendicolari al rettilineo
+			//Si Ã¨ perpendicolari al rettilineo
 			return TipoBlocco::CROSS4;
 	else
 		//Se si sta entrando nel rettilineo e poi in che senso
@@ -696,7 +696,7 @@ TipoBlocco Mappa::mergeEmptyRouteBlock(Direzione prevDir, Direzione currentDir)
 
 TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 {
-	//Si controlla se è un blocco che può essere adiacente ad una sorgente
+	//Si controlla se Ã¨ un blocco che puÃ² essere adiacente ad una sorgente
 	if (currentPos.y != 1 && currentPos.y != blocchiY - 2 &&
 		currentPos.x != 1 && currentPos.x != blocchiX - 2)
 		return tipo;
@@ -704,21 +704,21 @@ TipoBlocco Mappa::checkSourceRouteBlock(Vector2i currentPos, TipoBlocco tipo)
 	switch (tipo)
 	{
 	case TipoBlocco::HORIZONTAL:
-		//Se ci si trova sulla prima riga e sopra c'è una sorgente
+		//Se ci si trova sulla prima riga e sopra c'Ã¨ una sorgente
 		if (currentPos.y == 1 && sourceList.get(currentPos.x, currentPos.y - 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_UP;
 
-		//Se ci si trova sull'ultima riga e sotto c'è una sorgente
+		//Se ci si trova sull'ultima riga e sotto c'Ã¨ una sorgente
 		if (currentPos.y == blocchiY - 2 && sourceList.get(currentPos.x, currentPos.y + 1, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DOWN;
 		break;
 
 	case TipoBlocco::VERTICAL:
-		//Se ci si trova sulla prima colonna e a sinistra c'è una sorgente
+		//Se ci si trova sulla prima colonna e a sinistra c'Ã¨ una sorgente
 		if (currentPos.x == 1 && sourceList.get(currentPos.x - 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_SX;
 
-		//Se ci si trova sull'ultima colonna e a destra c'è una sorgente
+		//Se ci si trova sull'ultima colonna e a destra c'Ã¨ una sorgente
 		if (currentPos.x == blocchiX - 2 && sourceList.get(currentPos.x + 1, currentPos.y, false) != Vector2i(-1, -1))
 			tipo = TipoBlocco::CROSS3_DX;
 		break;
@@ -767,11 +767,11 @@ TipoBlocco Mappa::checkSourceCurveRouteBlock(Vector2i currentPos, Vector2i corne
 	}
 	else
 	{
-		//Se ci si trova nella stessa riga dell'angolo e se c'è una sorgente sopra/sotto
+		//Se ci si trova nella stessa riga dell'angolo e se c'Ã¨ una sorgente sopra/sotto
 		if (currentPos.y == cornerPos.y && sourceList.get(currentPos.x, currentPos.y + offset.y, false) != Vector2i(-1, -1))
 			return typeY;
 		else
-			//Se ci si trova nella stessa colonna dell'angolo e se c'è una sorgente a fianco
+			//Se ci si trova nella stessa colonna dell'angolo e se c'Ã¨ una sorgente a fianco
 			if (currentPos.x == cornerPos.x && sourceList.get(currentPos.x + offset.x, currentPos.y, false) != Vector2i(-1, -1))
 				return typeX;
 	}

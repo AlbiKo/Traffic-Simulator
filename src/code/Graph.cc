@@ -86,8 +86,8 @@ void Graph::findPath(Vector2i startPos, Vector2i_List &sources, Vector2i_List &p
 	Vector2i endPos(0,0);
 
 	//Indivuazione e inserimento delle destinazioni raggiungibili nella lista apposita.
-	//Una nodo Ë considerato destinazione se Ë una sorgente e se il suo rispettivo valore 
-	//nell'array delle distanze Ë diverso da 0.
+	//Una nodo √® considerato destinazione se √® una sorgente e se il suo rispettivo valore 
+	//nell'array delle distanze √® diverso da 0.
 	for (int i = 0; i < count; i++)
 	{
 		endPos = nodes.get(i)->pos;
@@ -338,12 +338,12 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 				assert(adjIndex >= 0 && adjIndex < count);
 				D3(PRINT("adjPos " << adjPos.x << ", " << adjPos.y << " di indice " << adjIndex << " e peso " << adjWeight << " pos " << parent[adjIndex].x << ", " << parent[adjIndex].y));
 
-				//Se il nodo non Ë ancora stato visitato, cioË il parent del nodo Ë uguale al nodo stesso, e se il nodo non Ë il nodo iniziale..
+				//Se il nodo non √® ancora stato visitato, cio√® il parent del nodo √® uguale al nodo stesso, e se il nodo non √® il nodo iniziale..
 				if ((parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y)) || 
-					//.. o se si trova una via pi˘ breve per raggiungere il nodo adiacente
+					//.. o se si trova una via pi√π breve per raggiungere il nodo adiacente
 					dist[adjIndex] > dist[currentIndex] + adjWeight)
 				{
-					//Se il nodo non Ë ancora stato visitato si aggiornano gli array
+					//Se il nodo non √® ancora stato visitato si aggiornano gli array
 					if (parent[adjIndex].x == adjPos.x && parent[adjIndex].y == adjPos.y && (adjPos.x != startPos.x || adjPos.y != startPos.y))
 					{
 						D3(PRINT("Non visitato"));
@@ -359,7 +359,7 @@ void Graph::buildParentArray(Vector2i parent[], int dist[], int count, Vector2i 
 		}
 
 		//Inserisco nello stack i nodi in ordine di peso decrescente
-		//(quindi il prossimo ad essere estratto sar‡ il nodo con peso minore)
+		//(quindi il prossimo ad essere estratto sar√† il nodo con peso minore)
 		insertStack(stack, adj, w);
 	}
 }

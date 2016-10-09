@@ -46,7 +46,7 @@ void Direzionatore::escludiDirezioni(Vector2i startPos, Vector2i endPos, Direzio
 	ripristina();
 	escludiDirezione(getDirOpposta(prevDir));
 
-	//Si escludono direzioni se la destinazione è in alto..
+	//Si escludono direzioni se la destinazione Ã¨ in alto..
 	if (endPos.y == 0)
 		escludiDirezioniX(startPos, endPos, Vector2i(numBlocchi.x - 2, 1), Direzione::GIU);
 	//.. o in basso
