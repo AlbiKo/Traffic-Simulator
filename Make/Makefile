@@ -16,7 +16,7 @@ release: CXXFLAGS+=-D NDEBUG
 release: Traffic-Simulator
 
 Traffic-Simulator: $(OBJ)
-	g++ -std=c++11 -o ../bin/Traffic-Simulator $(OBJ) $(LDFLAGS) $(LDLIBS)
+	g++ -std=c++11 -o ../bin/Traffic-Simulator $(OBJ) $(LDLIBS)
 
 
 -include dependencies
