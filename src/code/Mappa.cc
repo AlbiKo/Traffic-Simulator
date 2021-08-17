@@ -106,13 +106,16 @@ void Mappa::checkCarCollision()
 			blocchi[i][j]->checkCollision();
 }
 
-void Mappa::updateSemaphores()
+void Mappa::updateSemaphores(bool blockAll)
 {
 	for (int i = 0; i < crossList.count(); i++)
 	{
 		Vector2i pos = crossList.get(i, false);
 		Incroci * cross = dynamic_cast<Incroci *>(blocchi[pos.y][pos.x]);
-		cross->changeSemaphoreStatus();
+		if (blockAll) 
+			cross->blockTraffic();
+		else
+			cross->changeSemaphoreStatus();
 	}
 }
 

@@ -338,7 +338,7 @@ public:
 	void checkCarCollision();
 
 	/**Aggiorna tutti i semafori allo stato successivo. */
-	void updateSemaphores();
+	void updateSemaphores(bool blockAll);
 };
 #endif
 

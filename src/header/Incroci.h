@@ -29,6 +29,9 @@ protected:
 
 	/** Rappresenta lo stato del semaforo. Se true blocca le strade orizzontali. */
 	bool blockHoriz = false;
+	
+	/** Blocca tutte le strade per svuotare l'incrocio */
+	bool blockAll = false;
 
 	/** Direzione non valida. Indica la direzione in cui un veicolo non può andare. */
 	Direzione wrongDir = Direzione::ND;
@@ -76,5 +79,8 @@ public:
 	* 	@return Direzione che la macchina deve prendere per fare correttamente l'incrocio.
 	*/
 	Direzione getChangeDir(Vector2f pos, Direzione dir);
+
+	/** Blocca il traffico da tutte le direzioni */
+	void blockTraffic(); 
 };
 #endif // !INCROCI_INCLUDE

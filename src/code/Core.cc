@@ -20,7 +20,8 @@ static int NUM_MACCHINE = 100,
 			carSpawned = 0;
 
 static float carSpawningTime = 0.25f,
-				semChangeStatusTime = 10;
+				semChangeStatusTime = 10,
+				redInterval = 1000;
 
 extern int RESX, RESY;
 static Vector2i mapSize;
@@ -137,7 +138,7 @@ void enableInput(bool enable)
 
 void update(RenderWindow &widget)
 {
-	static Time timeLastSpawned, timeLastSemUpdate;
+	static Time timeLastSpawned, timeLastSemUpdate, timeLastRed;
 	static Clock clocks;
 
 	map.draw(widget);
@@ -147,7 +148,8 @@ void update(RenderWindow &widget)
 	if (!pause)
 	{
 		timeLastSpawned += elapsedTime;
-		timeLastSemUpdate += elapsedTime;
+		if (timeLastRed.asSeconds() < redInterval)
+			timeLastSemUpdate += elapsedTime;
 		map.checkCarCollision();
 	}
 
@@ -161,8 +163,19 @@ void update(RenderWindow &widget)
 
 	if (!pause && timeLastSemUpdate.asSeconds() >= semChangeStatusTime)
 	{
-		map.updateSemaphores();
-		timeLastSemUpdate = Time::Zero;
+		if (timeLastRed.asSeconds() >= redInterval) 
+		{
+			map.updateSemaphores(false);
+			timeLastSemUpdate = Time::Zero;
+			timeLastRed = Time::Zero;
+		}
+
+		else 
+		{
+			//if (timeLastRed == Time::Zero)
+			map.updateSemaphores(true);
+			timeLastRed += elapsedTime;
+		}
 	}
 
 	if (inputEnabled)

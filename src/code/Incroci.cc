@@ -109,14 +109,40 @@ void Incroci::setSemaphorePos()
 		semaphore2.left = pos.x + Blocco::size;
 		semaphore2.top = posChangeDirTopRight.y;
 	}
+
+	
+
 }
 
 void Incroci::changeSemaphoreStatus()
 {
+	blockAll = false;
 	blockHoriz = !blockHoriz;
 
 	setSemaphorePos();
 	setSemaphoresColor();
+}
+
+void Incroci::blockTraffic()
+{
+
+
+	blockAll = true;
+	Vector2i pos = getPos();
+
+	Color horizColor = Color::Red, vertColor = Color::Red;
+
+	semShape1.setFillColor(vertColor);
+	semShape2.setFillColor(horizColor);
+	semShape3.setFillColor(horizColor);
+	semShape4.setFillColor(vertColor);
+
+	semaphore1.left = pos.x;
+	semaphore1.top = pos.y;
+
+	semaphore2.left = pos.x + Blocco::size;
+	semaphore2.top = pos.y + Blocco::size;
+
 }
 
 IntRect Incroci::getSemaphore(Direzione dir)
